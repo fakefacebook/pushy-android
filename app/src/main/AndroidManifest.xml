@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~ Copyright 2017 Michael A Updike
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+<manifest package="com.weebly.opus1269.clipman"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:overrideLibrary="android.support.v14.preference,
+        android.support.v7.appcompat,
+        android.support.v7.preference,
+        android.support.graphics.drawable,
+        android.support.compat,android.support.v4,
+        android.support.coreutils,
+        android.support.mediacompat,
+        android.support.coreui,
+        android.support.fragment,
+        android.support.v7.recyclerview"/>
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <application
+        android:name=".app.App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppThemeLight"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppThemeLight">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.clipviewer.ClipViewerActivity"
+            android:label="@string/title_activity_clip_viewer"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppThemeLight">
+        </activity>
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppThemeLight">
+        </activity>
+        <activity
+            android:name=".ui.help.HelpActivity"
+            android:label="@string/title_activity_help"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppThemeLight">
+        </activity>
+        <activity
+            android:name=".ui.signin.SignInActivity"
+            android:label="@string/title_activity_sign_in"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppThemeLight">
+        </activity>
+        <activity
+            android:name=".ui.devices.DevicesActivity"
+            android:label="@string/title_activity_devices"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppThemeLight">
+        </activity>
+
+        <!-- private to app -->
+        <provider
+            android:name=".model.ClipContentProvider"
+            android:authorities="com.weebly.opus1269.clipman"
+            android:enabled="true"
+            android:exported="false">
+        </provider>
+
+        <service
+            android:name=".services.MyInstanceIDListenerService"
+            android:enabled="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.MyFcmListenerService"
+            android:enabled="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <!-- private to app -->
+        <service
+            android:name=".services.ClipboardWatcherService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+
+        <!-- private to app -->
+        <receiver
+            android:name=".services.AutoStartReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- private to app -->
+        <receiver
+            android:name=".services.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
+
+        <!-- private to app -->
+        <receiver
+            android:name=".ui.helpers.NotificationHelper$NotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.weebly.opus1269.clipman.DELETE_NOTIFICATION_ACTION"/>
+                <action android:name="com.weebly.opus1269.clipman.SEARCH_ACTION"/>
+                <action android:name="com.weebly.opus1269.clipman.SHARE_ACTION"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

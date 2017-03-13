@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~ Copyright 2017 Michael A Updike
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources>
+
+    <!-- Indigo Theme -->
+    <color name="primary">#FF283593</color>
+    <color name="primary_dark">#FF1A237E</color>
+    <color name="primary_medium">#FF7986CB</color>
+    <color name="primary_light">#FFC5CAE9</color>
+    <color name="accent">#FF009688</color>
+    <color name="icons">#FFFFFFFF</color>
+
+    <color name="search_highlight">#B3009688</color>
+    <color name="red_500">#FFF44336</color>
+    <color name="red_500_translucent">#CCF44336</color>
+
+    <color name="primary_selection_light">#33283593</color>
+    <color name="primary_selection_dark">#FF00796B</color>
+
+    <color name="deep_teal_200">#FF80CBC4</color>
+    <color name="deep_teal_500">#FF009688</color>
+    <color name="deep_teal_700">#FF00796B</color>
+
+    <color name="grey_900">#FF212121</color>
+    <color name="grey_background">#FF303030</color>
+    <color name="grey_800">#FF424242</color>
+    <color name="grey_700">#FF616161</color>
+
+    <color name="darkener">#66000000</color>
+
+    <color name="blue_grey_500">#607D8B</color>
+    <color name="blue_grey_600">#546E7A</color>
+    <color name="blue_grey_700">#455A64</color>
+    <color name="blue_grey_800">#37474F</color>
+    <color name="blue_grey_900">#263238</color>
+
+</resources>

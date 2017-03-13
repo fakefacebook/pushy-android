@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+      ~
+      ~ Copyright 2017 Michael A Updike
+      ~
+      ~ Licensed under the Apache License, Version 2.0 (the "License");
+      ~ you may not use this file except in compliance with the License.
+      ~ You may obtain a copy of the License at
+      ~
+      ~     http://www.apache.org/licenses/LICENSE-2.0
+      ~
+      ~ Unless required by applicable law or agreed to in writing, software
+      ~ distributed under the License is distributed on an "AS IS" BASIS,
+      ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      ~ See the License for the specific language governing permissions and
+      ~ limitations under the License.
+      ~
+      -->
+
+<resources>
+
+    <!-- Related to delete dialog -->
+
+    <string-array name="favs">
+        <item>@string/ar_delete_favs</item>
+    </string-array>
+
+    <!-- Related to sort dialog -->
+
+    <string-array name="sort_type_entries">
+        <item>@string/ar_sort_type_date</item>
+        <item>@string/ar_sort_type_text</item>
+    </string-array>
+
+    <string-array name="sort_type_values">
+        <item>date DESC</item>
+        <item>LOWER(text) ASC</item>
+    </string-array>
+
+    <!-- Related to preferences -->
+
+    <string-array name="pref_duration_entries">
+        <item>@string/ar_duration_day</item>
+        <item>@string/ar_duration_week</item>
+        <item>@string/ar_duration_month</item>
+        <item>@string/ar_duration_year</item>
+        <item>@string/ar_duration_forever</item>
+    </string-array>
+
+    <string-array name="pref_duration_values">
+        <item>@string/ar_duration_day_value</item>
+        <item>@string/ar_duration_week_value</item>
+        <item>@string/ar_duration_month_value</item>
+        <item>@string/ar_duration_year_value</item>
+        <item>@string/ar_duration_forever_value</item>
+    </string-array>
+
+    <string-array name="pref_theme_entries">
+        <item>@string/ar_theme_light</item>
+        <item>@string/ar_theme_dark</item>
+    </string-array>
+
+    <string-array name="pref_theme_values">
+        <item>@string/ar_theme_light_value</item>
+        <item>@string/ar_theme_dark_value</item>
+    </string-array>
+
+    <string-array name="pref_not_types_entries">
+        <item>@string/ar_not_remote</item>
+        <item>@string/ar_not_local</item>
+        <item>@string/ar_not_dev_added</item>
+        <item>@string/ar_not_dev_removed</item>
+    </string-array>
+
+    <string-array name="pref_not_types_values">
+        <item>@string/ar_not_remote_value</item>
+        <item>@string/ar_not_local_value</item>
+        <item>@string/ar_not_dev_added_value</item>
+        <item>@string/ar_not_dev_removed_value</item>
+    </string-array>
+
+    <string-array name="pref_not_types_default_values">
+        <item>@string/ar_not_remote_value</item>
+        <item>@string/ar_not_dev_added_value</item>
+        <item>@string/ar_not_dev_removed_value</item>
+    </string-array>
+
+</resources>

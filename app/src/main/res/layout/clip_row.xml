@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~
+  ~ Copyright 2017 Michael A Updike
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<LinearLayout
+    android:id="@+id/clipRow"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View style="@style/Divider"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/clipRowSelector">
+
+        <RelativeLayout
+            android:id="@+id/clipBackground"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/red_500_translucent"
+            tools:layout_width="match_parent">
+
+            <ImageView
+                android:layout_width="@dimen/row_image_large_size"
+                android:layout_height="@dimen/row_image_large_size"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:focusable="false"
+                android:tint="@color/icons"
+                app:srcCompat="@drawable/ic_delete_black_24dp"
+                tools:ignore="ContentDescription"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/clipForeground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <CheckBox
+                android:id="@+id/favCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/row_image_vertical_margin"
+                android:layout_marginLeft="@dimen/zero_dp"
+                android:layout_marginStart="@dimen/zero_dp"
+                android:background="@android:color/transparent"
+                android:button="@android:color/transparent"
+                tools:drawableLeft="@drawable/ic_favorite_border_black_24dp"
+                tools:drawableStart="@drawable/ic_favorite_border_black_24dp"
+                android:paddingBottom="@dimen/row_image_vertical_margin"
+                android:paddingTop="@dimen/row_image_vertical_margin"
+                android:paddingLeft="@dimen/row_image_horizontal_margin"
+                android:paddingStart="@dimen/row_image_horizontal_margin"
+                android:paddingRight="@dimen/row_image_horizontal_margin"
+                android:paddingEnd="@dimen/row_image_horizontal_margin"
+                android:contentDescription="@string/content_favorite"
+                />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/favCheckBox"
+                android:layout_alignBottom="@+id/favCheckBox"
+                android:layout_centerHorizontal="true"
+                android:maxLines="1"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:textColor="?android:textColorTertiary"
+                android:textIsSelectable="false"
+                tools:text="Test date"/>
+
+            <ImageButton
+                android:id="@+id/copyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/row_image_vertical_margin"
+                android:layout_marginTop="@dimen/row_image_vertical_margin"
+                android:layout_marginRight="@dimen/zero_dp"
+                android:layout_marginEnd="@dimen/zero_dp"
+                android:paddingBottom="@dimen/row_image_vertical_margin"
+                android:paddingTop="@dimen/row_image_vertical_margin"
+                android:paddingLeft="@dimen/row_image_horizontal_margin"
+                android:paddingStart="@dimen/row_image_horizontal_margin"
+                android:paddingRight="@dimen/row_image_horizontal_margin"
+                android:paddingEnd="@dimen/row_image_horizontal_margin"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/content_copy"
+                android:gravity="center_vertical"
+                app:srcCompat="@drawable/ic_content_copy_black_24dp"
+                />
+
+            <TextView
+                android:id="@+id/clipText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/favCheckBox"
+                android:ellipsize="end"
+                android:lines="2"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textIsSelectable="false"
+                tools:text="Test clip text\nTest clip text\nTest clip text\n http://www.cnn.com Test clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\nTest clip text\n"/>
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
+

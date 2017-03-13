@@ -1,0 +1,272 @@
+<!--
+  ~
+  ~ Copyright 2017 Michael A Updike
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Related to App -->
+    <string name="app_name">Clip Man</string>
+
+
+    <!-- Related to Activities -->
+    <string name="title_activity_main">@string/app_name</string>
+    <string name="title_activity_main_local">Clip Man: Local clip</string>
+    <string name="title_activity_main_remote_fmt">Clip Man: Remote clip - %s</string>
+    <string name="title_activity_clip_viewer">Local clip</string>
+    <string name="title_activity_clip_viewer_remote">Remote clip</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_help">Help &amp; feedback</string>
+    <string name="title_activity_sign_in">Manage account</string>
+    <string name="title_activity_devices">Manage devices</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <!-- Related to Menus -->
+    <string name="action_favorite">Toggle favorite</string>
+    <string name="action_show_favs">Show favorites</string>
+    <string name="action_show_all">Show all</string>
+    <string name="action_search">Search</string>
+    <string name="action_search_web">Search Web</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_share">Share</string>
+    <string name="action_sort">Sort by</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_delete_all">Delete all</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_help_feedback">Help &amp; feedback</string>
+    <string name="action_help">Help</string>
+    <string name="action_help_view_store">View in Google Play Store</string>
+    <string name="action_help_version">Version info</string>
+    <string name="action_help_licenses">Open source licenses</string>
+    <string name="action_refresh_devices">Refresh device list</string>
+
+    <string name="nav_account">Manage account</string>
+    <string name="nav_devices">Manage devices</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_help">Help &amp; feedback</string>
+
+
+    <!-- Related to Preferences -->
+    <string name="pref_cat_title_clipboard">Clipboard</string>
+    <string name="key_pref_cat_clipboard">cat_clipboard</string>
+
+    <string name="pref_title_monitor_clipboard">Monitor clipboard</string>
+    <string name="pref_desc_monitor_clipboard">Run service to store clipboard content</string>
+    <string name="key_pref_monitor_clipboard">monitor_clipboard</string>
+
+    <string name="pref_title_monitor_startup">Monitor clipboard on boot</string>
+    <string name="pref_desc_monitor_startup">Start service when device is turned on</string>
+    <string name="key_pref_monitor_startup">monitor_startup</string>
+
+    <string name="pref_title_push_clipboard">Push to devices</string>
+    <string name="pref_desc_push_clipboard">Send contents to registered devices</string>
+    <string name="key_pref_push_clipboard">push_clipboard</string>
+
+    <string name="pref_cat_title_general">General</string>
+    <string name="key_pref_cat_general">cat_general</string>
+
+    <string name="pref_title_nickname">Device nickname</string>
+    <string name="pref_desc_nickname_fmt">%s</string>
+    <string name="key_pref_nickname">nickname</string>
+    <string name="pref_nickname_hint">e.g. Work Phone</string>
+
+    <string name="pref_title_duration">Storage duration</string>
+    <string name="key_pref_duration">storage_duration</string>
+    <string name="ar_duration_day">One day</string>
+    <string name="ar_duration_week">One week</string>
+    <string name="ar_duration_month">One month</string>
+    <string name="ar_duration_year">One year</string>
+    <string name="ar_duration_forever">Forever</string>
+    <string name="ar_duration_day_value" translatable="false">day</string>
+    <string name="ar_duration_week_value" translatable="false">week</string>
+    <string name="ar_duration_month_value" translatable="false">month</string>
+    <string name="ar_duration_year_value" translatable="false">year</string>
+    <string name="ar_duration_forever_value" translatable="false">forever</string>
+
+    <string name="pref_title_theme">Theme</string>
+    <string name="key_pref_theme">theme</string>
+    <string name="ar_theme_light">light</string>
+    <string name="ar_theme_dark">dark</string>
+    <string name="ar_theme_light_value" translatable="false">light</string>
+    <string name="ar_theme_dark_value" translatable="false">dark</string>
+
+    <string name="pref_cat_title_notifications">Notifications</string>
+    <string name="key_pref_cat_notifications">cat_notifications</string>
+
+    <string name="pref_title_notifications">Show notifications</string>
+    <string name="key_pref_notifications">notifications</string>
+
+    <string name="pref_title_not_types">Notification types</string>
+    <string name="key_pref_not_types">notificationTypes</string>
+    <string name="ar_not_remote">On remote copy received</string>
+    <string name="ar_not_local">On local copy</string>
+    <string name="ar_not_dev_added">On device added</string>
+    <string name="ar_not_dev_removed">On device removed</string>
+    <string name="ar_not_remote_value" translatable="false">remoteCopy</string>
+    <string name="ar_not_local_value" translatable="false">localCopy</string>
+    <string name="ar_not_dev_added_value" translatable="false">deviceAdded</string>
+    <string name="ar_not_dev_removed_value" translatable="false">deviceRemoved</string>
+
+    <string name="pref_title_not_audible_once">Audible only once</string>
+    <string name="key_pref_not_audible_once">audible_once</string>
+    <string name="pref_desc_not_audible_once">New notifications are silent if already visible</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="key_pref_ringtone">ringtone</string>
+
+
+    <!-- Related to array.xml (other than prefs) -->
+    <string name="ar_sort_type_date">date</string>
+    <string name="ar_sort_type_text">text</string>
+    <string name="ar_delete_favs">Include favorites</string>
+
+
+    <!-- Related to the Clipboard -->
+    <string name="default_clip_1">I am Clip Man. The clipboard manager with push notifications.</string>
+    <string name="default_clip_2">Sign-In to share with all your devices.</string>
+    <string name="default_clip_3"><![CDATA[Tap to view all.\n\n
+    It is a good idea to go to the "Settings" and enter a nickname for this device.\n\n
+    Try clicking on a link: http://google.com\n\n
+    Or an Email address: clipmanapp@gmail.com\n\n
+    Or a phone number: 555-1234\n\n
+    Map locations too:\n\n1600 Amphitheatre Parkway\nMountain View, CA 94043]]></string>
+    <string name="default_clip_4">Tap the \u2661 to make it a favorite.</string>
+    <string name="default_clip_5">Swipe \u261E to delete.</string>
+
+
+    <!-- Related to HelpActivity -->
+    <string name="help_title_feedback">Feedback (English only, please)</string>
+
+    <string name="help_email_question">Question</string>
+    <string name="help_email_question_tag" translatable="false">Question</string>
+    <string name="help_email_bug">Bug report</string>
+    <string name="help_email_bug_tag" translatable="false">Bug report</string>
+    <string name="help_email_feature">Feature request</string>
+    <string name="help_email_feature_tag" translatable="false">Feature request</string>
+    <string name="help_email_trans">Volunteer help with translations</string>
+    <string name="help_email_trans_tag" translatable="false">Volunteer help with translations</string>
+    <string name="help_email_general">General feedback</string>
+    <string name="help_email_general_tag" translatable="false">General feedback</string>
+
+    <string name="help_github_issue">Submit issue to GitHub</string>
+    <string name="help_github_issue_tag" translatable="false">https://github.com/opus1269/Clip-Man/issues/new</string>
+
+    <string name="help_title_documentation">Help</string>
+
+    <string name="help_doc_usage">App documentation</string>
+    <string name="help_doc_usage_tag" translatable="false">https://github.com/opus1269/Clip-Man/blob/master/README.md</string>
+    <string name="help_doc_release">Release notes</string>
+    <string name="help_doc_releas_tag_fmt" translatable="false">https://github.com/opus1269/Clip-Man/releases/tag/v%s</string>
+    <string name="help_doc_source">Source code</string>
+    <string name="help_doc_source_tag" translatable="false">https://github.com/opus1269/Clip-Man/</string>
+
+    <string name="help_license_path" translatable="false">https://github.com/opus1269/Clip-Man/blob/master/LICENSE.md</string>
+    <string name="help_licenses_path" translatable="false">https://github.com/opus1269/Clip-Man/blob/master/LICENSES.md</string>
+
+
+    <!-- Related to DevicesActivity -->
+    <string name="device_model_fmt">Model - %s</string>
+    <string name="device_SN_fmt">SN - %s</string>
+    <string name="device_OS_fmt">OS - %s</string>
+    <string name="device_nickname_fmt">Nickname - %s</string>
+    <string name="device_last_seen_fmt">Last seen - %s</string>
+    <string name="remote_device_fmt">Source - %s</string>
+
+
+    <!-- Related to push notifications -->
+    <string name="error_registering">Failed to register with messaging service.</string>
+    <string name="error_unregistering">Failed to un-register with messaging service.</string>
+    <string name="error_unknown">An unknown error occurred.</string>
+    <string name="error_connection">Unable to connect to Google SignIn.</string>
+    <string name="error_timeout">Connection timed out.</string>
+    <string name="refresh_devices">Refreshing device list…</string>
+    <string name="device_ping">Contacting other devices&#8230;</string>
+    <string name="device_ping_response">Device is online</string>
+    <string name="device_added">New device added</string>
+    <string name="device_removed">Device removed</string>
+
+    <!-- Related to gae push notifications -->
+    <string name="registering">Registering device with the messaging service…</string>
+    <string name="unregistering">Removing device registration from the messaging service…</string>
+    <string name="err_register">Error registering device with server</string>
+    <string name="err_unregister">Error unregistering device with server</string>
+    <string name="err_refresh">Error refreshing token with server</string>
+    <string name="err_devices">Error getting device list from server</string>
+    <string name="err_change_device_name">Error changing device name on server</string>
+    <string name="err_send">Error sending message to remote devices</string>
+    <string name="err_unknown">An unknown error occurred</string>
+    <string name="err_invalid_regid">Registration ID is invalid</string>
+    <string name="err_not_registered">Device is not registered</string>
+    <string name="err_credential">Unable to get user credential</string>
+
+
+    <!-- Related to account sign-in -->
+    <string name="signin_title">Google Sign-In\nClip Man</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signed_in">Signed in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signed_out">Signed out</string>
+    <string name="loading">Loading…</string>
+    <string name="signin_help_title">Sign-In Help</string>
+    <string name="signin_help"><![CDATA[
+        Sign-in is only required if you want to share items with your other devices.
+         Your email address is used only to guarantee that all messages go to a single account.
+        \n\n\"Revoke Access\" will remove access to this app
+         for all of your connected devices using this account name until you sign-in again.]]>
+    </string>
+    <string name="revoke_err_fmt">"App revocation failed. Please try again later\n %s"</string>
+    <string name="sign_out_err_fmt">"Sign-out failed. Please try again later\n %s"</string>
+    <string name="sign_in_err_fmt">"Sign-in failed. Please try again later\n %s"</string>
+    <string name="auth_code_fmt">Auth Code: %s</string>
+    <string name="id_token_fmt">ID Token: %s</string>
+
+    <string name="play_services_error_fmt">Google Play Services Error: %i</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Revoke Access</string>
+    <string name="desc_google_icon">Google Logo</string>
+
+
+    <!-- Misc. strings -->
+    <string name="deleted_1_item">1 item deleted</string>
+    <string name="item_delete_empty">Nothing to delete</string>
+    <string name="clip_deleted">"Clip deleted"</string>
+    <string name="item_deleted_one">"1 item deleted"</string>
+    <string name="items_deleted">" items deleted"</string>
+    <string name="clipboard_copy">Copied to clipboard</string>
+    <string name="clip_notification_remote_fmt">From %s</string>
+    <string name="clip_notification_local">Clipboard item added</string>
+    <string name="clip_notification_count_fmt" tools:ignore="PluralsCandidate">%d new items</string>
+    <string name="content_favorite">Select to make favorite</string>
+    <string name="content_copy">Copy item to clipboard</string>
+    <string name="device_forget">Forget device</string>
+    <string name="no_share">Nothing to share</string>
+    <string name="share_text_to">Share text to…</string>
+    <string name="delete_all_question">Delete all items?</string>
+    <string name="button_delete">DELETE</string>
+    <string name="button_dismiss">DISMISS</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_continue">CONTINUE</string>
+    <string name="copyright" translatable="false">&#169;2017 Michael A Updike</string>
+    <string name="version_fmt">Version %s</string>
+    <string name="license" translatable="false"><a href="https://github.com/opus1269/Clip-Man/blob/master/LICENSE.md">Apache 2.0</a></string>
+    <string name="default_person_name">Tap to sign-in</string>
+    <string name="now_fmt">just now, %s</string>
+    <string name="joda_time_fmt_pattern">h:mm a</string>
+
+</resources>
