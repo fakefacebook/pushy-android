@@ -165,7 +165,7 @@
     <string name="help_email_general_tag" translatable="false">General feedback</string>
 
     <string name="help_github_issue">Submit issue to GitHub</string>
-    <string name="help_github_issue_tag" translatable="false">https://github.com/opus1269/Clip-Man/issues/new</string>
+    <string name="help_github_issue_tag" translatable="false">https://github.com/Clip-Man/clip-man-android/issues/new</string>
 
     <string name="help_title_documentation">Help</string>
 
