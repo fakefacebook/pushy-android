@@ -170,14 +170,14 @@
     <string name="help_title_documentation">Help</string>
 
     <string name="help_doc_usage">App documentation</string>
-    <string name="help_doc_usage_tag" translatable="false">https://github.com/opus1269/Clip-Man/blob/master/README.md</string>
+    <string name="help_doc_usage_tag" translatable="false">https://github.com/Clip-Man/clip-man-android/blob/master/README.md</string>
     <string name="help_doc_release">Release notes</string>
-    <string name="help_doc_releas_tag_fmt" translatable="false">https://github.com/opus1269/Clip-Man/releases/tag/v%s</string>
+    <string name="help_doc_releas_tag_fmt" translatable="false">https://github.com/Clip-Man/clip-man-android/releases/tag/v%s</string>
     <string name="help_doc_source">Source code</string>
-    <string name="help_doc_source_tag" translatable="false">https://github.com/opus1269/Clip-Man/</string>
+    <string name="help_doc_source_tag" translatable="false">https://github.com/Clip-Man/clip-man-android/</string>
 
-    <string name="help_license_path" translatable="false">https://github.com/opus1269/Clip-Man/blob/master/LICENSE.md</string>
-    <string name="help_licenses_path" translatable="false">https://github.com/opus1269/Clip-Man/blob/master/LICENSES.md</string>
+    <string name="help_license_path" translatable="false">https://github.com/Clip-Man/clip-man-android/blob/master/LICENSE.md</string>
+    <string name="help_licenses_path" translatable="false">https://github.com/Clip-Man/clip-man-android/blob/master/LICENSES.md</string>
 
 
     <!-- Related to DevicesActivity -->
