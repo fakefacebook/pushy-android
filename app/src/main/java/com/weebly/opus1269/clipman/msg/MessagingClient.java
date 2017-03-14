@@ -54,7 +54,7 @@ public class MessagingClient extends Endpoint{
 
         String message = clipItem.getText();
         if (message.length() > Msg.MAX_MSG_LEN) {
-            // 4KB limit with FCM - server may limit more
+            // 4KB limit with FCM - server will do final limiting
             message = message.substring(0, Msg.MAX_MSG_LEN - 1);
         }
         final String favString = clipItem.isFav() ? "1" : "0";
@@ -146,11 +146,11 @@ public class MessagingClient extends Endpoint{
 
         builder.setApplicationName(AppUtils.getApplicationName());
 
-        // TODO Comment out to test production server
-        if (BuildConfig.DEBUG) {
-            // user local server on DEBUG
-            setLocalServer(builder);
-        }
+        // Uncomment to test local server
+//        if (BuildConfig.DEBUG) {
+//            // user local server on DEBUG
+//            setLocalServer(builder);
+//        }
 
         return builder.build();
     }

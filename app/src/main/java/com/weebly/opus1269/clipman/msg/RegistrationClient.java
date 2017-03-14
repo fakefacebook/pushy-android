@@ -108,7 +108,7 @@ public class RegistrationClient extends Endpoint {
 
         try {
             // we will sign out regardless, so reset
-            //TODO is this right?
+            // TODO is this right?
             saveValues(false, "");
 
             final String regToken = getRegToken();
@@ -200,11 +200,11 @@ public class RegistrationClient extends Endpoint {
 
         builder.setApplicationName(AppUtils.getApplicationName());
 
-        // TODO Comment out to test production server
-        if (BuildConfig.DEBUG) {
-            // user local server on DEBUG
-            setLocalServer(builder);
-        }
+        // Uncomment to test local server
+//        if (BuildConfig.DEBUG) {
+//            // user local server on DEBUG
+//            setLocalServer(builder);
+//        }
 
         return builder.build();
     }
