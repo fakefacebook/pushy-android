@@ -24,16 +24,12 @@ import android.os.SystemClock;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.weebly.opus1269.clipman.app.AppUtils;
-import com.weebly.opus1269.clipman.logs.LogDBHelper;
-import com.weebly.opus1269.clipman.logs.LogItemFcm;
 import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.msg.Msg;
 import com.weebly.opus1269.clipman.ui.helpers.NotificationHelper;
-
-import org.joda.time.DateTime;
 
 import java.util.Map;
 
@@ -81,10 +77,6 @@ public class MyFcmListenerService extends FirebaseMessagingService {
             return;
         }
 
-        final LogItemFcm logItemFcm =
-                new LogItemFcm(Msg.FCM_RECEIVED, message.getMessageId(), new DateTime(), Long.toString(message.getSentTime()));
-        LogDBHelper.insert(LogDBHelper.TABLE_FCM, logItemFcm.getContentValues());
-
          switch (action) {
             case Msg.ACTION_MESSAGE:
                 AppUtils.logD(TAG, "ACTION_MESSAGE");
@@ -128,10 +120,6 @@ public class MyFcmListenerService extends FirebaseMessagingService {
     public void onDeletedMessages() {
         super.onDeletedMessages();
 
-        final LogItemFcm logItemFcm =
-                new LogItemFcm(Msg.FCM_DELETED, "", new DateTime(), "");
-        LogDBHelper.insert(LogDBHelper.TABLE_FCM, logItemFcm.getContentValues());
-
         AppUtils.logD(TAG, "onDeletedMessages called");
     }
 
@@ -139,22 +127,14 @@ public class MyFcmListenerService extends FirebaseMessagingService {
     public void onMessageSent(String msgId) {
         super.onMessageSent(msgId);
 
-        final LogItemFcm logItemFcm =
-                new LogItemFcm(Msg.FCM_SENT, msgId, new DateTime(), "");
-        LogDBHelper.insert(LogDBHelper.TABLE_FCM, logItemFcm.getContentValues());
-
         AppUtils.logD(TAG, "onMessageSent called: " + msgId);
     }
 
     @Override
-    public void onSendError(String msgId, Exception e) {
-        super.onSendError(msgId, e);
+    public void onSendError(String msgId, Exception ex) {
+        super.onSendError(msgId, ex);
 
-        final LogItemFcm logItemFcm =
-                new LogItemFcm(Msg.FCM_SEND_ERROR, msgId, new DateTime(), e.getMessage());
-        LogDBHelper.insert(LogDBHelper.TABLE_FCM, logItemFcm.getContentValues());
-
-        AppUtils.logEx(TAG, "Error from Fcm ", e);
+        AppUtils.logEx(TAG, "Error from Fcm ", ex);
     }
 
     ///////////////////////////////////////////////////////////////////////////

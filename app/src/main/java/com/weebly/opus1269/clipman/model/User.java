@@ -47,7 +47,6 @@ import com.google.api.services.people.v1.model.Person;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
-import com.weebly.opus1269.clipman.logs.LogDBHelper;
 import com.weebly.opus1269.clipman.ui.helpers.BitmapHelper;
 
 import java.io.IOException;
@@ -124,9 +123,6 @@ public enum User {
 
         // clear Devices list
         Devices.clear();
-
-        // clear out logs.db
-        LogDBHelper.emptyTables();
     }
 
     public boolean isLoggedIn() {

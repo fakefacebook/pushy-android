@@ -27,7 +27,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.weebly.opus1269.clipman.logs.LogDBHelper;
 import com.weebly.opus1269.clipman.model.ClipDatabaseHelper;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.ui.devices.DevicesActivity;
@@ -50,8 +49,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
     private static Context sContext = null;
     @SuppressLint("StaticFieldLeak")
     private static ClipDatabaseHelper sClipDb = null;
-    @SuppressLint("StaticFieldLeak")
-    private static LogDBHelper sLogDb = null;
 
     private static boolean sIsMainActivityVisible = false;
     private static boolean sIsDevicesActivityVisible = false;
@@ -74,10 +71,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
         return sClipDb;
     }
 
-   public static LogDBHelper getLogDbHelper() {
-        return sLogDb;
-    }
-
     public static boolean isMainActivityVisible() {
         return sIsMainActivityVisible;
     }
@@ -94,9 +87,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
         sClipDb = new ClipDatabaseHelper(sContext);
         sClipDb.getWritableDatabase();
-
-        sLogDb = new LogDBHelper(sContext);
-        sLogDb.getWritableDatabase();
 
         // save version info. to the preferences database
         try {
