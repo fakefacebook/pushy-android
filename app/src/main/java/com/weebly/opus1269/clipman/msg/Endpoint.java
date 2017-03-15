@@ -33,6 +33,7 @@ import com.google.api.client.googleapis.services.json.AbstractGoogleJsonClient;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.weebly.opus1269.clipman.BuildConfig;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
 
@@ -43,6 +44,9 @@ import java.util.concurrent.TimeUnit;
  */
 abstract class Endpoint {
     private static final String TAG = "Endpoint";
+
+    /** Set to true to use local gae server - {@value} */
+    private static final boolean USE_LOCAL_SERVER = false;
 
     /** Network timeout in seconds - {@value} */
     private static final int TIMEOUT = 10;
@@ -135,18 +139,18 @@ abstract class Endpoint {
     /**
      * Set setRootUrl and setGoogleClientRequestInitializer for running with local server
      *
-     * @param builder setup local server location
+     * @param builder Json client
      */
     static void setLocalServer(AbstractGoogleJsonClient.Builder builder) {
-        // Need to setRootUrl and setGoogleClientRequestInitializer only for local testing,
-        // otherwise they can be skipped
-        builder.setRootUrl("http://10.0.0.52:8080/_ah/api/")
-            .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                @Override
-                public void initialize(AbstractGoogleClientRequest<?> request) {
-                    request.setDisableGZipContent(true);
-                }
-            });
+        if (USE_LOCAL_SERVER && BuildConfig.DEBUG) {
+            builder.setRootUrl("http://10.0.0.52:8080/_ah/api/")
+                .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
+                    @Override
+                    public void initialize(AbstractGoogleClientRequest<?> request) {
+                        request.setDisableGZipContent(true);
+                    }
+                });
+        }
     }
 
 }

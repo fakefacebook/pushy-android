@@ -21,10 +21,9 @@ package com.weebly.opus1269.clipman.msg;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.weebly.opus1269.clipman.BuildConfig;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.backend.messaging.Messaging;
 import com.weebly.opus1269.clipman.backend.messaging.model.EndpointRet;
@@ -141,16 +140,13 @@ public class MessagingClient extends Endpoint{
      */
     private static Messaging getMessagingService(GoogleCredential credential) {
         final Messaging.Builder builder =
-            new Messaging.Builder(AndroidHttp.newCompatibleTransport(),
+            new Messaging.Builder(new NetHttpTransport(),
                 new AndroidJsonFactory(), credential);
 
         builder.setApplicationName(AppUtils.getApplicationName());
 
-        // Uncomment to test local server
-//        if (BuildConfig.DEBUG) {
-//            // user local server on DEBUG
-//            setLocalServer(builder);
-//        }
+        // for development purposes
+        setLocalServer(builder);
 
         return builder.build();
     }
