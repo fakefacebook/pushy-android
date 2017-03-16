@@ -7,3 +7,5 @@
 *.ZIP binary
 *.xcf binary
 *.XCF binary
+*.jar binary
+*.JAR binary
