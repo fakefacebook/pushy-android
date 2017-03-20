@@ -51,7 +51,7 @@ public class MessagingClient extends Endpoint{
      * @param clipItem - contents to send
      */
     public static void send(ClipItem clipItem) {
-        if (notRegistered() || Prefs.dontPushClipboard()) {
+        if (notRegistered() || !Prefs.isPushClipboard()) {
             return;
         }
 

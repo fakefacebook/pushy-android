@@ -212,7 +212,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     /**
      * Initialize the {@link android.support.v7.view.menu.ActionMenuItemView} for search
-     *
      */
     private void setupSearch() {
         final MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);

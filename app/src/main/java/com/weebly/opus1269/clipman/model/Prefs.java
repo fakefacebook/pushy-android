@@ -88,10 +88,16 @@ public class Prefs {
         return get(key, true);
     }
 
-    public static boolean dontPushClipboard() {
+    public static boolean isPushClipboard() {
         final Context context = App.getContext();
         final String key = context.getResources().getString(R.string.key_pref_push_clipboard);
-        return !get(key, true);
+        return get(key, true);
+    }
+
+    public static boolean isAutoSend() {
+        final Context context = App.getContext();
+        final String key = context.getResources().getString(R.string.key_pref_auto_clipboard);
+        return get(key, true);
     }
 
     public static String getDeviceNickname() {

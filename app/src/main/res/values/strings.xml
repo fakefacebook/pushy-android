@@ -41,6 +41,7 @@
     <string name="action_favorite">Toggle favorite</string>
     <string name="action_show_favs">Show favorites</string>
     <string name="action_show_all">Show all</string>
+    <string name="action_send">Send clipboard contents</string>
     <string name="action_search">Search</string>
     <string name="action_search_web">Search Web</string>
     <string name="action_copy">Copy</string>
@@ -77,6 +78,10 @@
     <string name="pref_title_push_clipboard">Push to devices</string>
     <string name="pref_desc_push_clipboard">Send contents to registered devices</string>
     <string name="key_pref_push_clipboard">push_clipboard</string>
+
+    <string name="pref_title_auto_clipboard">Auto send</string>
+    <string name="pref_desc_auto_clipboard">Automatically send contents</string>
+    <string name="key_pref_auto_clipboard">auto_clipboard</string>
 
     <string name="pref_cat_title_general">General</string>
     <string name="key_pref_cat_general">cat_general</string>
@@ -249,6 +254,7 @@
     <string name="item_deleted_one">"1 item deleted"</string>
     <string name="items_deleted">" items deleted"</string>
     <string name="clipboard_copy">Copied to clipboard</string>
+    <string name="clipboard_sent">Sent clipboard contents</string>
     <string name="clip_notification_remote_fmt">From %s</string>
     <string name="clip_notification_local">Clipboard item added</string>
     <string name="clip_notification_count_fmt" tools:ignore="PluralsCandidate">%d new items</string>

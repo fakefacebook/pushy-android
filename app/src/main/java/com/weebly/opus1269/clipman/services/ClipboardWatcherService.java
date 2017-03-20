@@ -181,7 +181,8 @@ public class ClipboardWatcherService extends Service implements
         protected Void doInBackground(Boolean... params) {
             final Boolean onNewOnly = params[0];
             mResult =
-                    ClipContentProvider.insert(ClipboardWatcherService.this, mClipItem, onNewOnly);
+                    ClipContentProvider.insert(ClipboardWatcherService.this,
+                        mClipItem, onNewOnly);
             return null;
         }
 
@@ -192,8 +193,9 @@ public class ClipboardWatcherService extends Service implements
                 // display notification if requested by user
                 NotificationHelper.show(mClipItem);
 
-                if (!mClipItem.isRemote() && Prefs.isDeviceRegistered() && !Prefs.dontPushClipboard()) {
-                    // send to server for delivery
+                if (!mClipItem.isRemote() && Prefs.isDeviceRegistered() &&
+                    Prefs.isPushClipboard() && Prefs.isAutoSend()) {
+                    // send local copy to server for delivery
                     MessagingClient.send(mClipItem);
                 }
             }

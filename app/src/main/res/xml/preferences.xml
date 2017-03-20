@@ -40,11 +40,18 @@
             />
 
         <SwitchPreferenceCompat
-            android:dependency="@string/key_pref_monitor_clipboard"
             android:defaultValue="true"
             android:key="@string/key_pref_push_clipboard"
             android:title="@string/pref_title_push_clipboard"
             android:summary="@string/pref_desc_push_clipboard"
+            />
+
+        <SwitchPreferenceCompat
+            android:dependency="@string/key_pref_push_clipboard"
+            android:defaultValue="true"
+            android:key="@string/key_pref_auto_clipboard"
+            android:title="@string/pref_title_auto_clipboard"
+            android:summary="@string/pref_desc_auto_clipboard"
             />
 
     </PreferenceCategory>

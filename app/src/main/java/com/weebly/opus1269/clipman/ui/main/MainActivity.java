@@ -18,7 +18,9 @@
 
 package com.weebly.opus1269.clipman.ui.main;
 
+import android.content.ClipboardManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,8 +42,10 @@ import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.model.ClipContentProvider;
 import com.weebly.opus1269.clipman.model.ClipItem;
+import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.model.User;
+import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.services.ClipboardWatcherService;
 import com.weebly.opus1269.clipman.ui.devices.DevicesActivity;
 import com.weebly.opus1269.clipman.ui.base.BaseActivity;
@@ -146,6 +150,8 @@ public class MainActivity extends BaseActivity implements
 
         updateNavHeader();
 
+        updateOptionsMenu();
+
         NotificationHelper.removeClips();
 
         // so relative dates get updated
@@ -180,6 +186,8 @@ public class MainActivity extends BaseActivity implements
 
         setPrefFavFilter(mFavFilter, false);
 
+        updateOptionsMenu();
+
         return ret;
     }
 
@@ -192,6 +200,9 @@ public class MainActivity extends BaseActivity implements
             case R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 setQueryString("");
+                break;
+            case R.id.action_send:
+                sendClipboardContents();
                 break;
              case R.id.action_fav_filter:
                  // toggle
@@ -403,8 +414,8 @@ public class MainActivity extends BaseActivity implements
                 }
             }
         } else if (intent.hasExtra(ClipItem.INTENT_EXTRA_CLIP_ITEM)) {
-            final ClipItem item =
-                    (ClipItem) intent.getSerializableExtra(ClipItem.INTENT_EXTRA_CLIP_ITEM);
+            final ClipItem item = (ClipItem) intent.getSerializableExtra(
+                        ClipItem.INTENT_EXTRA_CLIP_ITEM);
             intent.removeExtra(ClipItem.INTENT_EXTRA_CLIP_ITEM);
             startOrUpdateClipViewer(item);
         }
@@ -417,6 +428,40 @@ public class MainActivity extends BaseActivity implements
     private void startActivity(Class cls) {
         final Intent intent = new Intent(this, cls);
         startActivity(intent);
+    }
+
+    /**
+     * Send the clipboard contents to our {@link Devices}
+     */
+    private void sendClipboardContents() {
+        ClipboardManager clipboardManager =
+            (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        final ClipItem clipItem = ClipItem.getFromClipboard(clipboardManager);
+        if (clipItem != null) {
+            if (Prefs.isPushClipboard()) {
+                MessagingClient.send(clipItem);
+                Snackbar.make(findViewById(R.id.fab),
+                    R.string.clipboard_sent, Snackbar.LENGTH_SHORT).show();
+            }
+        }
+//        if (Prefs.isMonitorClipboard()) {
+//                if (Prefs.isPushClipboard()) {
+//                    // send if it wasn't autosent
+//                    if (!Prefs.isAutoSend()) {
+//                        MessagingClient.send(clipItem);
+//                    }
+//                    Snackbar.make(findViewById(R.id.fab),
+//                        R.string.clipboard_sent, Snackbar.LENGTH_SHORT).show();
+//                }
+//            } else {
+//                // not monitoring cliboard, send if push enabled
+//                if (Prefs.isPushClipboard()) {
+//                    MessagingClient.send(clipItem);
+//                    Snackbar.make(findViewById(R.id.fab),
+//                        R.string.clipboard_sent, Snackbar.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
     }
 
     /**
@@ -529,5 +574,19 @@ public class MainActivity extends BaseActivity implements
 
         User.INSTANCE.setNavigationHeaderView(hView);
     }
+
+    /**
+     * Set Option Menu icons enabled state
+     */
+    private void updateOptionsMenu() {
+        // set state of send menu item
+        if (mOptionsMenu != null) {
+            final MenuItem sendItem = mOptionsMenu.findItem(R.id.action_send);
+            sendItem.setEnabled(Prefs.isPushClipboard());
+            final Integer alpha  = Prefs.isPushClipboard() ? 255 : 64;
+            MenuTintHelper.colorMenuItem(sendItem, null, alpha);
+        }
+    }
+
 
 }

@@ -32,6 +32,12 @@
         app:showAsAction="collapseActionView|ifRoom"/>
 
     <item
+        android:id="@+id/action_send"
+        android:icon="@drawable/ic_send_black_24dp"
+        android:title="@string/action_send"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/action_fav_filter"
         android:icon="@drawable/ic_favorite_border_black_24dp"
         android:title="@string/action_show_favs"
