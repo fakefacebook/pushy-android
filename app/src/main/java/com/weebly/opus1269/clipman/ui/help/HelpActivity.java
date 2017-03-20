@@ -38,6 +38,7 @@ import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.ui.base.BaseActivity;
 import com.weebly.opus1269.clipman.ui.helpers.DrawableHelper;
+import com.weebly.opus1269.clipman.ui.views.VectorDrawableTextView;
 
 /**
  * This Activity handles the display of help & feedback about the app
@@ -55,7 +56,9 @@ public class HelpActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         TextView release = (TextView) findViewById(R.id.docRelease);
-        release.setTag(getResources().getString(R.string.help_doc_releas_tag_fmt, Prefs.getVersionName()));
+        release.setTag(getResources()
+            .getString(R.string.help_doc_releas_tag_fmt,
+                Prefs.getVersionName()));
 
         // color the TextView icons
         tintLeftDrawables();
@@ -82,7 +85,8 @@ public class HelpActivity extends BaseActivity {
                 showVersionDialog();
                 break;
             case R.id.action_licenses:
-                AppUtils.showWebUrl(getString(R.string.help_licenses_path));
+                AppUtils.showWebUrl(
+                    getString(R.string.help_licenses_path));
                 break;
             default:
                 processed = false;
@@ -96,6 +100,10 @@ public class HelpActivity extends BaseActivity {
     // Public methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Handle click on Help and feedback items
+     * @param v the TextView that was clicked
+     */
     public void onItemClicked(View v) {
 
         final TextView textView = (TextView) v;
@@ -130,7 +138,9 @@ public class HelpActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Send me an email
+     * Send an email
+     * @param subject email Subject
+     * @param body Email Body
      */
     private void emailMe(String subject, String body) {
         final Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -176,8 +186,7 @@ public class HelpActivity extends BaseActivity {
     }
 
     /**
-     * color the LeftDrawables in all our
-     * {@link com.weebly.opus1269.clipman.ui.views.VectorDrawableTextView} views
+     * color the LeftDrawables in all our {@link VectorDrawableTextView} views
      */
     private void tintLeftDrawables() {
 
@@ -211,14 +220,16 @@ public class HelpActivity extends BaseActivity {
     }
 
     /**
-     * color the leftDrawable in a
-     * {@link com.weebly.opus1269.clipman.ui.views.VectorDrawableTextView}
+     * Color the leftDrawable in a {@link VectorDrawableTextView}
+     * @param drawableHelper helper class
+     * @param idView id of VectorDrawableTextView
      */
     private void tintLeftDrawable(DrawableHelper drawableHelper, int idView) {
         final TextView textView = (TextView) findViewById(idView);
         if (textView != null) {
             Drawable drawable = drawableHelper.get();
-            textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+            textView.setCompoundDrawablesWithIntrinsicBounds(
+                drawable, null, null, null);
         }
     }
 }

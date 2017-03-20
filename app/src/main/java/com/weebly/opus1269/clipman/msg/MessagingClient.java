@@ -46,6 +46,10 @@ public class MessagingClient extends Endpoint{
     private MessagingClient() {
     }
 
+    /**
+     * Send contents of {@link ClipItem}
+     * @param clipItem - contents to send
+     */
     public static void send(ClipItem clipItem) {
         if (notRegistered() || Prefs.dontPushClipboard()) {
             return;
@@ -71,28 +75,33 @@ public class MessagingClient extends Endpoint{
         }
     }
 
+    /** Notify of our addition */
     public static void sendDeviceAdded() {
         if (notRegistered()) {
             return;
         }
 
-        JSONObject data = getJSONData(Msg.ACTION_DEVICE_ADDED, Msg.MSG_DEVICE_ADDED);
+        JSONObject data =
+            getJSONData(Msg.ACTION_DEVICE_ADDED, Msg.MSG_DEVICE_ADDED);
         if (data != null) {
             new MessagingAsyncTask().execute(data);
         }
     }
 
+    /** Notify of our removal */
     public static void sendDeviceRemoved() {
         if (notRegistered()) {
             return;
         }
 
-        JSONObject data = getJSONData(Msg.ACTION_DEVICE_REMOVED, Msg.MSG_DEVICE_REMOVED);
+        JSONObject data =
+            getJSONData(Msg.ACTION_DEVICE_REMOVED, Msg.MSG_DEVICE_REMOVED);
         if (data != null) {
             new MessagingAsyncTask().execute(data);
         }
     }
 
+    /** Ping others */
     public static void sendPing() {
         if (notRegistered()) {
             return;
@@ -104,12 +113,14 @@ public class MessagingClient extends Endpoint{
         }
     }
 
+    /** Respond to ping */
     public static void sendPingResponse() {
         if (notRegistered()) {
             return;
         }
 
-        JSONObject data = getJSONData(Msg.ACTION_PING_RESPONSE, Msg.MSG_PING_RESPONSE);
+        JSONObject data =
+            getJSONData(Msg.ACTION_PING_RESPONSE, Msg.MSG_PING_RESPONSE);
         if (data != null) {
             new MessagingAsyncTask().execute(data);
         }
@@ -121,7 +132,6 @@ public class MessagingClient extends Endpoint{
 
     /**
      * Determine if we are registered with the server
-     *
      * @return true if not registered
      */
     private static boolean notRegistered() {
@@ -134,7 +144,6 @@ public class MessagingClient extends Endpoint{
 
     /**
      * Get an authorized connection to the MessagingEndpoint
-     *
      * @param credential - authorization for current user
      * @return Connection to MessagingEndpoint on server
      */
@@ -153,7 +162,6 @@ public class MessagingClient extends Endpoint{
 
     /**
      * Build the message data object
-     *
      * @param action the message action
      * @param message the message text
      * @return a JSON data object
@@ -182,7 +190,8 @@ public class MessagingClient extends Endpoint{
     /**
      * AsyncTask to call gae Messaging Endpoint
      */
-    private static class MessagingAsyncTask extends AsyncTask<JSONObject, Void, EndpointRet> {
+    private static class MessagingAsyncTask
+        extends AsyncTask<JSONObject, Void, EndpointRet> {
         String mAction;
 
         MessagingAsyncTask() {}
@@ -209,9 +218,11 @@ public class MessagingClient extends Endpoint{
                 final Messaging msgService = getMessagingService(credential);
 
                 // call server
-                ret = msgService.send(Prefs.getRegToken(), jsonString).execute();
+                ret = msgService.send(Prefs.getRegToken(), jsonString)
+                    .execute();
                 if (!ret.getSuccess()) {
-                    ret.setReason(AppUtils.logE(TAG, Msg.ERROR_SEND + " " + ret.getReason()));
+                    ret.setReason(AppUtils.logE(TAG,
+                        Msg.ERROR_SEND + " " + ret.getReason()));
                 }
             } catch (IOException|JSONException ex) {
                 AppUtils.logEx(TAG, Msg.FCM_SEND_ERROR + ex.getMessage(), ex);
