@@ -270,7 +270,7 @@
     <string name="button_continue">CONTINUE</string>
     <string name="copyright" translatable="false">&#169;2017 Michael A Updike</string>
     <string name="version_fmt">Version %s</string>
-    <string name="license" translatable="false"><a href="https://github.com/opus1269/Clip-Man/blob/master/LICENSE.md">Apache 2.0</a></string>
+    <string name="license" translatable="false"><a href="https://github.com/Clip-Man/clip-man-android/blob/master/LICENSE.md">Apache 2.0</a></string>
     <string name="default_person_name">Tap to sign-in</string>
     <string name="now_fmt">just now, %s</string>
     <string name="joda_time_fmt_pattern">h:mm a</string>
