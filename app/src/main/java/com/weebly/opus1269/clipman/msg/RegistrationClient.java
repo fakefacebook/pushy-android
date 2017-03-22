@@ -24,6 +24,8 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.weebly.opus1269.clipman.R;
+import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.registration.Registration;
@@ -38,6 +40,15 @@ import java.io.IOException;
  */
 public class RegistrationClient extends Endpoint {
     private static final String TAG = "RegistrationClient";
+
+    private static final String ERROR_REGISTER =
+        App.getContext().getString(R.string.err_register);
+    private static final String ERROR_UNREGISTER =
+        App.getContext().getString(R.string.err_unregister);
+    private static final String ERROR_REFRESH =
+        App.getContext().getString(R.string.err_refresh);
+    private static final String ERROR_INVALID_REGID =
+        App.getContext().getString(R.string.err_invalid_regid);
 
     private RegistrationClient() {
     }
@@ -60,7 +71,7 @@ public class RegistrationClient extends Endpoint {
 
         final String regToken = getRegToken();
         if (TextUtils.isEmpty(regToken)) {
-            ret.setReason(Log.logE(TAG, Msg.ERROR_INVALID_REGID));
+            ret.setReason(Log.logE(TAG, ERROR_INVALID_REGID));
             return ret;
         }
 
@@ -79,10 +90,10 @@ public class RegistrationClient extends Endpoint {
                 isRegistered = true;
             } else {
                 ret.setReason(Log.logE(TAG,
-                    Msg.ERROR_REGISTER + " " + ret.getReason()));
+                    ERROR_REGISTER + " " + ret.getReason()));
             }
-        } catch (final IOException e) {
-            ret.setReason(Log.logEx(TAG, Msg.ERROR_REGISTER, e));
+        } catch (final IOException ex) {
+            ret.setReason(Log.logEx(TAG, ERROR_REGISTER, ex));
         } finally {
             saveValues(isRegistered, regToken);
         }
@@ -112,7 +123,7 @@ public class RegistrationClient extends Endpoint {
 
             final String regToken = getRegToken();
             if (TextUtils.isEmpty(regToken)) {
-                ret.setReason(Log.logE(TAG, Msg.ERROR_INVALID_REGID));
+                ret.setReason(Log.logE(TAG, ERROR_INVALID_REGID));
                 return ret;
             }
 
@@ -126,11 +137,11 @@ public class RegistrationClient extends Endpoint {
             final Registration regService = getRegistrationService(credential);
             ret = regService.unregister(regToken).execute();
             if (!ret.getSuccess()) {
-                ret.setReason(Log.logE(TAG, Msg.ERROR_UNREGISTER +
+                ret.setReason(Log.logE(TAG, ERROR_UNREGISTER +
                     " " + ret.getReason()));
             }
-        } catch (final IOException e) {
-            ret.setReason(Log.logEx(TAG, Msg.ERROR_UNREGISTER, e));
+        } catch (final IOException ex) {
+            ret.setReason(Log.logEx(TAG, ERROR_UNREGISTER, ex));
         }
 
         return ret;
@@ -178,11 +189,10 @@ public class RegistrationClient extends Endpoint {
                     newRegToken + "\nold: " + oldRegToken);
             } else {
                 ret.setReason(
-                    Log.logE(TAG, Msg.ERROR_REFRESH + " " + ret.getReason()));
+                    Log.logE(TAG, ERROR_REFRESH + " " + ret.getReason()));
             }
-        } catch (final IOException e) {
-            ret.setReason(Log.logEx(TAG, Msg.ERROR_REFRESH, e));
-            return ret;
+        } catch (final IOException ex) {
+            ret.setReason(Log.logEx(TAG, ERROR_REFRESH, ex));
         }
 
         return ret;

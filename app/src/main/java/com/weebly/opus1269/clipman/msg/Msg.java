@@ -74,14 +74,7 @@ public class Msg {
     /** {@value} */
     public static final String DEVICE_NICKNAME = "dN";
 
-    static final String ERROR_REGISTER =
-        App.getContext().getString(R.string.err_register);
-    static final String ERROR_UNREGISTER =
-        App.getContext().getString(R.string.err_unregister);
-    static final String ERROR_REFRESH = App.getContext().getString(R.string.err_refresh);
-    static final String ERROR_SEND = App.getContext().getString(R.string.err_send);
     static final String ERROR_UNKNOWN = App.getContext().getString(R.string.err_unknown);
-    static final String ERROR_INVALID_REGID = App.getContext().getString(R.string.err_invalid_regid);
     static final String ERROR_NOT_REGISTERED = App.getContext().getString(R.string.err_not_registered);
     static final String ERROR_CREDENTIAL = App.getContext().getString(R.string.err_credential);
 

@@ -176,6 +176,7 @@ public enum User {
         Prefs.set(PREF_USER_TYPE, value);
     }
 
+    @SuppressWarnings("unused")
     public String getType() {
         return Prefs.get(PREF_USER_TYPE, "com.google");
     }
@@ -353,8 +354,8 @@ public enum User {
             // Get all the user details
             try {
                 userProfile = service.people().get("people/me").execute();
-            } catch (IOException e) {
-                Log.logEx(TAG, e.getMessage(), e);
+            } catch (IOException ex) {
+                Log.logEx(TAG, "", ex);
             }
 
             if (userProfile != null) {

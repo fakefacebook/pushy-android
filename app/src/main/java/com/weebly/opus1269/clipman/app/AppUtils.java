@@ -149,7 +149,7 @@ public class AppUtils {
             try {
                 App.getContext().startActivity(intent);
             } catch (Exception ex) {
-                Log.logEx(TAG, ex.getMessage(), ex);
+                Log.logEx(TAG, "", ex);
                 ret = false;
             }
         }
@@ -174,7 +174,7 @@ public class AppUtils {
             try {
                 context.startActivity(intent);
             } catch (Exception ex) {
-                Log.logEx(TAG, ex.getMessage(), ex);
+                Log.logEx(TAG, "", ex);
                 ret = false;
             }
         }

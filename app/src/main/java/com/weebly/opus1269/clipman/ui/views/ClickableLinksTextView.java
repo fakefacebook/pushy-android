@@ -140,8 +140,8 @@ public class ClickableLinksTextView extends
                 this.mIgnoreActionUpEventField.setAccessible(true);
             }
 
-        } catch (Exception e) {
-            Log.logEx(TAG, e.getMessage(), e);
+        } catch (Exception ex) {
+            Log.logEx(TAG, "", ex);
         } finally {
             this.mBaseEditorCopied = true;
         }

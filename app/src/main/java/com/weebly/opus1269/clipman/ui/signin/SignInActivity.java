@@ -390,7 +390,7 @@ public class SignInActivity extends BaseActivity implements
             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.logD(TAG, "signInWithCredential:onComplete:" +
+                    Log.logD(TAG, "signInWithCredential:onComplete: " +
                         task.isSuccessful());
 
                     // If sign in fails, display a message to the user.

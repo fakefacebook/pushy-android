@@ -60,16 +60,16 @@ public class BitmapHelper {
         if (!TextUtils.isEmpty(urlName)) {
             try {
                 url = new URL(urlName);
-            } catch (final MalformedURLException e) {
-                Log.logEx(TAG, "Bad bitmap URL: " + e.getMessage(), e);
+            } catch (final MalformedURLException ex) {
+                Log.logEx(TAG, "Bad bitmap URL", ex);
                 return null;
             }
             InputStream inputStream = null;
             try {
                 inputStream = url.openStream();
                 bitmap = BitmapFactory.decodeStream(inputStream);
-            } catch (final IOException e) {
-                Log.logEx(TAG, "Failed to get bitmap: " + e.getMessage(), e);
+            } catch (final IOException ex) {
+                Log.logEx(TAG, "Failed to get bitmap", ex);
             } finally {
                 try {
                     if (inputStream != null) {

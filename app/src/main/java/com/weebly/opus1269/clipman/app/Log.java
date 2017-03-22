@@ -18,6 +18,8 @@
 
 package com.weebly.opus1269.clipman.app;
 
+import android.text.TextUtils;
+
 import com.weebly.opus1269.clipman.BuildConfig;
 
 /**
@@ -57,7 +59,11 @@ public class Log {
      * @return The message
      */
     public static String logEx(String tag, String message, Exception e) {
-        final String msg = message + ": " + e.getLocalizedMessage();
+        String msg = "";
+        if (!TextUtils.isEmpty(message)) {
+            msg = message + ": ";
+        }
+        msg+= e.getLocalizedMessage();
         android.util.Log.e(MY_APP + tag, msg);
         android.util.Log.e(MY_APP + tag, e.toString());
         return msg;

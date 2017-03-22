@@ -212,8 +212,6 @@
     <string name="err_register">Error registering device with server</string>
     <string name="err_unregister">Error unregistering device with server</string>
     <string name="err_refresh">Error refreshing token with server</string>
-    <string name="err_devices">Error getting device list from server</string>
-    <string name="err_change_device_name">Error changing device name on server</string>
     <string name="err_send">Error sending message to remote devices</string>
     <string name="err_unknown">An unknown error occurred</string>
     <string name="err_invalid_regid">Registration ID is invalid</string>

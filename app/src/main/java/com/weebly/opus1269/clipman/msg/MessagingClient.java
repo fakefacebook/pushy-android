@@ -24,6 +24,8 @@ import android.os.AsyncTask;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.weebly.opus1269.clipman.R;
+import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.messaging.Messaging;
@@ -45,8 +47,8 @@ public class MessagingClient extends Endpoint{
     private static final String TAG = "MessagingClient";
 
     /** {@value} */
-    private static final String GAE_MESSAGING_ERROR =
-        "Error sending message to server ";
+    private static final String ERROR_SEND =
+        App.getContext().getString(R.string.err_send);
 
     private MessagingClient() {
     }
@@ -71,7 +73,7 @@ public class MessagingClient extends Endpoint{
         try {
             data.put(Msg.FAV, favString);
         } catch (JSONException ex) {
-            Log.logEx(TAG, ex.getMessage(), ex);
+            Log.logEx(TAG, "", ex);
             data = null;
         }
 
@@ -182,7 +184,7 @@ public class MessagingClient extends Endpoint{
             data.put(Msg.DEVICE_OS, Device.getMyDevice().getOS());
             data.put(Msg.DEVICE_NICKNAME, Device.getMyDevice().getNickname());
         } catch(JSONException ex) {
-            Log.logEx(TAG, ex.getMessage(), ex);
+            Log.logEx(TAG, "", ex);
             data = null;
         }
         return data;
@@ -226,11 +228,13 @@ public class MessagingClient extends Endpoint{
                 ret = msgService.send(Prefs.getRegToken(), jsonString)
                     .execute();
                 if (!ret.getSuccess()) {
-                    ret.setReason(Log.logE(TAG,
-                        Msg.ERROR_SEND + " " + ret.getReason()));
+                    ret.setReason(
+                        Log.logE(TAG, ERROR_SEND + ": " + ret.getReason()));
+                } else {
+                    Log.logD(TAG, "Message sent to server: " + mAction);
                 }
             } catch (IOException|JSONException ex) {
-                Log.logEx(TAG, GAE_MESSAGING_ERROR + ex.getMessage(), ex);
+                ret.setReason(Log.logEx(TAG, ERROR_SEND, ex));
             }
             return ret;
         }
