@@ -22,11 +22,9 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.weebly.opus1269.clipman.app.AppUtils;
-import com.weebly.opus1269.clipman.msg.Msg;
 
 import org.joda.time.DateTime;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Immutable Class that represents a (hopefully) unique device
@@ -83,15 +81,15 @@ public class Device {
     }
 
     // TODO look into SERIAL
-    public static String getMySN() {
+    private static String getMySN() {
         return Build.SERIAL;
     }
 
-    public static String getMyOS() {
+    private static String getMyOS() {
         return "Android";
     }
 
-    public static String getMyNickname() {
+    private static String getMyNickname() {
         return Prefs.getDeviceNickname();
     }
 
@@ -130,21 +128,4 @@ public class Device {
     public String getUniqueName() {
         return getModel() + " - " + getSN() + " - " + getOS();
     }
-
-    public String toJSONString() {
-        String ret = "";
-        try {
-            final JSONObject jsonObject = new JSONObject();
-            jsonObject.put(Msg.DEVICE_MODEL, mModel);
-            jsonObject.put(Msg.DEVICE_SN, mSN);
-            jsonObject.put(Msg.DEVICE_OS, mOS);
-            jsonObject.put(Msg.DEVICE_NICKNAME, mNickname);
-
-            ret = jsonObject.toString();
-        } catch (final JSONException e) {
-            AppUtils.logEx(TAG, "Error getting device JSON", e);
-        }
-        return ret;
-    }
-
 }
