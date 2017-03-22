@@ -114,6 +114,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
+
         <service
             android:name=".services.MyFcmListenerService"
             android:enabled="true"
@@ -129,6 +130,17 @@
             android:enabled="true"
             android:exported="false">
         </service>
+
+        <receiver android:name=".services.MyWidgetProvider" >
+            <intent-filter >
+                <action
+                    android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
 
         <!-- private to app -->
         <receiver

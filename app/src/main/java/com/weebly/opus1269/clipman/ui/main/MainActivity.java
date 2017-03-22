@@ -18,9 +18,8 @@
 
 package com.weebly.opus1269.clipman.ui.main;
 
-import android.content.ClipboardManager;
+import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,7 +44,6 @@ import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.model.User;
-import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.services.ClipboardWatcherService;
 import com.weebly.opus1269.clipman.ui.devices.DevicesActivity;
 import com.weebly.opus1269.clipman.ui.base.BaseActivity;
@@ -374,7 +372,6 @@ public class MainActivity extends BaseActivity implements
 
     /**
      * Start the {@link ClipViewerActivity} or update the {@link ClipViewerFragment}
-     *
      * @param clipItem item to display
      */
     void startOrUpdateClipViewer(ClipItem clipItem) {
@@ -406,7 +403,8 @@ public class MainActivity extends BaseActivity implements
 
         if (Intent.ACTION_SEND.equals(action) && (type != null)) {
             if (ClipItem.TEXT_PLAIN.equals(type)) {
-                final String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                final String sharedText =
+                    intent.getStringExtra(Intent.EXTRA_TEXT);
                 if (!TextUtils.isEmpty(sharedText)) {
                     final ClipItem item = new ClipItem(sharedText);
                     ClipContentProvider.insert(this, item);
@@ -422,7 +420,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     /**
-     * Start an {@link android.app.Activity}
+     * Start an {@link Activity}
      * @param cls Class of Activity
      */
     private void startActivity(Class cls) {
@@ -434,34 +432,7 @@ public class MainActivity extends BaseActivity implements
      * Send the clipboard contents to our {@link Devices}
      */
     private void sendClipboardContents() {
-        ClipboardManager clipboardManager =
-            (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        final ClipItem clipItem = ClipItem.getFromClipboard(clipboardManager);
-        if (clipItem != null) {
-            if (Prefs.isPushClipboard()) {
-                MessagingClient.send(clipItem);
-                Snackbar.make(findViewById(R.id.fab),
-                    R.string.clipboard_sent, Snackbar.LENGTH_SHORT).show();
-            }
-        }
-//        if (Prefs.isMonitorClipboard()) {
-//                if (Prefs.isPushClipboard()) {
-//                    // send if it wasn't autosent
-//                    if (!Prefs.isAutoSend()) {
-//                        MessagingClient.send(clipItem);
-//                    }
-//                    Snackbar.make(findViewById(R.id.fab),
-//                        R.string.clipboard_sent, Snackbar.LENGTH_SHORT).show();
-//                }
-//            } else {
-//                // not monitoring cliboard, send if push enabled
-//                if (Prefs.isPushClipboard()) {
-//                    MessagingClient.send(clipItem);
-//                    Snackbar.make(findViewById(R.id.fab),
-//                        R.string.clipboard_sent, Snackbar.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
+        AppUtils.sendClipboardContents(findViewById(R.id.fab));
     }
 
     /**
@@ -482,7 +453,6 @@ public class MainActivity extends BaseActivity implements
 
     /**
      * Initialize the NavigationView
-     *
      */
     private void setupNavigationView() {
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -579,14 +549,16 @@ public class MainActivity extends BaseActivity implements
      * Set Option Menu icons enabled state
      */
     private void updateOptionsMenu() {
-        // set state of send menu item
         if (mOptionsMenu != null) {
+            Boolean enabled  = false;
+            Integer alpha  = 64;
+            if (Prefs.isDeviceRegistered() && Prefs.isPushClipboard()) {
+                enabled = true;
+                alpha = 255;
+            }
             final MenuItem sendItem = mOptionsMenu.findItem(R.id.action_send);
-            sendItem.setEnabled(Prefs.isPushClipboard());
-            final Integer alpha  = Prefs.isPushClipboard() ? 255 : 64;
             MenuTintHelper.colorMenuItem(sendItem, null, alpha);
+            sendItem.setEnabled(enabled);
         }
     }
-
-
 }

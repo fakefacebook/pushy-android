@@ -20,22 +20,27 @@ package com.weebly.opus1269.clipman.app;
 
 import android.app.ActivityManager;
 import android.app.SearchManager;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 
 import com.weebly.opus1269.clipman.BuildConfig;
 import com.weebly.opus1269.clipman.R;
+import com.weebly.opus1269.clipman.model.ClipItem;
+import com.weebly.opus1269.clipman.model.Devices;
+import com.weebly.opus1269.clipman.model.Prefs;
+import com.weebly.opus1269.clipman.msg.MessagingClient;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import java.security.SecureRandom;
 
 /**
  * General static constants utility methods
@@ -62,10 +67,6 @@ public class AppUtils {
     public static final String INTENT_EXTRA_NOTIFICATION_ID =
             PACKAGE_PATH + "NOTIFICATION_ID";
 
-    private static final String AB =
-            "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static final SecureRandom RAND = new SecureRandom();
-
     private static final String MY_APP = "MyApp ";
 
     private AppUtils() {
@@ -73,7 +74,6 @@ public class AppUtils {
 
     /**
      * Log a debug message
-     *
      * @param tag Class we are from
      * @param message message to log
      */
@@ -85,7 +85,6 @@ public class AppUtils {
 
     /**
      * Log an error message
-     *
      * @param tag     Class we are from
      * @param message message to log
      * @return The message
@@ -96,8 +95,7 @@ public class AppUtils {
     }
 
     /**
-     * Log an Exception
-     *
+     * Log an {@link Exception}
      * @param tag     Class we are from
      * @param message message to log
      * @param e       Exception to log
@@ -110,12 +108,24 @@ public class AppUtils {
         return msg;
     }
 
+    /**
+     * Convert device density to pixels
+     * @param context A Context
+     * @param dipValue Value to convert
+     * @return Value in pixels
+     */
     public static int dp2px(Context context, float dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         //noinspection NumericCastThatLosesPrecision,MagicNumber
         return (int) ((dipValue * scale) + 0.5F);
     }
 
+    /**
+     * Convert pixels to device density
+     * @param context A Context
+     * @param pxValue Value to convert
+     * @return Value in device density
+     */
     @SuppressWarnings("unused")
     public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -123,7 +133,10 @@ public class AppUtils {
         return (int) ((pxValue / scale) + 0.5F);
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Get the app name
+     * @return app name
+     */
     public static String getApplicationName() {
         final Context context = App.getContext();
         final int stringId = context.getApplicationInfo().labelRes;
@@ -132,7 +145,6 @@ public class AppUtils {
 
     /**
      * Check if the MainActivity is in dual pane mode
-     *
      * @return boolean
      */
     public static boolean isDualPane() {
@@ -141,8 +153,7 @@ public class AppUtils {
 
     /**
      * Check if a service is running
-     * http://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
-     *
+     * @see <a href="https://goo.gl/55RFa6">Stack Overflow</a>
      * @param serviceClass Class name of Service
      * @return boolean
      */
@@ -163,8 +174,7 @@ public class AppUtils {
     }
 
     /**
-     * Launch an {@link android.content.Intent} to show a {@link android.net.Uri}
-     *
+     * Launch an {@link Intent} to show a {@link Uri}
      * @param uri A String that is a valid Web Url
      * @return true on success
      */
@@ -187,8 +197,7 @@ public class AppUtils {
     }
 
     /**
-     * Launch an {@link android.content.Intent} to search the web
-     *
+     * Launch an {@link Intent} to search the web
      * @param text A String to search for
      * @return true on success
      */
@@ -212,12 +221,11 @@ public class AppUtils {
         return ret;
     }
 
-        /**
-         * Get a time string relative to now
-         *
-         * @param date A {@link DateTime}
-         * @return CharSequence time
-         */
+    /**
+     * Get a time string relative to now
+     * @param date A {@link DateTime}
+     * @return CharSequence time
+     */
     public static CharSequence getRelativeDisplayTime(DateTime date) {
         final Context context = App.getContext();
         final CharSequence value;
@@ -230,13 +238,38 @@ public class AppUtils {
                     DateTimeFormat.forPattern(context.getString(R.string.joda_time_fmt_pattern));
             value = context.getString(R.string.now_fmt,date.toString(fmt));
         } else {
-            value = DateUtils.getRelativeDateTimeString(context, time,
-                    DateUtils.SECOND_IN_MILLIS, DateUtils.DAY_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);
+            value =
+                DateUtils.getRelativeDateTimeString(context, time,
+                    DateUtils.SECOND_IN_MILLIS, DateUtils.DAY_IN_MILLIS,
+                    DateUtils.FORMAT_ABBREV_ALL);
         }
          return value;
     }
 
 
+    /**
+     * Send the clipboard contents to our {@link Devices}
+     */
+    public static void sendClipboardContents(View view) {
+        ClipboardManager clipboardManager = (ClipboardManager)
+            App.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        final ClipItem clipItem = ClipItem.getFromClipboard(clipboardManager);
+        if (clipItem != null) {
+            if (Prefs.isPushClipboard()) {
+                MessagingClient.send(clipItem);
+                if (view != null) {
+                    Snackbar.make(view,
+                        R.string.clipboard_sent, Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    /**
+     * Capitalize a {@link String}
+     * @param s String to captialize
+     * @return capitalized String
+     */
     public static String capitalize(String s) {
         if (TextUtils.isEmpty(s)) {
             return "";
@@ -248,18 +281,4 @@ public class AppUtils {
             return Character.toUpperCase(first) + s.substring(1);
         }
     }
-
-    public static String randomString(int len) {
-        final StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(AB.charAt(RAND.nextInt(AB.length())));
-        }
-        return sb.toString();
-    }
-
-    @SuppressWarnings("unused")
-    public static int randomInt(int min, int max) {
-        return min + (int)(Math.random() * ((max - min) + 1));
-    }
-
 }
