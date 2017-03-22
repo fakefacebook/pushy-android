@@ -34,6 +34,7 @@ import com.weebly.opus1269.clipman.BuildConfig;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.ui.base.BaseActivity;
@@ -43,7 +44,6 @@ import com.weebly.opus1269.clipman.ui.views.VectorDrawableTextView;
 /**
  * This Activity handles the display of help & feedback about the app
  */
-
 public class HelpActivity extends BaseActivity {
 
     private DialogFragment mDialog;
@@ -172,7 +172,7 @@ public class HelpActivity extends BaseActivity {
             intent.setData(Uri.parse(AppUtils.PLAY_STORE));
             startActivity(intent);
         } catch (android.content.ActivityNotFoundException ignored) {
-            AppUtils.logD(TAG, "Could not open app in play store, trying web.");
+            Log.logD(TAG, "Could not open app in play store, trying web.");
             AppUtils.showWebUrl(AppUtils.PLAY_STORE_WEB);
         }
     }

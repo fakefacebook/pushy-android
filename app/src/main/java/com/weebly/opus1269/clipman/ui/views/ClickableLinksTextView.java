@@ -12,7 +12,7 @@ package com.weebly.opus1269.clipman.ui.views;
 
 import java.lang.reflect.Field;
 
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 
 import android.content.Context;
 import android.text.Layout;
@@ -23,9 +23,10 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 /**
- * The TextView that handles correctly clickable spans.
+ * A TextView that correctly handles clickable spans.
  */
-public class ClickableLinksTextView extends android.support.v7.widget.AppCompatTextView {
+public class ClickableLinksTextView extends
+    android.support.v7.widget.AppCompatTextView {
     private static final String TAG = "ClickableLinksTextView";
 
     private boolean mBaseEditorCopied = false;
@@ -37,7 +38,8 @@ public class ClickableLinksTextView extends android.support.v7.widget.AppCompatT
         super(context);
     }
 
-    public ClickableLinksTextView(Context context, AttributeSet attrs, int defStyle) {
+    public ClickableLinksTextView(Context context, AttributeSet attrs,
+                                  int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -49,7 +51,8 @@ public class ClickableLinksTextView extends android.support.v7.widget.AppCompatT
     public void onStartTemporaryDetach() {
         super.onStartTemporaryDetach();
 
-        // listview scrolling behaves incorrectly after you select and copy some text, so I've added this code
+        // listview scrolling behaves incorrectly after you select
+        // and copy some text, so I've added this code
         if (this.isFocused()) {
             this.clearFocus();
         }
@@ -57,7 +60,8 @@ public class ClickableLinksTextView extends android.support.v7.widget.AppCompatT
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // the base TextView class checks if getAutoLinkMask != 0, so I added a similar code for == 0
+        // the base TextView class checks if getAutoLinkMask != 0,
+        // so I added a similar code for == 0
         if(this.isTextSelectable()
                 && this.getText() instanceof Spannable
                 && this.getAutoLinkMask() == 0
@@ -84,7 +88,8 @@ public class ClickableLinksTextView extends android.support.v7.widget.AppCompatT
             return superResult;
         }
 
-        final boolean touchIsFinished = (action == MotionEvent.ACTION_UP) && !this.getIgnoreActionUpEvent() && isFocused();
+        final boolean touchIsFinished = (action == MotionEvent.ACTION_UP) &&
+            !this.getIgnoreActionUpEvent() && isFocused();
 
         // Copied from the LinkMovementMethod class
         if (touchIsFinished) {
@@ -102,7 +107,8 @@ public class ClickableLinksTextView extends android.support.v7.widget.AppCompatT
             int line = layout.getLineForVertical(y);
             int off = layout.getOffsetForHorizontal(line, x);
 
-            ClickableSpan[] link = spannable.getSpans(off, off, ClickableSpan.class);
+            ClickableSpan[] link =
+                spannable.getSpans(off, off, ClickableSpan.class);
 
             if (link.length != 0) {
                 link[0].onClick(this);
@@ -125,15 +131,17 @@ public class ClickableLinksTextView extends android.support.v7.widget.AppCompatT
 
             if (this.mBaseEditor != null) {
                 Class editorClass = this.mBaseEditor.getClass();
-                this.mDiscardNextActionUpField = editorClass.getDeclaredField("mDiscardNextActionUp");
+                this.mDiscardNextActionUpField =
+                    editorClass.getDeclaredField("mDiscardNextActionUp");
                 this.mDiscardNextActionUpField.setAccessible(true);
 
-                this.mIgnoreActionUpEventField = editorClass.getDeclaredField("mIgnoreActionUpEvent");
+                this.mIgnoreActionUpEventField =
+                    editorClass.getDeclaredField("mIgnoreActionUpEvent");
                 this.mIgnoreActionUpEventField.setAccessible(true);
             }
 
         } catch (Exception e) {
-            AppUtils.logEx(TAG, e.getMessage(), e);
+            Log.logEx(TAG, e.getMessage(), e);
         } finally {
             this.mBaseEditorCopied = true;
         }

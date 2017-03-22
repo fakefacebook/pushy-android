@@ -35,7 +35,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.weebly.opus1269.clipman.BuildConfig;
 import com.weebly.opus1269.clipman.app.App;
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +53,6 @@ abstract class Endpoint {
 
     /**
      * Get InstanceId (regToken)
-     *
      * @return regToken
      */
     static String getRegToken() {
@@ -62,13 +61,13 @@ abstract class Endpoint {
 
     /**
      * Get an idToken for authorization
-     *
      * @return idToken
      */
     private static String getIdToken() {
         String idToken = "";
 
-        // Get the IDToken that can be used securely on the backend for a short time
+        // Get the IDToken that can be used securely on the backend
+        // for a short time
         final GoogleSignInOptions gso =
             new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -77,7 +76,8 @@ abstract class Endpoint {
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
-        final GoogleApiClient googleApiClient = new GoogleApiClient.Builder(App.getContext())
+        final GoogleApiClient googleApiClient =
+            new GoogleApiClient.Builder(App.getContext())
             .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
             .build();
 
@@ -85,18 +85,20 @@ abstract class Endpoint {
             final ConnectionResult result =
                 googleApiClient.blockingConnect(TIMEOUT, TimeUnit.SECONDS);
             if (result.isSuccess()) {
-                final GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi
-                    .silentSignIn(googleApiClient)
-                    .await(TIMEOUT, TimeUnit.SECONDS);
+                final GoogleSignInResult googleSignInResult =
+                    Auth.GoogleSignInApi
+                        .silentSignIn(googleApiClient)
+                        .await(TIMEOUT, TimeUnit.SECONDS);
                 if (googleSignInResult.isSuccess()) {
-                    final GoogleSignInAccount acct = googleSignInResult.getSignInAccount();
+                    final GoogleSignInAccount acct =
+                        googleSignInResult.getSignInAccount();
                     if (acct != null) {
                         idToken = acct.getIdToken();
                     }
                 }
             }
         } catch (Exception ex) {
-            AppUtils.logEx(TAG, ex.getLocalizedMessage(), ex);
+            Log.logEx(TAG, ex.getLocalizedMessage(), ex);
         } finally {
             googleApiClient.disconnect();
         }
@@ -106,7 +108,6 @@ abstract class Endpoint {
 
     /**
      * Get a {@link GoogleCredential} for authorized server call
-     *
      * @param idToken - authorization token for user
      * @return {@link GoogleCredential} for authorized server call
      */
@@ -114,7 +115,8 @@ abstract class Endpoint {
 
         // get credential for a server call
         final NetHttpTransport transport = new NetHttpTransport();
-        final GoogleCredential.Builder credentialBuilder = new GoogleCredential.Builder();
+        final GoogleCredential.Builder credentialBuilder =
+            new GoogleCredential.Builder();
         final GoogleCredential credential = credentialBuilder
             .setTransport(transport)
             .setJsonFactory(JacksonFactory.getDefaultInstance())
@@ -137,9 +139,9 @@ abstract class Endpoint {
     }
 
     /**
-     * Set setRootUrl and setGoogleClientRequestInitializer for running with local server
-     *
-     * @param builder Json client
+     * Set setRootUrl and setGoogleClientRequestInitializer
+     * for running with local server
+     * @param builder JSON client
      */
     static void setLocalServer(AbstractGoogleJsonClient.Builder builder) {
         if (USE_LOCAL_SERVER && BuildConfig.DEBUG) {

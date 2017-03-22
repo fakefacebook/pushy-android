@@ -18,11 +18,9 @@
 
 package com.weebly.opus1269.clipman.services;
 
-import android.util.Log;
-
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.registration.model.EndpointRet;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.msg.RegistrationClient;
@@ -43,12 +41,12 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        AppUtils.logD(TAG, "Refreshed token: " + refreshedToken);
+        Log.logD(TAG, "Refreshed token: " + refreshedToken);
 
         if (Prefs.isDeviceRegistered()) {
             final EndpointRet ret = RegistrationClient.refresh(refreshedToken);
             if (!ret.getSuccess()) {
-                Log.e(TAG, ret.getReason());
+                Log.logE(TAG, ret.getReason());
             }
         } else {
             // first time save it. still not registered though

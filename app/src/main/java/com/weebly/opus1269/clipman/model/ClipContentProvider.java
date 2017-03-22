@@ -19,6 +19,7 @@
 package com.weebly.opus1269.clipman.model;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -33,7 +34,7 @@ import android.text.TextUtils;
 
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 
 import org.joda.time.DateTime;
 
@@ -49,7 +50,8 @@ public class ClipContentProvider extends ContentProvider {
     // used for the UriMatcher
     private static final int CLIP = 10;
     private static final int CLIP_ID = 20;
-    private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher URI_MATCHER =
+        new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         URI_MATCHER.addURI(ClipContract.AUTHORITY, "clip", CLIP);
@@ -57,14 +59,15 @@ public class ClipContentProvider extends ContentProvider {
     }
 
     /**
-     * Add the contents of the ClipItem to the clipboard, optionally only if item text is new
-     *
+     * Add the contents of the ClipItem to the clipboard,
+     * optionally only if item text is new
      * @param context   a {@link Context}
      * @param clipItem the {@link ClipItem} to insert
      * @param onNewOnly only insert if item text is not in database if true
      * @return boolean true if inserted
      */
-    public static boolean insert(Context context, ClipItem clipItem, Boolean onNewOnly) {
+    public static boolean
+    insert(Context context, ClipItem clipItem, Boolean onNewOnly) {
         if ((clipItem == null) || TextUtils.isEmpty(clipItem.getText())) {
             return false;
         }
@@ -76,8 +79,10 @@ public class ClipContentProvider extends ContentProvider {
                     "(" + ClipContract.Clip.COL_TEXT + " == ? )";
             final String[] selectionArgs = {clipItem.getText()};
 
-            final Cursor cursor = context.getContentResolver().query(ClipContract.Clip.CONTENT_URI,
-                    projection, selection, selectionArgs, null);
+            final Cursor cursor =
+                context.getContentResolver()
+                    .query(ClipContract.Clip.CONTENT_URI, projection,
+                        selection, selectionArgs, null);
             if (cursor.getCount() != 0) {
                 // already in database, we are done
                 cursor.close();
@@ -95,18 +100,20 @@ public class ClipContentProvider extends ContentProvider {
 
     @SuppressWarnings("UnusedReturnValue")
     public static Uri insert(Context context, ClipItem item) {
-        return context.getContentResolver().insert(ClipContract.Clip.CONTENT_URI, item.getContentValues());
+        final ContentResolver resolver = context.getContentResolver();
+        return resolver.insert(ClipContract.Clip.CONTENT_URI,
+            item.getContentValues());
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public static int insert(Context context, ContentValues[] items) {
-        return context.getContentResolver().bulkInsert(ClipContract.Clip.CONTENT_URI, items);
+        final ContentResolver resolver = context.getContentResolver();
+        return resolver.bulkInsert(ClipContract.Clip.CONTENT_URI, items);
     }
 
 
     /**
      * Get the non-favorite and optionally favorite rows in the database
-     *
      * @param context     our {@link Context}
      * @param includeFavs flag to indicate if favorites should be retrieved too
      * @return Array of {@link ContentValues}
@@ -116,13 +123,19 @@ public class ClipContentProvider extends ContentProvider {
 
         // Select all non-favorites
         String selection = "(" + ClipContract.Clip.COL_FAV + " == 0 " + ")";
-
         if (includeFavs) {
             // select all favorites too
-            selection = selection + " OR (" + ClipContract.Clip.COL_FAV + " == 1 )";
+            selection+= " OR (" + ClipContract.Clip.COL_FAV + " == 1 )";
         }
 
-        final Cursor cursor = context.getContentResolver().query(ClipContract.Clip.CONTENT_URI, projection, selection, null, null);
+        final ContentResolver resolver = context.getContentResolver();
+        final Cursor cursor = resolver.query(
+            ClipContract.Clip.CONTENT_URI,
+            projection,
+            selection,
+            null,
+            null);
+
         final ContentValues[] array = new ContentValues[cursor.getCount()];
         int count = 0;
         while (cursor.moveToNext()) {
@@ -143,7 +156,6 @@ public class ClipContentProvider extends ContentProvider {
 
     /**
      * Delete all non-favorite and optionally favorite rows
-     *
      * @param context    a context
      * @param deleteFavs flag to indicate if favorites should be deleted
      * @return Number of rows deleted
@@ -157,12 +169,12 @@ public class ClipContentProvider extends ContentProvider {
             selection = selection + " OR (" + ClipContract.Clip.COL_FAV + " == 1 )";
         }
 
-        return context.getContentResolver().delete(ClipContract.Clip.CONTENT_URI, selection, null);
+        final ContentResolver resolver = context.getContentResolver();
+        return resolver.delete(ClipContract.Clip.CONTENT_URI, selection, null);
     }
 
     /**
      * Delete rows older than the storage duration
-     *
      * @return Number of rows deleted
      */
     public static int deleteOldItems() {
@@ -196,10 +208,12 @@ public class ClipContentProvider extends ContentProvider {
         final long deleteTime = deleteDate.getMillis();
 
         // Select all non-favorites older than the calculated time
-        final String selection = "(" + ClipContract.Clip.COL_FAV + " == 0 " + ")" +
-                " AND (" + ClipContract.Clip.COL_DATE + " < " + deleteTime + ")";
+        final String selection =
+            "(" + ClipContract.Clip.COL_FAV + " == 0 " + ")" + " AND (" +
+                ClipContract.Clip.COL_DATE + " < " + deleteTime + ")";
 
-        return context.getContentResolver().delete(ClipContract.Clip.CONTENT_URI, selection, null);
+        final ContentResolver resolver = context.getContentResolver();
+        return resolver.delete(ClipContract.Clip.CONTENT_URI, selection, null);
     }
 
     @Override
@@ -208,7 +222,8 @@ public class ClipContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
 
         String newSelection = selection;
         String newSortOrder = sortOrder;
@@ -227,12 +242,11 @@ public class ClipContentProvider extends ContentProvider {
                 if (TextUtils.isEmpty(sortOrder)) {
                     newSortOrder = ClipContract.getDefaultSortOrder();
                 }
-                /*
-                 * Because this URI was for a single row, the _ID value part is
-                 * present. Get the last path segment from the URI; this is the _ID value.
-                 * Then, append the value to the WHERE clause for the query
-                 */
-                newSelection = newSelection + "and _ID = " + uri.getLastPathSegment();
+                // Because this URI was for a single row, the _ID value part is
+                // present. Get the last path segment from the URI; this is the
+                // _ID value. Then, append the value to the WHERE clause for
+                // the query
+                newSelection+= "and _ID = " + uri.getLastPathSegment();
                 break;
             default:
                 throw new IllegalArgumentException(UNKNOWN_URI + uri);
@@ -250,7 +264,8 @@ public class ClipContentProvider extends ContentProvider {
                 newSortOrder);
 
         // set notifier
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        final ContentResolver resolver = getContext().getContentResolver();
+        cursor.setNotificationUri(resolver, uri);
 
         return cursor;
     }
@@ -286,9 +301,10 @@ public class ClipContentProvider extends ContentProvider {
         if (row != -1) {
             newUri = ContentUris.withAppendedId(uri, row);
 
-            AppUtils.logD(TAG, "Added row from insert: " + row);
+            Log.logD(TAG, "Added row from insert: " + row);
 
-            getContext().getContentResolver().notifyChange(newUri, null);
+            final ContentResolver resolver = getContext().getContentResolver();
+            resolver.notifyChange(uri, null);
         }
 
         return newUri;
@@ -318,9 +334,10 @@ public class ClipContentProvider extends ContentProvider {
                 throw new IllegalArgumentException(UNKNOWN_URI + uri);
         }
 
-        AppUtils.logD(TAG, "Bulk insert rows: " + insertCount);
+        Log.logD(TAG, "Bulk insert rows: " + insertCount);
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        final ContentResolver resolver = getContext().getContentResolver();
+        resolver.notifyChange(uri, null);
 
         return insertCount;
     }
@@ -356,9 +373,10 @@ public class ClipContentProvider extends ContentProvider {
                 newSelection,
                 selectionArgs);
 
-        AppUtils.logD(TAG, "Deleted rows: " + rowsDeleted);
+        Log.logD(TAG, "Deleted rows: " + rowsDeleted);
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        final ContentResolver resolver = getContext().getContentResolver();
+        resolver.notifyChange(uri, null);
 
         return rowsDeleted;
     }
@@ -379,7 +397,8 @@ public class ClipContentProvider extends ContentProvider {
                 if (TextUtils.isEmpty(selection)) {
                     newSelection = ClipContract.Clip._ID + "=" + id;
                 } else {
-                    newSelection = newSelection + " and " + ClipContract.Clip._ID + "=" + id;
+                    newSelection = newSelection + " and " +
+                        ClipContract.Clip._ID + "=" + id;
                 }
                 break;
             default:
@@ -394,9 +413,10 @@ public class ClipContentProvider extends ContentProvider {
                 newSelection,
                 selectionArgs);
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        final ContentResolver resolver = getContext().getContentResolver();
+        resolver.notifyChange(uri, null);
 
-        AppUtils.logD(TAG, "Updated rows: " + rowsUpdated);
+        Log.logD(TAG, "Updated rows: " + rowsUpdated);
 
         return rowsUpdated;
     }

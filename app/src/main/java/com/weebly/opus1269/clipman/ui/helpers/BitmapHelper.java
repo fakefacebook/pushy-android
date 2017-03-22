@@ -30,7 +30,7 @@ import android.support.v7.widget.AppCompatDrawableManager;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,22 +43,17 @@ import javax.annotation.CheckForNull;
 /**
  * Helper class for working with Bitmaps
  */
-
 public class BitmapHelper {
     private static final String TAG = "BitmapHelper";
 
-    private BitmapHelper() {
-    }
+    private BitmapHelper() {}
 
     /**
      * Loads a Bitmap from the inter-webs, blocks
-     *
      * @param urlName path to Bitmap
      * @return The Bitmap null on failure
      */
-    public static
-    @Nullable
-    Bitmap loadBitmap(String urlName) {
+    public static @Nullable Bitmap loadBitmap(String urlName) {
         final URL url;
         Bitmap bitmap = null;
 
@@ -66,7 +61,7 @@ public class BitmapHelper {
             try {
                 url = new URL(urlName);
             } catch (final MalformedURLException e) {
-                AppUtils.logEx(TAG, "Bad bitmap URL: " + e.getMessage(), e);
+                Log.logEx(TAG, "Bad bitmap URL: " + e.getMessage(), e);
                 return null;
             }
             InputStream inputStream = null;
@@ -74,7 +69,7 @@ public class BitmapHelper {
                 inputStream = url.openStream();
                 bitmap = BitmapFactory.decodeStream(inputStream);
             } catch (final IOException e) {
-                AppUtils.logEx(TAG, "Failed to get bitmap: " + e.getMessage(), e);
+                Log.logEx(TAG, "Failed to get bitmap: " + e.getMessage(), e);
             } finally {
                 try {
                     if (inputStream != null) {
@@ -90,7 +85,6 @@ public class BitmapHelper {
 
     /**
      * Do a Base64 encoding of a {@link Bitmap}
-     *
      * @param bitmap a Bitmap
      * @return the encoded String
      */
@@ -107,8 +101,7 @@ public class BitmapHelper {
     }
 
     /**
-     * Do a Base64 encoding of a {@link Bitmap}
-     *
+     * Decode a Base64 encoding of a {@link Bitmap}
      * @param encodedBitmap a Base64 encoding of a bitmap
      * @return the decoded Bitmap null if string is empty
      */

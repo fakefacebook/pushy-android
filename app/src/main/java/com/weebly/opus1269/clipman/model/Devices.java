@@ -40,21 +40,29 @@ import java.util.List;
  */
 public class Devices {
 
+    /** @value */
     public static final String INTENT_FILTER = "devicesIntent";
+    /** @value */
     public static final String BUNDLE = "bundleDevices";
+    /** @value */
     public static final String ACTION = "actionDevices";
+    /** @value */
     public static final String ACTION_ADD = "addDevice";
+    /** @value */
     public static final String ACTION_CHANGE = "changeDevice";
+    /** @value */
     public static final String ACTION_REMOVE = "removeDevice";
+    /** @value */
     public static final String ACTION_CLEAR = "clearDevices";
+    /** @value */
     public static final String POS = "posDevices";
+    /** @value */
     public static final String ACTION_MY_DEVICE = "myDevice";
 
     @SuppressWarnings("StaticNonFinalField")
     private static List<Device> sDevices = load();
 
-    private Devices() {
-    }
+    private Devices() {}
 
     /**
      * Save list to persistant storage
@@ -75,7 +83,6 @@ public class Devices {
 
     /**
      * Load list from persistant storage
-     *
      * @return List<Device> the list of {@link Device} objects
      */
     private static List<Device> load() {
@@ -122,7 +129,6 @@ public class Devices {
 
     /**
      * Remove the given {@link Device}
-     *
      * @param dev The {@link Device} to remove
      */
     public static void remove(Device dev) {
@@ -151,7 +157,7 @@ public class Devices {
     }
 
     /**
-     * Notify listeners that we have unregistered from DeviceGroup
+     * Notify listeners that we have unregistered from server
      */
     public static void notifyMyDeviceUnregistered() {
         clear();
@@ -160,7 +166,6 @@ public class Devices {
 
     /**
      * Get the {@link Device} at the given position
-     *
      * @param pos Position in list
      * @return A {@link Device}
      */
@@ -170,16 +175,18 @@ public class Devices {
 
     /**
      * Get the number of {@link Device} objects in the list
-     *
      * @return the number of {@link Device} objects in the list
      */
     public static int getCount() {
         return sDevices.size();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Private methods
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Get the position of a {@link Device} in the list
-     *
      * @param dev the {@link Device} to find
      * @return the position in the list
      */
@@ -196,7 +203,6 @@ public class Devices {
 
     /**
      * Broadcast changes to listeners
-     *
      * @param action the type of the change
      * @param pos the position of the change
      */

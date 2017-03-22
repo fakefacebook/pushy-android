@@ -32,7 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.weebly.opus1269.clipman.R;
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.ui.base.BaseActivity;
@@ -128,7 +128,8 @@ public class DevicesActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////
 
     private void setupRecyclerView() {
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.deviceList);
+        final RecyclerView recyclerView =
+            (RecyclerView) findViewById(R.id.deviceList);
         if (recyclerView != null) {
             mAdapter = new DevicesAdapter();
             recyclerView.setAdapter(mAdapter);
@@ -152,7 +153,7 @@ public class DevicesActivity extends BaseActivity {
                     return;
                 }
 
-                AppUtils.logD(TAG, "Devices change: " + action + " pos: " + pos);
+                Log.logD(TAG, "Devices change: " + action + " pos: " + pos);
 
                 switch (action) {
                     case Devices.ACTION_ADD:

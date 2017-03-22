@@ -46,7 +46,7 @@ import com.google.api.services.people.v1.model.CoverPhoto;
 import com.google.api.services.people.v1.model.Person;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.ui.helpers.BitmapHelper;
 
 import java.io.IOException;
@@ -74,17 +74,19 @@ public enum User {
     /** {@value} */
     private static final String PREF_USER_PHOTO_URI = "prefUserPhotoUri";
     /** {@value} */
-    private static final String PREF_USER_PHOTO_ENCODED = "prefUserPhotoEncoded";
+    private static final String PREF_USER_PHOTO_ENCODED =
+        "prefUserPhotoEncoded";
     /** {@value} */
     private static final String PREF_USER_TYPE = "prefUserType";
     /** {@value} */
-    private static final String PREF_USER_COVER_PHOTO_URI = "prefUserCoverPhotoUri";
+    private static final String PREF_USER_COVER_PHOTO_URI =
+        "prefUserCoverPhotoUri";
     /** {@value} */
-    private static final String PREF_USER_COVER_PHOTO_ENCODED = "prefUserCoverPhotoEncoded";
+    private static final String PREF_USER_COVER_PHOTO_ENCODED =
+        "prefUserCoverPhotoEncoded";
 
     /**
      * Save information on current user
-     *
      * @param acct - A signedIn Google user
      */
     public void set(GoogleSignInAccount acct) {
@@ -166,7 +168,8 @@ public enum User {
     }
 
     private Bitmap getPhotoBitmap() {
-        return BitmapHelper.decodeBitmap(Prefs.get(PREF_USER_PHOTO_ENCODED, ""));
+        return BitmapHelper.decodeBitmap(
+            Prefs.get(PREF_USER_PHOTO_ENCODED, ""));
     }
 
     private void setType(String value) {
@@ -186,16 +189,17 @@ public enum User {
     }
 
     private void setCoverPhotoBitmap(Bitmap bitmap) {
-        Prefs.set(PREF_USER_COVER_PHOTO_ENCODED, BitmapHelper.encodeBitmap(bitmap));
+        Prefs.set(PREF_USER_COVER_PHOTO_ENCODED,
+            BitmapHelper.encodeBitmap(bitmap));
     }
 
     private Bitmap getCoverPhotoBitmap() {
-        return BitmapHelper.decodeBitmap(Prefs.get(PREF_USER_COVER_PHOTO_ENCODED, ""));
+        return BitmapHelper.decodeBitmap(
+            Prefs.get(PREF_USER_COVER_PHOTO_ENCODED, ""));
     }
 
     /**
      * Set the UI based on current user
-     *
      * @param hView - Navigation drawer Header UI component
      */
     public void setNavigationHeaderView(View hView) {
@@ -220,7 +224,8 @@ public enum User {
     }
 
     private void setPersonAvatar(@NonNull View hView) {
-        final ImageView personPhoto = (ImageView) hView.findViewById(R.id.personPhoto);
+        final ImageView personPhoto =
+            (ImageView) hView.findViewById(R.id.personPhoto);
 
         if (isLoggedIn()) {
             final Bitmap bitmap = getPhotoBitmap();
@@ -228,18 +233,22 @@ public enum User {
             if (bitmap != null) {
                 // user has a photo
                 final RoundedBitmapDrawable bg =
-                        RoundedBitmapDrawableFactory.create(hView.getResources(), bitmap);
+                        RoundedBitmapDrawableFactory.create(
+                            hView.getResources(), bitmap);
                 bg.setCircular(true);
                 if (dark) {
-                    final int color = ContextCompat.getColor(hView.getContext(), R.color.darkener);
+                    final int color = ContextCompat.getColor(
+                        hView.getContext(), R.color.darkener);
                     bg.setColorFilter(color, PorterDuff.Mode.DARKEN);
                 }
                 personPhoto.setImageDrawable(bg);
             } else {
                 if (dark) {
-                    personPhoto.setImageResource(R.drawable.ic_account_circle_white_24dp);
+                    personPhoto.setImageResource(
+                        R.drawable.ic_account_circle_white_24dp);
                 } else {
-                    personPhoto.setImageResource(R.drawable.ic_account_circle_black_24dp);
+                    personPhoto.setImageResource(
+                        R.drawable.ic_account_circle_black_24dp);
                 }
                 personPhoto.setImageAlpha(200);
             }
@@ -250,7 +259,8 @@ public enum User {
     }
 
     private void setCoverPhoto(@NonNull View hView) {
-        final LinearLayout coverPhoto = (LinearLayout) hView.findViewById(R.id.navHeader);
+        final LinearLayout coverPhoto =
+            (LinearLayout) hView.findViewById(R.id.navHeader);
         final Bitmap bitmap = getCoverPhotoBitmap();
         final boolean dark = Prefs.isDarkTheme();
         final Drawable drawable;
@@ -259,22 +269,27 @@ public enum User {
             if (bitmap != null) {
                 // user has a cover photo
                 drawable = new BitmapDrawable(hView.getResources(), bitmap);
-                final int color = ContextCompat.getColor(hView.getContext(), R.color.darkener);
+                final int color = ContextCompat
+                    .getColor(hView.getContext(), R.color.darkener);
                 drawable.setColorFilter(color, PorterDuff.Mode.DARKEN);
             } else {
                 // no cover, use default background
                 if (dark) {
-                    drawable = ContextCompat.getDrawable(App.getContext(), R.drawable.side_nav_bar_dark);
+                    drawable = ContextCompat.getDrawable(App.getContext(),
+                        R.drawable.side_nav_bar_dark);
                 } else {
-                    drawable = ContextCompat.getDrawable(App.getContext(), R.drawable.side_nav_bar);
+                    drawable = ContextCompat.getDrawable(App.getContext(),
+                        R.drawable.side_nav_bar);
                 }
             }
         } else {
             // no cover, use default background
             if (dark) {
-                drawable = ContextCompat.getDrawable(App.getContext(), R.drawable.side_nav_bar_dark);
+                drawable = ContextCompat.getDrawable(App.getContext(),
+                    R.drawable.side_nav_bar_dark);
             } else {
-                drawable = ContextCompat.getDrawable(App.getContext(), R.drawable.side_nav_bar);
+                drawable = ContextCompat.getDrawable(App.getContext(),
+                    R.drawable.side_nav_bar);
             }
             setCoverPhotoBitmap(null);
         }
@@ -287,7 +302,8 @@ public enum User {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Inner class to handle loading of user avatar and cover photo asynchronously
+     * Inner class to handle loading of user avatar
+     * and cover photo asynchronously
      */
     private class SetPhotosAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -329,7 +345,8 @@ public enum User {
                     GoogleAccountCredential.usingOAuth2(context, scopes);
             credential.setSelectedAccount(new Account(email, "com.google"));
 
-            People service = new People.Builder(httpTransport, jsonFactory, credential)
+            People service =
+                new People.Builder(httpTransport, jsonFactory, credential)
                     .setApplicationName(context.getString(R.string.app_name))
                     .build();
 
@@ -337,7 +354,7 @@ public enum User {
             try {
                 userProfile = service.people().get("people/me").execute();
             } catch (IOException e) {
-                AppUtils.logEx(TAG, e.getMessage(), e);
+                Log.logEx(TAG, e.getMessage(), e);
             }
 
             if (userProfile != null) {
@@ -353,5 +370,4 @@ public enum User {
             return urlName;
         }
     }
-
 }

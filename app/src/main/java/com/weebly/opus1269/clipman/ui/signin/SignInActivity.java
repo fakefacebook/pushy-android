@@ -52,8 +52,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.weebly.opus1269.clipman.R;
-import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.app.CustomAsyncTask;
+import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.registration.model.EndpointRet;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
@@ -138,7 +138,9 @@ public class SignInActivity extends BaseActivity implements
     protected void onResume() {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mDevicesReceiver,
+        LocalBroadcastManager
+            .getInstance(this)
+            .registerReceiver(mDevicesReceiver,
             new IntentFilter(Devices.INTENT_FILTER));
         updateView();
     }
@@ -147,7 +149,9 @@ public class SignInActivity extends BaseActivity implements
     protected void onPause() {
         super.onPause();
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mDevicesReceiver);
+        LocalBroadcastManager
+            .getInstance(this)
+            .unregisterReceiver(mDevicesReceiver);
         dismissProgressDialog();
     }
 
@@ -200,9 +204,11 @@ public class SignInActivity extends BaseActivity implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        // Result returned from launching the Intent from
+        // GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            final GoogleSignInResult result =
+                Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
     }
@@ -234,9 +240,10 @@ public class SignInActivity extends BaseActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
-        // be available.
-        AppUtils.logE(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
+        // An unresolvable error has occurred and Google APIs
+        // (including Sign-In) will not be available.
+        Log.logE(TAG,
+            "onConnectionFailed: " + connectionResult.getErrorMessage());
         mErrorMessage = getString(R.string.error_connection);
         dismissProgressDialog();
     }
@@ -261,9 +268,12 @@ public class SignInActivity extends BaseActivity implements
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.revoke_access_button).setOnClickListener(this);
 
-        final SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        final SignInButton signInButton =
+            (SignInButton) findViewById(R.id.sign_in_button);
         if (signInButton != null) {
-            signInButton.setStyle(SignInButton.SIZE_WIDE, SignInButton.COLOR_AUTO);
+            signInButton.setStyle(
+                SignInButton.SIZE_WIDE,
+                SignInButton.COLOR_AUTO);
         }
     }
 
@@ -280,7 +290,8 @@ public class SignInActivity extends BaseActivity implements
                 final Bundle bundle = intent.getBundleExtra(Devices.BUNDLE);
                 final String action = bundle.getString(Devices.ACTION);
 
-                if ((action != null) && action.equals(Devices.ACTION_MY_DEVICE)) {
+                if ((action != null) &&
+                    action.equals(Devices.ACTION_MY_DEVICE)) {
                     doUnregister();
                 }
             }
@@ -316,13 +327,15 @@ public class SignInActivity extends BaseActivity implements
             Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
 
         if (opr.isDone()) {
-            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+            // If the user's cached credentials are valid,
+            // the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
             handleSignInResult(opr.get());
         } else {
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
+            // If the user has not previously signed in on this device
+            // or the sign-in has expired,
+            // this asynchronous branch will attempt to sign in the user
+            // silently.  Cross-device single sign-on will occur in this branch.
             showProgressDialog(getString(R.string.signing_in));
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
@@ -336,7 +349,6 @@ public class SignInActivity extends BaseActivity implements
 
     /**
      * All SignIn attempts will come through here
-     *
      * @param result The {@link GoogleSignInResult} of any SignIn attempt
      */
     private void handleSignInResult(GoogleSignInResult result) {
@@ -360,30 +372,34 @@ public class SignInActivity extends BaseActivity implements
 
         } else {
             // reset info.
-            mErrorMessage = getString(R.string.sign_in_err_fmt, result.getStatus().toString());
-            AppUtils.logE(TAG, mErrorMessage);
+            mErrorMessage =
+                getString(R.string.sign_in_err_fmt, result.getStatus().toString());
+            Log.logE(TAG, mErrorMessage);
             clearUser();
         }
     }
 
     /**
      * Authorize with Firebase as well
-     *
      * @param acct - user account info. Result of successful Google signIn
      */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        AuthCredential credential =
+            GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    AppUtils.logD(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                    Log.logD(TAG, "signInWithCredential:onComplete:" +
+                        task.isSuccessful());
 
-                    // If sign in fails, display a message to the user. If sign in succeeds
-                    // the auth state listener will be notified and logic to handle the
+                    // If sign in fails, display a message to the user.
+                    // If sign in succeeds the auth state listener will be
+                    // notified and logic to handle the
                     // signed in user can be handled in the listener.
                     if (!task.isSuccessful()) {
-                        AppUtils.logEx(TAG, "signInWithCredential", task.getException());
+                        Log.logEx(TAG, "signInWithCredential",
+                            task.getException());
                     }
                     // success
                 }
@@ -394,7 +410,8 @@ public class SignInActivity extends BaseActivity implements
      * Event: SignIn button clicked
      */
     private void onSignInClicked() {
-        final Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        final Intent signInIntent =
+            Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -445,7 +462,9 @@ public class SignInActivity extends BaseActivity implements
                             FirebaseAuth.getInstance().signOut();
                             clearUser();
                         } else {
-                            mErrorMessage = getString(R.string.sign_out_err_fmt, status.getStatusMessage());
+                            mErrorMessage =
+                                getString(R.string.sign_out_err_fmt,
+                                    status.getStatusMessage());
                             updateView();
                         }
                     }
@@ -461,7 +480,9 @@ public class SignInActivity extends BaseActivity implements
      */
     private void doRevoke() {
         if (mGoogleApiClient.isConnected()) {
-            Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+            Auth.GoogleSignInApi
+                .revokeAccess(mGoogleApiClient)
+                .setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
@@ -469,7 +490,9 @@ public class SignInActivity extends BaseActivity implements
                             FirebaseAuth.getInstance().signOut();
                             clearUser();
                         } else {
-                            mErrorMessage = getString(R.string.revoke_err_fmt, status.getStatusMessage());
+                            mErrorMessage =
+                                getString(R.string.revoke_err_fmt,
+                                    status.getStatusMessage());
                             updateView();
                         }
                     }
@@ -520,7 +543,6 @@ public class SignInActivity extends BaseActivity implements
 
     /**
      * Display progress dialod
-     *
      * @param message - message to display
      */
     private void showProgressDialog(String message) {
@@ -541,7 +563,8 @@ public class SignInActivity extends BaseActivity implements
     /**
      * AsyncTask to register our {@link Device} with the server.
      */
-    private static class RegisterAsyncTask extends CustomAsyncTask<Void, Void, String> {
+    private static class RegisterAsyncTask extends
+        CustomAsyncTask<Void, Void, String> {
 
         private ProgressDialog mProgress;
         private final String mIdToken;
@@ -575,9 +598,11 @@ public class SignInActivity extends BaseActivity implements
 
         private void showProgressDialog() {
             mProgress = new ProgressDialog(mActivity);
-            mProgress.setMessage(mActivity.getString(R.string.registering));
+            mProgress.setMessage(
+                mActivity.getString(R.string.registering));
             mProgress.setCancelable(true);
-            mProgress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            mProgress
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     cancel(true);
@@ -618,7 +643,7 @@ public class SignInActivity extends BaseActivity implements
                     MessagingClient.sendDeviceAdded();
                 }
             } else {
-                AppUtils.logD(SignInActivity.class.getName(),
+                Log.logD(SignInActivity.class.getName(),
                     "AsyncTask finished while no Activity was attached.");
             }
         }
@@ -626,9 +651,11 @@ public class SignInActivity extends BaseActivity implements
     }
 
     /**
-     * AsyncTask to remove ourselves from the device Group. Also sign-out or revoke access on success
+     * AsyncTask to remove ourselves from the device Group.
+     * Also sign-out or revoke access on success
      */
-    private static class UnregisterAsyncTask extends CustomAsyncTask<Void, Void, String> {
+    private static class UnregisterAsyncTask extends
+        CustomAsyncTask<Void, Void, String> {
 
         private ProgressDialog mProgress;
 
@@ -660,7 +687,8 @@ public class SignInActivity extends BaseActivity implements
 
         private void showProgressDialog() {
             mProgress = new ProgressDialog(mActivity);
-            mProgress.setMessage(mActivity.getString(R.string.unregistering));
+            mProgress.setMessage(
+                mActivity.getString(R.string.unregistering));
             mProgress.setCancelable(true);
             mProgress.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
@@ -707,10 +735,9 @@ public class SignInActivity extends BaseActivity implements
                     }
                 }
             } else {
-                AppUtils.logD(SignInActivity.class.getName(),
+                Log.logD(SignInActivity.class.getName(),
                     "AsyncTask finished while no Activity was attached.");
             }
         }
     }
-
 }

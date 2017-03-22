@@ -60,8 +60,8 @@ public class Msg {
 
     // message data keys
 
-    /** {@value} */
     // TODO change to "m" here and extension
+    /** {@value} */
     public static final String MESSAGE = "message";
     /** {@value} */
     public static final String FAV = "fav";
@@ -74,17 +74,10 @@ public class Msg {
     /** {@value} */
     public static final String DEVICE_NICKNAME = "dN";
 
-    // Log messages
-
-    /** {@value} */
-    public static final String FCM_RECEIVED = "Message received";
-    /** {@value} */
-    public static final String FCM_SENT = "Upstream message sent";
-    /** {@value} */
-    public static final String FCM_DELETED = "Messages deleted";
-
-    static final String ERROR_REGISTER = App.getContext().getString(R.string.err_register);
-    static final String ERROR_UNREGISTER = App.getContext().getString(R.string.err_unregister);
+    static final String ERROR_REGISTER =
+        App.getContext().getString(R.string.err_register);
+    static final String ERROR_UNREGISTER =
+        App.getContext().getString(R.string.err_unregister);
     static final String ERROR_REFRESH = App.getContext().getString(R.string.err_refresh);
     static final String ERROR_SEND = App.getContext().getString(R.string.err_send);
     static final String ERROR_UNKNOWN = App.getContext().getString(R.string.err_unknown);
@@ -92,6 +85,5 @@ public class Msg {
     static final String ERROR_NOT_REGISTERED = App.getContext().getString(R.string.err_not_registered);
     static final String ERROR_CREDENTIAL = App.getContext().getString(R.string.err_credential);
 
-    private Msg() {
-    }
+    private Msg() {}
 }

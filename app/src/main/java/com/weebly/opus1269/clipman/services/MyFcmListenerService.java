@@ -23,7 +23,7 @@ import android.os.SystemClock;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
@@ -39,20 +39,39 @@ import java.util.Map;
 public class MyFcmListenerService extends FirebaseMessagingService {
     private static final String TAG = "MyFcmListenerService";
 
+    /** {@value} */
+    private static final String FCM_RECEIVED = "FCM message received: ";
+    /** {@value} */
+    private static final String FCM_SENT = "FCM message sent: ";
+    /** {@value} */
+    private static final String FCM_DELETED = "FCM messages deleted";
+    /** {@value} */
+    private static final String FCM_SEND_ERROR = "Error sending FCM message: ";
+    /** {@value} */
+    private static final String FCM_MESSAGE_ERROR =
+        "Unknown FCM message received: ";
+
+
     /**
      * Called when message is received from one of our devices.
-     *
      * @param message message sent from fcm.
      */
     @Override
     public void onMessageReceived(RemoteMessage message) {
-        // There are two types of messages data messages and notification messages. Data messages are handled
-        // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
-        // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
-        // is in the foreground. When the app is in the background an automatically generated notification is displayed.
-        // When the user taps on the notification they are returned to the app. Messages containing both notification
-        // and data payloads are treated as notification messages. The Firebase console always sends notification
-        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
+        // There are two types of messages data messages and notification
+        // messages. Data messages are handled
+        // here in onMessageReceived whether the app is in the foreground or
+        // background. Data messages are the type
+        // traditionally used with GCM. Notification messages are only received
+        // here in onMessageReceived when the app
+        // is in the foreground. When the app is in the background an
+        // automatically generated notification is displayed.
+        // When the user taps on the notification they are returned to the app.
+        // Messages containing both notification
+        // and data payloads are treated as notification messages. The Firebase
+        // console always sends notification
+        // messages. For more see:
+        // https://firebase.google.com/docs/cloud-messaging/concept-options
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
 
@@ -70,45 +89,44 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         final String deviceSN = data.get(Msg.DEVICE_SN);
         final String deviceOS = data.get(Msg.DEVICE_OS);
         final String deviceNickname = data.get(Msg.DEVICE_NICKNAME);
-        final Device device = new Device(deviceModel, deviceSN, deviceOS, deviceNickname);
+        final Device device =
+            new Device(deviceModel, deviceSN, deviceOS, deviceNickname);
 
         if (device.getUniqueName().equals(Device.getMyUniqueName())) {
             // ignore our own messages
             return;
         }
 
-         switch (action) {
+        Log.logD(TAG, FCM_RECEIVED + action);
+
+        switch (action) {
             case Msg.ACTION_MESSAGE:
-                AppUtils.logD(TAG, "ACTION_MESSAGE");
                 // normal message, copy to clipboard
                 Devices.add(device, false);
                 copyToClipboard(data, device);
                 break;
             case Msg.ACTION_PING:
                 // We were pinged
-                AppUtils.logD(TAG, "ACTION_PING");
                 MessagingClient.sendPingResponse();
                 break;
             case Msg.ACTION_PING_RESPONSE:
-                // Response to a ping
+                // Device responded to a ping
                 Devices.add(device, true);
-                AppUtils.logD(TAG, "ACTION_PING_RESPONSE");
-                AppUtils.logD(TAG, device.getDisplayName() + " told me he is around.");
+                Log.logD(TAG, device.getDisplayName() +
+                    " told me he is around.");
                 break;
             case Msg.ACTION_DEVICE_ADDED:
                 // A new device was added
-                AppUtils.logD(TAG, "ACTION_DEVICE_ADDED");
                 Devices.add(device, true);
                 NotificationHelper.show(action, device.getDisplayName());
                 break;
             case Msg.ACTION_DEVICE_REMOVED:
                 // A device was removed
-                AppUtils.logD(TAG, "ACTION_DEVICE_REMOVED");
                 Devices.remove(device);
                 NotificationHelper.show(action, device.getDisplayName());
                 break;
             default:
-                AppUtils.logE(TAG, "Unknown message type received.");
+                Log.logE(TAG, FCM_MESSAGE_ERROR + action);
                 break;
         }
 
@@ -119,29 +137,32 @@ public class MyFcmListenerService extends FirebaseMessagingService {
     @Override
     public void onDeletedMessages() {
         super.onDeletedMessages();
-
-        AppUtils.logD(TAG, "onDeletedMessages called");
+        Log.logD(TAG, FCM_DELETED);
     }
 
     @Override
     public void onMessageSent(String msgId) {
         super.onMessageSent(msgId);
-
-        AppUtils.logD(TAG, "onMessageSent called: " + msgId);
+        Log.logD(TAG, FCM_SENT + msgId);
     }
 
     @Override
     public void onSendError(String msgId, Exception ex) {
         super.onSendError(msgId, ex);
-
-        AppUtils.logEx(TAG, "Error from Fcm ", ex);
+        Log.logEx(TAG, FCM_SEND_ERROR + msgId, ex);
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Private methods
     ///////////////////////////////////////////////////////////////////////////
 
-    private static void copyToClipboard(Map<String, String> data, Device device) {
+    /**
+     * Copy data to clipboard
+     * @param data {@link Map} of key value pairs
+     * @param device Source {@link Device}
+     */
+    private static void
+    copyToClipboard(Map<String, String> data, Device device) {
         final String message = data.get(Msg.MESSAGE);
         final String favString = data.get(Msg.FAV);
         final Boolean fav = "1".equals(favString);
@@ -156,5 +177,4 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         clipItem.setFav(fav);
         clipItem.copyToClipboard();
     }
-
 }

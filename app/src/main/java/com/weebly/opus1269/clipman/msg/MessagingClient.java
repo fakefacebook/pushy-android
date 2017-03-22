@@ -25,6 +25,7 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.messaging.Messaging;
 import com.weebly.opus1269.clipman.backend.messaging.model.EndpointRet;
 import com.weebly.opus1269.clipman.model.ClipItem;
@@ -70,7 +71,7 @@ public class MessagingClient extends Endpoint{
         try {
             data.put(Msg.FAV, favString);
         } catch (JSONException ex) {
-            AppUtils.logEx(TAG, ex.getMessage(), ex);
+            Log.logEx(TAG, ex.getMessage(), ex);
             data = null;
         }
 
@@ -140,7 +141,7 @@ public class MessagingClient extends Endpoint{
      */
     private static boolean notRegistered() {
         if (!Prefs.isDeviceRegistered()) {
-            AppUtils.logD(TAG, Msg.ERROR_NOT_REGISTERED);
+            Log.logD(TAG, Msg.ERROR_NOT_REGISTERED);
             return true;
         }
         return false;
@@ -181,7 +182,7 @@ public class MessagingClient extends Endpoint{
             data.put(Msg.DEVICE_OS, Device.getMyDevice().getOS());
             data.put(Msg.DEVICE_NICKNAME, Device.getMyDevice().getNickname());
         } catch(JSONException ex) {
-            AppUtils.logEx(TAG, ex.getMessage(), ex);
+            Log.logEx(TAG, ex.getMessage(), ex);
             data = null;
         }
         return data;
@@ -215,7 +216,7 @@ public class MessagingClient extends Endpoint{
 
                 final GoogleCredential credential = getCredential(null);
                 if (credential == null) {
-                    ret.setReason(AppUtils.logE(TAG, Msg.ERROR_CREDENTIAL));
+                    ret.setReason(Log.logE(TAG, Msg.ERROR_CREDENTIAL));
                     return ret;
                 }
 
@@ -225,11 +226,11 @@ public class MessagingClient extends Endpoint{
                 ret = msgService.send(Prefs.getRegToken(), jsonString)
                     .execute();
                 if (!ret.getSuccess()) {
-                    ret.setReason(AppUtils.logE(TAG,
+                    ret.setReason(Log.logE(TAG,
                         Msg.ERROR_SEND + " " + ret.getReason()));
                 }
             } catch (IOException|JSONException ex) {
-                AppUtils.logEx(TAG, GAE_MESSAGING_ERROR + ex.getMessage(), ex);
+                Log.logEx(TAG, GAE_MESSAGING_ERROR + ex.getMessage(), ex);
             }
             return ret;
         }
