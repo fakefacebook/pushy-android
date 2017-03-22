@@ -43,6 +43,10 @@ import java.io.IOException;
 public class MessagingClient extends Endpoint{
     private static final String TAG = "MessagingClient";
 
+    /** {@value} */
+    private static final String GAE_MESSAGING_ERROR =
+        "Error sending message to server ";
+
     private MessagingClient() {
     }
 
@@ -225,7 +229,7 @@ public class MessagingClient extends Endpoint{
                         Msg.ERROR_SEND + " " + ret.getReason()));
                 }
             } catch (IOException|JSONException ex) {
-                AppUtils.logEx(TAG, Msg.FCM_SEND_ERROR + ex.getMessage(), ex);
+                AppUtils.logEx(TAG, GAE_MESSAGING_ERROR + ex.getMessage(), ex);
             }
             return ret;
         }

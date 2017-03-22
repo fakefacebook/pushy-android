@@ -29,7 +29,11 @@ public class Msg {
     static final String WEB_CLIENT_ID =
         App.getContext().getString(R.string.default_web_client_id);
 
+    /** Max length of fcm data message - {@value} */
+    static final int MAX_MSG_LEN = 4096;
+
     // message types
+
     /** {@value} */
     public static final String ACTION = "act";
     /** {@value} */
@@ -43,8 +47,7 @@ public class Msg {
     /** {@value} */
     public static final String ACTION_MESSAGE = "m";
 
-    /** Max length of fcm data message - {@value} */
-    static final int MAX_MSG_LEN = 4096;
+    // mesage text
 
     static final String MSG_PING =
         App.getContext().getString(R.string.device_ping);
@@ -55,7 +58,10 @@ public class Msg {
     static final String MSG_DEVICE_REMOVED =
         App.getContext().getString(R.string.device_removed);
 
+    // message data keys
+
     /** {@value} */
+    // TODO change to "m" here and extension
     public static final String MESSAGE = "message";
     /** {@value} */
     public static final String FAV = "fav";
@@ -76,25 +82,10 @@ public class Msg {
     public static final String FCM_SENT = "Upstream message sent";
     /** {@value} */
     public static final String FCM_DELETED = "Messages deleted";
-    /** {@value} */
-    public static final String FCM_SEND_ERROR = "Error sending upstream message ";
-
-    /** {@value} */
-    public static final String LOG_ACTION = "Action: ";
-    /** {@value} */
-    public static final String LOG_DEVICE_MODEL = "Device model: ";
-    /** {@value} */
-    public static final String LOG_DEVICE_SN = "Device SN: ";
-    /** {@value} */
-    public static final String LOG_DEVICE_OS = "Device OS: ";
-    /** {@value} */
-    public static final String LOG_DEVICE_NICKNAME = "Device Nickname: ";
 
     static final String ERROR_REGISTER = App.getContext().getString(R.string.err_register);
     static final String ERROR_UNREGISTER = App.getContext().getString(R.string.err_unregister);
     static final String ERROR_REFRESH = App.getContext().getString(R.string.err_refresh);
-    static final String ERROR_DEVICES = App.getContext().getString(R.string.err_devices);
-    static final String ERROR_CHANGE_DEVICE_NAME = App.getContext().getString(R.string.err_change_device_name);
     static final String ERROR_SEND = App.getContext().getString(R.string.err_send);
     static final String ERROR_UNKNOWN = App.getContext().getString(R.string.err_unknown);
     static final String ERROR_INVALID_REGID = App.getContext().getString(R.string.err_invalid_regid);
