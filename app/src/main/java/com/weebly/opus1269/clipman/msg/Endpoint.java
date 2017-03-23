@@ -49,7 +49,7 @@ abstract class Endpoint {
     private static final boolean USE_LOCAL_SERVER = false;
 
     /** Network timeout in seconds - {@value} */
-    private static final int TIMEOUT = 10;
+    private static final int TIMEOUT = 20;
 
     /**
      * Get InstanceId (regToken)

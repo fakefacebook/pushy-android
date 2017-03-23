@@ -23,7 +23,6 @@ import android.text.TextUtils;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
@@ -45,8 +44,6 @@ public class RegistrationClient extends Endpoint {
         App.getContext().getString(R.string.err_register);
     private static final String ERROR_UNREGISTER =
         App.getContext().getString(R.string.err_unregister);
-    private static final String ERROR_REFRESH =
-        App.getContext().getString(R.string.err_refresh);
     private static final String ERROR_INVALID_REGID =
         App.getContext().getString(R.string.err_invalid_regid);
 
@@ -95,7 +92,7 @@ public class RegistrationClient extends Endpoint {
         } catch (final IOException ex) {
             ret.setReason(Log.logEx(TAG, ERROR_REGISTER, ex));
         } finally {
-            saveValues(isRegistered, regToken);
+            saveValues(isRegistered);
         }
 
         return ret;
@@ -119,7 +116,7 @@ public class RegistrationClient extends Endpoint {
         try {
             // we will sign out regardless, so reset
             // TODO is this right?
-            saveValues(false, "");
+            saveValues(false);
 
             final String regToken = getRegToken();
             if (TextUtils.isEmpty(regToken)) {
@@ -142,57 +139,6 @@ public class RegistrationClient extends Endpoint {
             }
         } catch (final IOException ex) {
             ret.setReason(Log.logEx(TAG, ERROR_UNREGISTER, ex));
-        }
-
-        return ret;
-    }
-
-    /**
-     * Update registration on server when RegToken changes
-     * @param newRegToken refreshed {@link FirebaseInstanceId}
-     * @return getSuccess() false on error
-     */
-    public static EndpointRet refresh(String newRegToken) {
-        EndpointRet ret = new EndpointRet();
-        ret.setSuccess(false);
-        ret.setReason(Msg.ERROR_UNKNOWN);
-
-        if (!Prefs.isDeviceRegistered()) {
-            Log.logD(TAG, Msg.ERROR_NOT_REGISTERED);
-            ret.setSuccess(true);
-            return ret;
-        }
-
-        final String oldRegToken = Prefs.getRegToken();
-
-        try {
-            if (newRegToken.equals(oldRegToken)) {
-                ret.setSuccess(true);
-                return ret;
-            }
-
-            final GoogleCredential credential = getCredential(null);
-            if (credential == null) {
-                ret.setReason(Log.logE(TAG, Msg.ERROR_CREDENTIAL));
-                return ret;
-            }
-
-            // call server
-            final Registration regService = getRegistrationService(credential);
-            ret = regService.refresh(newRegToken, oldRegToken).execute();
-
-            // update prefs
-            Prefs.setDeviceRegistered(ret.getSuccess());
-            Prefs.setRegToken(newRegToken);
-            if (ret.getSuccess()) {
-                Log.logD(TAG, "Token refreshed\nnew: " +
-                    newRegToken + "\nold: " + oldRegToken);
-            } else {
-                ret.setReason(
-                    Log.logE(TAG, ERROR_REFRESH + " " + ret.getReason()));
-            }
-        } catch (final IOException ex) {
-            ret.setReason(Log.logEx(TAG, ERROR_REFRESH, ex));
         }
 
         return ret;
@@ -224,11 +170,8 @@ public class RegistrationClient extends Endpoint {
     /**
      * Store registration state
      * @param registered - true if registered with server
-     * @param regToken   - {@link FirebaseInstanceId} we registered with
      */
-    private static void saveValues(boolean registered, String regToken) {
+    private static void saveValues(boolean registered) {
         Prefs.setDeviceRegistered(registered);
-        Prefs.setRegToken(regToken);
     }
-
 }

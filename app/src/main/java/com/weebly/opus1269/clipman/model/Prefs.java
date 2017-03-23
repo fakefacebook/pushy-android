@@ -56,7 +56,8 @@ public class Prefs {
             App.getContext().getString(R.string.ar_not_dev_removed_value);
 
     private static final String[] DEF_NOTIFY_VALUES =
-            App.getContext().getResources().getStringArray(R.array.pref_not_types_default_values);
+            App.getContext().getResources().getStringArray(
+                R.array.pref_not_types_default_values);
     private static final Set<String> DEF_NOTIFICATIONS =
             new HashSet<>(Arrays.asList(DEF_NOTIFY_VALUES));
 
@@ -65,7 +66,6 @@ public class Prefs {
     private static final String PREF_VERSION_CODE = "prefVersionCode";
     private static final String PREF_FAV_FILTER = "prefFavFilter";
     private static final String PREF_SORT_TYPE = "prefSortType";
-    private static final String PREF_REG_TOKEN = "prefRegToken";
     private static final String PREF_DEVICE_REGISTERED = "prefDeviceRegistered";
     private static final String PREF_DEVICES = "prefDevices";
 
@@ -158,7 +158,8 @@ public class Prefs {
         final String key = context.getResources().getString(R.string.key_pref_not_types);
         final SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        final Set<String> values = preferences.getStringSet(key, DEF_NOTIFICATIONS);
+        final Set<String> values =
+            preferences.getStringSet(key, DEF_NOTIFICATIONS);
         return values.contains(value);
     }
 
@@ -229,14 +230,6 @@ public class Prefs {
     }
 
 
-    public static void setRegToken(String value) {
-        set(PREF_REG_TOKEN, value);
-    }
-
-    public static String getRegToken() {
-        return get(PREF_REG_TOKEN, "");
-    }
-
     public static void setDeviceRegistered(Boolean value) {
         set(PREF_DEVICE_REGISTERED, value);
     }
@@ -255,7 +248,7 @@ public class Prefs {
 
     static void set(String key, String value) {
         final SharedPreferences preferences =
-                android.preference.PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                PreferenceManager.getDefaultSharedPreferences(App.getContext());
         preferences.edit()
                 .putString(key, value)
                 .apply();
@@ -264,7 +257,7 @@ public class Prefs {
     @SuppressWarnings("SameParameterValue")
     private static void set(String key, boolean value) {
         final SharedPreferences preferences =
-                android.preference.PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                PreferenceManager.getDefaultSharedPreferences(App.getContext());
         preferences.edit()
                 .putBoolean(key, value)
                 .apply();
@@ -272,7 +265,7 @@ public class Prefs {
 
     private static void set(String key, int value) {
         final SharedPreferences preferences =
-                android.preference.PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                PreferenceManager.getDefaultSharedPreferences(App.getContext());
         preferences.edit()
                 .putInt(key, value)
                 .apply();
@@ -296,6 +289,5 @@ public class Prefs {
                 PreferenceManager.getDefaultSharedPreferences(App.getContext());
         return preferences.getInt(key, defValue);
     }
-
 }
 

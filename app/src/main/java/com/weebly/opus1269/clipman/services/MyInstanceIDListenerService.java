@@ -44,13 +44,10 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
         Log.logD(TAG, "Refreshed token: " + refreshedToken);
 
         if (Prefs.isDeviceRegistered()) {
-            final EndpointRet ret = RegistrationClient.refresh(refreshedToken);
+            final EndpointRet ret = RegistrationClient.register(refreshedToken);
             if (!ret.getSuccess()) {
                 Log.logE(TAG, ret.getReason());
             }
-        } else {
-            // first time save it. still not registered though
-            Prefs.setRegToken(refreshedToken);
         }
     }
 }

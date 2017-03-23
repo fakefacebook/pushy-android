@@ -60,9 +60,8 @@ public class Msg {
 
     // message data keys
 
-    // TODO change to "m" here and extension
     /** {@value} */
-    public static final String MESSAGE = "message";
+    public static final String MESSAGE = "m";
     /** {@value} */
     public static final String FAV = "fav";
     /** {@value} */

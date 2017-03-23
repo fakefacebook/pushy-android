@@ -225,7 +225,8 @@ public class MessagingClient extends Endpoint{
                 final Messaging msgService = getMessagingService(credential);
 
                 // call server
-                ret = msgService.send(Prefs.getRegToken(), jsonString)
+                final String regToken = getRegToken();
+                ret = msgService.send(regToken, jsonString)
                     .execute();
                 if (!ret.getSuccess()) {
                     ret.setReason(
