@@ -54,6 +54,13 @@
             android:summary="@string/pref_desc_auto_clipboard"
             />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/key_pref_receive_clipboard"
+            android:title="@string/pref_title_receive_clipboard"
+            android:summary="@string/pref_desc_receive_clipboard"
+        />
+
     </PreferenceCategory>
 
     <PreferenceCategory

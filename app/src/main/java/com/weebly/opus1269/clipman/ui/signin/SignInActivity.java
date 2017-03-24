@@ -18,17 +18,14 @@
 
 package com.weebly.opus1269.clipman.ui.signin;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,10 +49,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.weebly.opus1269.clipman.R;
-import com.weebly.opus1269.clipman.app.CustomAsyncTask;
 import com.weebly.opus1269.clipman.app.Log;
-import com.weebly.opus1269.clipman.backend.registration.model.EndpointRet;
-import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.model.User;
@@ -249,6 +243,72 @@ public class SignInActivity extends BaseActivity implements
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // public methods
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Should we revoke access at signout
+     * @return true if revoke
+     */
+    public boolean isRevoke() {
+        return mIsRevoke;
+    }
+
+    /**
+     * SignOut of Google and Firebase
+     */
+    public void doSignOut() {
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        if (status.isSuccess()) {
+                            FirebaseAuth.getInstance().signOut();
+                            clearUser();
+                        } else {
+                            mErrorMessage =
+                                getString(R.string.sign_out_err_fmt,
+                                    status.getStatusMessage());
+                            updateView();
+                        }
+                    }
+                });
+        } else {
+            mErrorMessage = getString(R.string.sign_out_err_fmt, "");
+            updateView();
+        }
+    }
+
+    /**
+     * Revoke access to app for this {@link User}
+     */
+    public void doRevoke() {
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi
+                .revokeAccess(mGoogleApiClient)
+                .setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            if (status.isSuccess()) {
+                                FirebaseAuth.getInstance().signOut();
+                                clearUser();
+                            } else {
+                                mErrorMessage =
+                                    getString(R.string.revoke_err_fmt,
+                                        status.getStatusMessage());
+                                updateView();
+                            }
+                        }
+                    });
+        } else {
+            mErrorMessage = getString(R.string.revoke_err_fmt, "");
+            updateView();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // private methods
     ///////////////////////////////////////////////////////////////////////////
 
@@ -366,10 +426,9 @@ public class SignInActivity extends BaseActivity implements
             final String idToken = account.getIdToken();
             if (!Prefs.isDeviceRegistered() && !TextUtils.isEmpty(idToken)) {
                 // register with server
-                new RegisterAsyncTask(SignInActivity.this, idToken).execute();
+                new RegistrationClient.RegisterAsyncTask(
+                    SignInActivity.this, idToken).execute();
             }
-
-
         } else {
             // reset info.
             mErrorMessage =
@@ -420,7 +479,7 @@ public class SignInActivity extends BaseActivity implements
      */
     private void onSignOutClicked() {
         mIsRevoke = false;
-        if (Prefs.isDeviceRegistered()) {
+        if (Prefs.isPushClipboard()) {
             // also handles sign-out
             MessagingClient.sendDeviceRemoved();
         } else {
@@ -433,7 +492,7 @@ public class SignInActivity extends BaseActivity implements
      */
     private void onRevokeAccessClicked() {
         mIsRevoke = true;
-        if (Prefs.isDeviceRegistered()) {
+        if (Prefs.isPushClipboard()) {
             // also handles revocation
             MessagingClient.sendDeviceRemoved();
         } else {
@@ -443,64 +502,10 @@ public class SignInActivity extends BaseActivity implements
 
     /**
      * Unregister with fcm. This will also perform the sign-out or revoke
-     * based on value of {@link this.mIsRevoke}
      */
     private void doUnregister() {
-        new UnregisterAsyncTask(SignInActivity.this).execute();
-    }
-
-    /**
-     * SignOut of Google and Firebase
-     */
-    private void doSignOut() {
-        if (mGoogleApiClient.isConnected()) {
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                        if (status.isSuccess()) {
-                            FirebaseAuth.getInstance().signOut();
-                            clearUser();
-                        } else {
-                            mErrorMessage =
-                                getString(R.string.sign_out_err_fmt,
-                                    status.getStatusMessage());
-                            updateView();
-                        }
-                    }
-                });
-        } else {
-            mErrorMessage = getString(R.string.sign_out_err_fmt, "");
-            updateView();
-        }
-    }
-
-    /**
-     * Revoke access to app for this {@link User}
-     */
-    private void doRevoke() {
-        if (mGoogleApiClient.isConnected()) {
-            Auth.GoogleSignInApi
-                .revokeAccess(mGoogleApiClient)
-                .setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                        if (status.isSuccess()) {
-                            FirebaseAuth.getInstance().signOut();
-                            clearUser();
-                        } else {
-                            mErrorMessage =
-                                getString(R.string.revoke_err_fmt,
-                                    status.getStatusMessage());
-                            updateView();
-                        }
-                    }
-                });
-        } else {
-            mErrorMessage = getString(R.string.revoke_err_fmt, "");
-            updateView();
-        }
+        new RegistrationClient.UnregisterAsyncTask(
+            SignInActivity.this).execute();
     }
 
     /**
@@ -554,190 +559,5 @@ public class SignInActivity extends BaseActivity implements
      */
     private void dismissProgressDialog() {
         ProgressDialogHelper.dismiss();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Inner Classes
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * AsyncTask to register our {@link Device} with the server.
-     */
-    private static class RegisterAsyncTask extends
-        CustomAsyncTask<Void, Void, String> {
-
-        private ProgressDialog mProgress;
-        private final String mIdToken;
-
-        RegisterAsyncTask(SignInActivity activity, String idToken) {
-            super(activity);
-            mIdToken = idToken;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // must call
-            super.onPreExecute();
-            showProgressDialog();
-        }
-
-        @Override
-        protected void onActivityDetached() {
-            if (mProgress != null) {
-                mProgress.dismiss();
-                mProgress = null;
-            }
-        }
-
-        @Override
-        protected void onActivityAttached() {
-            if (mProgress == null) {
-                showProgressDialog();
-            }
-        }
-
-        private void showProgressDialog() {
-            mProgress = new ProgressDialog(mActivity);
-            mProgress.setMessage(
-                mActivity.getString(R.string.registering));
-            mProgress.setCancelable(true);
-            mProgress
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    cancel(true);
-                }
-            });
-
-            mProgress.show();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String error = "";
-            // register device with the server - blocks
-            EndpointRet ret = RegistrationClient.register(mIdToken);
-            if(!ret.getSuccess()) {
-                error = ret.getReason();
-            }
-            return error;
-        }
-
-        @Override
-        protected void onPostExecute(String error) {
-            // must call
-            super.onPostExecute(error);
-
-            if (mActivity != null) {
-                mProgress.dismiss();
-                if (!TextUtils.isEmpty(error)) {
-                    // failed to register Device with server
-                    ((SignInActivity) mActivity).doSignOut();
-                    new AlertDialog.Builder(mActivity)
-                        .setTitle(R.string.err_register)
-                        .setMessage(error)
-                        .setPositiveButton(R.string.button_dismiss, null)
-                        .show();
-                } else {
-                    // let others know we are here
-                    MessagingClient.sendDeviceAdded();
-                }
-            } else {
-                Log.logD(SignInActivity.class.getName(),
-                    "AsyncTask finished while no Activity was attached.");
-            }
-        }
-
-    }
-
-    /**
-     * AsyncTask to remove ourselves from the device Group.
-     * Also sign-out or revoke access on success
-     */
-    private static class UnregisterAsyncTask extends
-        CustomAsyncTask<Void, Void, String> {
-
-        private ProgressDialog mProgress;
-
-        UnregisterAsyncTask(SignInActivity activity) {
-            super(activity);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // must call
-            super.onPreExecute();
-            showProgressDialog();
-        }
-
-        @Override
-        protected void onActivityDetached() {
-            if (mProgress != null) {
-                mProgress.dismiss();
-                mProgress = null;
-            }
-        }
-
-        @Override
-        protected void onActivityAttached() {
-            if (mProgress == null) {
-                showProgressDialog();
-            }
-        }
-
-        private void showProgressDialog() {
-            mProgress = new ProgressDialog(mActivity);
-            mProgress.setMessage(
-                mActivity.getString(R.string.unregistering));
-            mProgress.setCancelable(true);
-            mProgress.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    cancel(true);
-                }
-            });
-
-            mProgress.show();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String error = "";
-            // unregister device with the server - blocks
-            EndpointRet ret = RegistrationClient.unregister();
-            if (!ret.getSuccess()) {
-                error = ret.getReason();
-            }
-            return error;
-        }
-
-        @Override
-        protected void onPostExecute(String error) {
-            // must call
-            super.onPostExecute(error);
-
-            if (mActivity != null) {
-                mProgress.dismiss();
-                if (!TextUtils.isEmpty(error)) {
-                    MessagingClient.sendDeviceAdded();
-                    // failed to unregister Device
-                    new AlertDialog.Builder(mActivity)
-                        .setTitle(R.string.err_unregister)
-                        .setMessage(error)
-                        .setPositiveButton(R.string.button_dismiss, null)
-                        .show();
-                } else {
-                    SignInActivity act = (SignInActivity) mActivity;
-                    if (act.mIsRevoke) {
-                        act.doRevoke();
-                    } else {
-                        act.doSignOut();
-                    }
-                }
-            } else {
-                Log.logD(SignInActivity.class.getName(),
-                    "AsyncTask finished while no Activity was attached.");
-            }
-        }
     }
 }

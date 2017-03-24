@@ -37,6 +37,8 @@ public class Msg {
     /** {@value} */
     public static final String ACTION = "act";
     /** {@value} */
+    public static final String ACTION_MESSAGE = "m";
+    /** {@value} */
     public static final String ACTION_PING = "ping_others";
     /** {@value} */
     public static final String ACTION_PING_RESPONSE = "respond_to_ping";
@@ -44,8 +46,6 @@ public class Msg {
     public static final String ACTION_DEVICE_ADDED = "add_our_device";
     /** {@value} */
     public static final String ACTION_DEVICE_REMOVED = "remove_our_device";
-    /** {@value} */
-    public static final String ACTION_MESSAGE = "m";
 
     // mesage text
 
@@ -73,9 +73,14 @@ public class Msg {
     /** {@value} */
     public static final String DEVICE_NICKNAME = "dN";
 
-    static final String ERROR_UNKNOWN = App.getContext().getString(R.string.err_unknown);
-    static final String ERROR_NOT_REGISTERED = App.getContext().getString(R.string.err_not_registered);
-    static final String ERROR_CREDENTIAL = App.getContext().getString(R.string.err_credential);
+    static final String ERROR_UNKNOWN =
+        App.getContext().getString(R.string.err_unknown);
+    static final String ERROR_NOT_SIGNED_IN =
+        App.getContext().getString(R.string.err_not_signed_in);
+    static final String ERROR_NOT_REGISTERED =
+        App.getContext().getString(R.string.err_not_registered);
+    static final String ERROR_CREDENTIAL =
+        App.getContext().getString(R.string.err_credential);
 
     private Msg() {}
 }

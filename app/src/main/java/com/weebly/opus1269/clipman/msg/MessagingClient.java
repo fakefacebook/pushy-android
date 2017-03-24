@@ -34,6 +34,7 @@ import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.model.Prefs;
+import com.weebly.opus1269.clipman.model.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +59,7 @@ public class MessagingClient extends Endpoint{
      * @param clipItem - contents to send
      */
     public static void send(ClipItem clipItem) {
-        if (notRegistered() || !Prefs.isPushClipboard()) {
+        if (notSignedIn() || !Prefs.isPushClipboard()) {
             return;
         }
 
@@ -83,8 +84,8 @@ public class MessagingClient extends Endpoint{
     }
 
     /** Notify of our addition */
-    public static void sendDeviceAdded() {
-        if (notRegistered()) {
+    static void sendDeviceAdded() {
+        if (notSignedIn()) {
             return;
         }
 
@@ -97,7 +98,7 @@ public class MessagingClient extends Endpoint{
 
     /** Notify of our removal */
     public static void sendDeviceRemoved() {
-        if (notRegistered()) {
+        if (notSignedIn()) {
             return;
         }
 
@@ -110,7 +111,7 @@ public class MessagingClient extends Endpoint{
 
     /** Ping others */
     public static void sendPing() {
-        if (notRegistered()) {
+        if (notSignedIn()) {
             return;
         }
 
@@ -122,7 +123,7 @@ public class MessagingClient extends Endpoint{
 
     /** Respond to ping */
     public static void sendPingResponse() {
-        if (notRegistered()) {
+        if (notSignedIn()) {
             return;
         }
 
@@ -138,12 +139,12 @@ public class MessagingClient extends Endpoint{
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Determine if we are registered with the server
-     * @return true if not registered
+     * Determine if we are signed in
+     * @return true if not signed in
      */
-    private static boolean notRegistered() {
-        if (!Prefs.isDeviceRegistered()) {
-            Log.logD(TAG, Msg.ERROR_NOT_REGISTERED);
+    private static boolean notSignedIn() {
+        if (!User.INSTANCE.isLoggedIn()) {
+            Log.logD(TAG, Msg.ERROR_NOT_SIGNED_IN);
             return true;
         }
         return false;
@@ -209,7 +210,7 @@ public class MessagingClient extends Endpoint{
             ret.setSuccess(false);
             ret.setReason(Msg.ERROR_UNKNOWN);
 
-            JSONObject data = params[0];
+            final JSONObject data = params[0];
 
             try {
                 mAction = data.getString(Msg.ACTION);
@@ -228,11 +229,11 @@ public class MessagingClient extends Endpoint{
                 final String regToken = getRegToken();
                 ret = msgService.send(regToken, jsonString)
                     .execute();
-                if (!ret.getSuccess()) {
+                if (ret.getSuccess()) {
+                    Log.logD(TAG, "Message sent to server: " + mAction);
+                } else {
                     ret.setReason(
                         Log.logE(TAG, ERROR_SEND + ": " + ret.getReason()));
-                } else {
-                    Log.logD(TAG, "Message sent to server: " + mAction);
                 }
             } catch (IOException|JSONException ex) {
                 ret.setReason(Log.logEx(TAG, ERROR_SEND, ex));

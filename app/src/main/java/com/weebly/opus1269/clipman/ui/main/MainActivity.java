@@ -540,7 +540,7 @@ public class MainActivity extends BaseActivity implements
         // set Devices menu state
         final Menu menu = navigationView.getMenu();
         final MenuItem deviceItem = menu.findItem(R.id.nav_devices);
-        deviceItem.setEnabled(Prefs.isDeviceRegistered());
+        deviceItem.setEnabled(User.INSTANCE.isLoggedIn());
 
         User.INSTANCE.setNavigationHeaderView(hView);
     }
@@ -552,7 +552,7 @@ public class MainActivity extends BaseActivity implements
         if (mOptionsMenu != null) {
             Boolean enabled  = false;
             Integer alpha  = 64;
-            if (Prefs.isDeviceRegistered() && Prefs.isPushClipboard()) {
+            if (User.INSTANCE.isLoggedIn() && Prefs.isPushClipboard()) {
                 enabled = true;
                 alpha = 255;
             }

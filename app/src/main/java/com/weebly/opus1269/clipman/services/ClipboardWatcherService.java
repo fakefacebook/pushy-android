@@ -32,6 +32,7 @@ import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.model.ClipContentProvider;
 import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Prefs;
+import com.weebly.opus1269.clipman.model.User;
 import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.ui.helpers.NotificationHelper;
 
@@ -193,7 +194,7 @@ public class ClipboardWatcherService extends Service implements
                 // display notification if requested by user
                 NotificationHelper.show(mClipItem);
 
-                if (!mClipItem.isRemote() && Prefs.isDeviceRegistered() &&
+                if (!mClipItem.isRemote() && User.INSTANCE.isLoggedIn() &&
                     Prefs.isPushClipboard() && Prefs.isAutoSend()) {
                     // send local copy to server for delivery
                     MessagingClient.send(mClipItem);

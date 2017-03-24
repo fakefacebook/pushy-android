@@ -18,6 +18,10 @@
 
 package com.weebly.opus1269.clipman.msg;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -26,11 +30,12 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.CustomAsyncTask;
 import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.registration.Registration;
 import com.weebly.opus1269.clipman.backend.registration.model.EndpointRet;
-import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Prefs;
+import com.weebly.opus1269.clipman.ui.signin.SignInActivity;
 
 import java.io.IOException;
 
@@ -47,11 +52,10 @@ public class RegistrationClient extends Endpoint {
     private static final String ERROR_INVALID_REGID =
         App.getContext().getString(R.string.err_invalid_regid);
 
-    private RegistrationClient() {
-    }
+    private RegistrationClient() {}
 
     /**
-     * Register {@link Device} with server
+     * Register with server
      * @param idToken - authorization token
      * @return getSuccess() false on error
      */
@@ -62,6 +66,10 @@ public class RegistrationClient extends Endpoint {
 
         if (Prefs.isDeviceRegistered()) {
             Log.logD(TAG, "Already registered.");
+            ret.setSuccess(true);
+            return ret;
+        } else if (!Prefs.isAllowReceive()) {
+            Log.logD(TAG, "User doesn't want to receive messasges.");
             ret.setSuccess(true);
             return ret;
         }
@@ -92,17 +100,21 @@ public class RegistrationClient extends Endpoint {
         } catch (final IOException ex) {
             ret.setReason(Log.logEx(TAG, ERROR_REGISTER, ex));
         } finally {
-            saveValues(isRegistered);
+            Prefs.setDeviceRegistered(isRegistered);
         }
 
         return ret;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Private methods
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
-     * Unregister {@link Device} with server
+     * Unregister with server
      * @return getSuccess() false on error
      */
-    public static EndpointRet unregister() {
+    private static EndpointRet unregister() {
         EndpointRet ret = new EndpointRet();
         ret.setSuccess(false);
         ret.setReason(Msg.ERROR_UNKNOWN);
@@ -113,12 +125,9 @@ public class RegistrationClient extends Endpoint {
             return ret;
         }
 
+        boolean isRegistered = true;
         try {
-            // we will sign out regardless, so reset
-            // TODO is this right?
-            saveValues(false);
-
-            final String regToken = getRegToken();
+             final String regToken = getRegToken();
             if (TextUtils.isEmpty(regToken)) {
                 ret.setReason(Log.logE(TAG, ERROR_INVALID_REGID));
                 return ret;
@@ -133,20 +142,20 @@ public class RegistrationClient extends Endpoint {
             // call server
             final Registration regService = getRegistrationService(credential);
             ret = regService.unregister(regToken).execute();
-            if (!ret.getSuccess()) {
+            if (ret.getSuccess()) {
+                isRegistered = false;
+            } else {
                 ret.setReason(Log.logE(TAG, ERROR_UNREGISTER +
                     " " + ret.getReason()));
             }
         } catch (final IOException ex) {
             ret.setReason(Log.logEx(TAG, ERROR_UNREGISTER, ex));
+        }  finally {
+            Prefs.setDeviceRegistered(isRegistered);
         }
 
         return ret;
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Private methods
-    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Get an authorized connection to the RegistrationEndpoint
@@ -167,11 +176,190 @@ public class RegistrationClient extends Endpoint {
         return builder.build();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Inner Classes
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
-     * Store registration state
-     * @param registered - true if registered with server
+     * AsyncTask to register our with the server.
      */
-    private static void saveValues(boolean registered) {
-        Prefs.setDeviceRegistered(registered);
+    public static class RegisterAsyncTask extends
+        CustomAsyncTask<Void, Void, String> {
+
+        private ProgressDialog mProgress;
+        private final String mIdToken;
+
+        public RegisterAsyncTask(Activity activity, String idToken) {
+            super(activity);
+            mIdToken = idToken;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // must call
+            super.onPreExecute();
+            showProgressDialog();
+        }
+
+        @Override
+        protected void onActivityDetached() {
+            if (mProgress != null) {
+                mProgress.dismiss();
+                mProgress = null;
+            }
+        }
+
+        @Override
+        protected void onActivityAttached() {
+            if (mProgress == null) {
+                showProgressDialog();
+            }
+        }
+
+        private void showProgressDialog() {
+            mProgress = new ProgressDialog(mActivity);
+            mProgress.setMessage(
+                mActivity.getString(R.string.registering));
+            mProgress.setCancelable(true);
+            mProgress
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        cancel(true);
+                    }
+                });
+
+            mProgress.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String error = "";
+            // register device with the server - blocks
+            EndpointRet ret = RegistrationClient.register(mIdToken);
+            if(!ret.getSuccess()) {
+                error = ret.getReason();
+            }
+            return error;
+        }
+
+        @Override
+        protected void onPostExecute(String error) {
+            // must call
+            super.onPostExecute(error);
+
+            if (mActivity != null) {
+                mProgress.dismiss();
+                if (!TextUtils.isEmpty(error)) {
+                    // failed to register Device with server
+                    if (mActivity instanceof SignInActivity) {
+                        ((SignInActivity) mActivity).doSignOut();
+                    }
+                    new AlertDialog.Builder(mActivity)
+                        .setTitle(R.string.err_register)
+                        .setMessage(error)
+                        .setPositiveButton(R.string.button_dismiss, null)
+                        .show();
+                } else {
+                    // let others know we are here
+                    MessagingClient.sendDeviceAdded();
+                }
+            } else {
+                Log.logD(TAG, NO_ACTIVITY);
+            }
+        }
+
+    }
+
+    /**
+     * AsyncTask to unregister from server.
+     * Also, optionally sign-out or revoke access on success
+     */
+    public static class UnregisterAsyncTask extends
+        CustomAsyncTask<Void, Void, String> {
+
+        private ProgressDialog mProgress;
+
+        public UnregisterAsyncTask(Activity activity) {
+            super(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // must call
+            super.onPreExecute();
+            showProgressDialog();
+        }
+
+        @Override
+        protected void onActivityDetached() {
+            if (mProgress != null) {
+                mProgress.dismiss();
+                mProgress = null;
+            }
+        }
+
+        @Override
+        protected void onActivityAttached() {
+            if (mProgress == null) {
+                showProgressDialog();
+            }
+        }
+
+        private void showProgressDialog() {
+            mProgress = new ProgressDialog(mActivity);
+            mProgress.setMessage(
+                mActivity.getString(R.string.unregistering));
+            mProgress.setCancelable(true);
+            mProgress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    cancel(true);
+                }
+            });
+
+            mProgress.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String error = "";
+            // unregister with the server - blocks
+            EndpointRet ret = RegistrationClient.unregister();
+            if (!ret.getSuccess()) {
+                error = ret.getReason();
+            }
+            return error;
+        }
+
+        @Override
+        protected void onPostExecute(String error) {
+            // must call
+            super.onPostExecute(error);
+
+            if (mActivity != null) {
+                mProgress.dismiss();
+                if (!TextUtils.isEmpty(error)) {
+                    // failed to unregister Device
+                    MessagingClient.sendDeviceAdded();
+                    new AlertDialog.Builder(mActivity)
+                        .setTitle(R.string.err_unregister)
+                        .setMessage(error)
+                        .setPositiveButton(R.string.button_dismiss, null)
+                        .show();
+                } else {
+                    if (mActivity instanceof SignInActivity) {
+                        SignInActivity act = (SignInActivity) mActivity;
+                        if (act.isRevoke()) {
+                            act.doRevoke();
+                        } else {
+                            act.doSignOut();
+                        }
+                    }
+                }
+            } else {
+                Log.logD(TAG, NO_ACTIVITY);
+            }
+        }
     }
 }

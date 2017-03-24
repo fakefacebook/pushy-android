@@ -10,7 +10,11 @@ import android.os.AsyncTask;
  * see: https://fattybeagle.com/2011/02/15/android-asynctasks-during-a-screen-rotation-part-ii/
  */
 
-public abstract class CustomAsyncTask<TParams, TProgress, TResult> extends AsyncTask<TParams, TProgress, TResult> {
+public abstract class CustomAsyncTask<TParams, TProgress, TResult>
+    extends AsyncTask<TParams, TProgress, TResult> {
+    protected static final String NO_ACTIVITY =
+        "AsyncTask finished while no Activity was attached.";
+
     private final App mApp;
     protected Activity mActivity;
 

@@ -35,10 +35,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.weebly.opus1269.clipman.R;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompatDividers;
+import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.model.Prefs;
+import com.weebly.opus1269.clipman.model.User;
 import com.weebly.opus1269.clipman.msg.MessagingClient;
+import com.weebly.opus1269.clipman.msg.RegistrationClient;
 import com.weebly.opus1269.clipman.services.ClipboardWatcherService;
 import com.weebly.opus1269.clipman.ui.helpers.NotificationHelper;
 import com.weebly.opus1269.clipman.ui.main.MainActivity;
@@ -47,8 +49,8 @@ import com.weebly.opus1269.clipman.ui.main.MainActivity;
  * Fragment for app Preferences.
  * Supports Material design through {@link PreferenceFragmentCompatDividers}
  */
-public class SettingsFragment extends PreferenceFragmentCompatDividers  implements
-    SharedPreferences.OnSharedPreferenceChangeListener  {
+public class SettingsFragment extends PreferenceFragmentCompatDividers
+    implements SharedPreferences.OnSharedPreferenceChangeListener  {
 
     private static final int REQUEST_CODE_ALERT_RINGTONE = 5;
 
@@ -86,11 +88,15 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         try {
             return super.onCreateView(inflater, container, savedInstanceState);
         } finally {
-            setDividerPreferences(DIVIDER_PADDING_CHILD | DIVIDER_CATEGORY_AFTER_LAST | DIVIDER_CATEGORY_BETWEEN);
+            setDividerPreferences(
+                DIVIDER_PADDING_CHILD |
+                DIVIDER_CATEGORY_AFTER_LAST |
+                DIVIDER_CATEGORY_BETWEEN);
         }
     }
 
@@ -98,11 +104,14 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
     public boolean onPreferenceTreeClick(Preference preference) {
 
         if (preference.getKey().equals(mRingtoneKey)) {
-
-            // support library doesn't implement RingtonePreference. need to do it ourselves
+            // support library doesn't implement RingtonePreference.
+            // need to do it ourselves
             // see: https://code.google.com/p/android/issues/detail?id=183255
-            final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+            final Intent intent =
+                new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(
+                RingtoneManager.EXTRA_RINGTONE_TYPE,
+                RingtoneManager.TYPE_NOTIFICATION);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI,
@@ -112,7 +121,8 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
             if (existingValue != null) {
                 if (existingValue.isEmpty()) {
                     // Select "Silent"
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
+                        (Uri) null);
                 } else {
                     intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
                             Uri.parse(existingValue));
@@ -134,7 +144,9 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((requestCode == REQUEST_CODE_ALERT_RINGTONE) && (data != null)) {
-            final Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            final Uri ringtone =
+                data.getParcelableExtra(
+                    RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (ringtone != null) {
                 Prefs.setRingtone(ringtone.toString());
             } else {
@@ -152,11 +164,18 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        final String keyNickname = getResources().getString(R.string.key_pref_nickname);
-        final String keyMonitor = getResources().getString(R.string.key_pref_monitor_clipboard);
-        final String keyTheme = getResources().getString(R.string.key_pref_theme);
-        final String keyNotifications = getResources().getString(R.string.key_pref_notifications);
+    public void
+    onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        final String keyNickname =
+            getResources().getString(R.string.key_pref_nickname);
+        final String keyMonitor =
+            getResources().getString(R.string.key_pref_monitor_clipboard);
+        final String keyTheme =
+            getResources().getString(R.string.key_pref_theme);
+        final String keyNotifications =
+            getResources().getString(R.string.key_pref_notifications);
+        final String keyReceive =
+            getResources().getString(R.string.key_pref_receive_clipboard);
         final Activity activity = getActivity();
 
         if (key.equals(keyNickname)) {
@@ -167,7 +186,8 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
             if (Prefs.isMonitorClipboard()) {
                 ClipboardWatcherService.startService(false);
             } else {
-                final Intent intent = new Intent(activity, ClipboardWatcherService.class);
+                final Intent intent =
+                    new Intent(activity, ClipboardWatcherService.class);
                 activity.stopService(intent);
             }
         } else if (key.equals(keyTheme)) {
@@ -178,12 +198,25 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
                 .addNextIntent(activity.getIntent())
                 .startActivities();
         } else if (key.equals(keyNotifications)) {
-            if (!Prefs.isNotifications()) {
+            if (Prefs.notNotifications()) {
                 // remove any currently displayed Notifications
                 NotificationHelper.removeAll();
             }
+        }  else if (key.equals(keyReceive)) {
+            if (User.INSTANCE.isLoggedIn()) {
+                if (Prefs.isAllowReceive()) {
+                    // register
+                    new RegistrationClient
+                        .RegisterAsyncTask(getActivity(), null)
+                        .execute();
+                } else {
+                    // unregister
+                    new RegistrationClient
+                        .UnregisterAsyncTask(getActivity())
+                        .execute();
+                }
+            }
         }
-
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -201,7 +234,8 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
             title = "Silent";
         } else {
             final Uri uri = Uri.parse(value);
-            final Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), uri);
+            final Ringtone ringtone =
+                RingtoneManager.getRingtone(getActivity(), uri);
             title = ringtone.getTitle(getActivity());
         }
         preference.setSummary(title);
@@ -218,5 +252,4 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers  implemen
         }
         preference.setSummary(value);
     }
-
 }

@@ -100,6 +100,12 @@ public class Prefs {
         return get(key, true);
     }
 
+    public static boolean isAllowReceive() {
+        final Context context = App.getContext();
+        final String key = context.getResources().getString(R.string.key_pref_receive_clipboard);
+        return get(key, true);
+    }
+
     public static String getDeviceNickname() {
         final Context context = App.getContext();
         final String key = context.getResources().getString(R.string.key_pref_nickname);
@@ -128,10 +134,10 @@ public class Prefs {
         return context.getString(R.string.ar_theme_light_value).equals(getTheme());
     }
 
-    public static boolean isNotifications() {
+    public static boolean notNotifications() {
         final Context context = App.getContext();
         final String key = context.getResources().getString(R.string.key_pref_notifications);
-        return get(key, true);
+        return !get(key, true);
     }
 
     public static boolean isNotifyLocal() {
@@ -151,7 +157,7 @@ public class Prefs {
     }
 
     private static boolean isNotifyEnabled(String value) {
-        if (!isNotifications()) {
+        if (notNotifications()) {
             return false;
         }
         final Context context = App.getContext();
