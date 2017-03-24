@@ -36,7 +36,7 @@ import com.weebly.opus1269.clipman.ui.helpers.DrawableHelper;
 /**
  * Bridge between the Devices RecyclerView and the Devices class
  */
-public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder> {
+class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder> {
 
     ///////////////////////////////////////////////////////////////////////////
     // superclass overrides
