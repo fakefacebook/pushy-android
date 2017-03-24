@@ -34,7 +34,6 @@ import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.model.Prefs;
-import com.weebly.opus1269.clipman.model.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,18 +136,6 @@ public class MessagingClient extends Endpoint{
     ///////////////////////////////////////////////////////////////////////////
     // Private methods
     ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Determine if we are signed in
-     * @return true if not signed in
-     */
-    private static boolean notSignedIn() {
-        if (!User.INSTANCE.isLoggedIn()) {
-            Log.logD(TAG, Msg.ERROR_NOT_SIGNED_IN);
-            return true;
-        }
-        return false;
-    }
 
     /**
      * Get an authorized connection to the MessagingEndpoint

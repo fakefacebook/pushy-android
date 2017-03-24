@@ -64,7 +64,10 @@ public class RegistrationClient extends Endpoint {
         ret.setSuccess(false);
         ret.setReason(Msg.ERROR_UNKNOWN);
 
-        if (Prefs.isDeviceRegistered()) {
+        if (notSignedIn()) {
+            ret.setSuccess(true);
+            return ret;
+        } else if (Prefs.isDeviceRegistered()) {
             Log.logD(TAG, "Already registered.");
             ret.setSuccess(true);
             return ret;
@@ -119,7 +122,10 @@ public class RegistrationClient extends Endpoint {
         ret.setSuccess(false);
         ret.setReason(Msg.ERROR_UNKNOWN);
 
-        if (!Prefs.isDeviceRegistered()) {
+        if (notSignedIn()) {
+            ret.setSuccess(true);
+            return ret;
+        } else if (!Prefs.isDeviceRegistered()) {
             Log.logD(TAG, Msg.ERROR_NOT_REGISTERED);
             ret.setSuccess(true);
             return ret;

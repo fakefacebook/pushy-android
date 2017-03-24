@@ -18,36 +18,41 @@
 
 package com.weebly.opus1269.clipman.services;
 
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.RetryStrategy;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.weebly.opus1269.clipman.app.Log;
-import com.weebly.opus1269.clipman.backend.registration.model.EndpointRet;
-import com.weebly.opus1269.clipman.model.User;
-import com.weebly.opus1269.clipman.msg.RegistrationClient;
+import com.weebly.opus1269.clipman.app.App;
+
+import static com.firebase.jobdispatcher.Trigger.NOW;
 
 /**
  * This {@link FirebaseInstanceIdService} listens for changes to the regToken
  */
 public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
-    private static final String TAG = "MyInstanceIDLS";
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is also called
      * when the InstanceID token is initially generated, so this is where
-     * you retrieve the token.
+     * you retrieve the token. Use JobService
+     * @see <a href="https://goo.gl/wYr4o2">firebase-jobdispatcher-android</a>
      */
     @Override
     public void onTokenRefresh() {
-        // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.logD(TAG, "Refreshed token: " + refreshedToken);
+        // Use Job Service
+        FirebaseJobDispatcher dispatcher =
+            new FirebaseJobDispatcher(new GooglePlayDriver(App.getContext()));
 
-        if (User.INSTANCE.isLoggedIn()) {
-            final EndpointRet ret = RegistrationClient.register(refreshedToken);
-            if (!ret.getSuccess()) {
-                Log.logE(TAG, ret.getReason());
-            }
-        }
+        Job myJob = dispatcher.newJobBuilder()
+            .setService(RefreshTokenJobService.class)
+            .setTrigger(NOW)
+            .setRecurring(false)
+            .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+            .setTag(RefreshTokenJobService.TAG)
+            .build();
+
+        dispatcher.mustSchedule(myJob);
     }
 }

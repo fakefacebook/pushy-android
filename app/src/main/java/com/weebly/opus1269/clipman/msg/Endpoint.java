@@ -36,6 +36,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.weebly.opus1269.clipman.BuildConfig;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.Log;
+import com.weebly.opus1269.clipman.model.User;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +51,18 @@ abstract class Endpoint {
 
     /** Network timeout in seconds - {@value} */
     private static final int TIMEOUT = 20;
+
+    /**
+     * Determine if we are signed in
+     * @return true if not signed in
+     */
+    static boolean notSignedIn() {
+        if (!User.INSTANCE.isLoggedIn()) {
+            Log.logD(TAG, Msg.ERROR_NOT_SIGNED_IN);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Get InstanceId (regToken)
@@ -154,5 +167,4 @@ abstract class Endpoint {
                 });
         }
     }
-
 }

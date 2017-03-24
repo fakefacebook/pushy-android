@@ -126,6 +126,15 @@
 
         <!-- private to app -->
         <service
+            android:exported="false"
+            android:name=".services.RefreshTokenJobService">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+
+        <!-- private to app -->
+        <service
             android:name=".services.ClipboardWatcherService"
             android:enabled="true"
             android:exported="false">
