@@ -27,7 +27,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.weebly.opus1269.clipman.R;
-import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
@@ -57,7 +56,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
 
     @Override
     public void onBindViewHolder(DeviceViewHolder holder, int position) {
-        final Context context = App.getContext();
+        final Context context = holder.deviceTextView.getContext();
 
         tintIcons(holder);
 
@@ -93,10 +92,10 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
 
     /**
      * Color the Vector Drawables based on theme
-     *
-     * @param holder ClipViewHolder
+     * @param holder DeviceViewHolder
      */
     private void tintIcons(DevicesAdapter.DeviceViewHolder holder) {
+        final Context context = holder.forgetButton.getContext();
         final int color;
 
         if (Prefs.isLightTheme()) {
@@ -106,7 +105,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
         }
 
         DrawableHelper
-                .withContext(App.getContext())
+                .withContext(context)
                 .withColor(color)
                 .withDrawable(R.drawable.ic_clear_black_24dp)
                 .tint()
@@ -118,7 +117,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
     ///////////////////////////////////////////////////////////////////////////
 
     static class DeviceViewHolder extends RecyclerView.ViewHolder {
-       final TextView lastSeenTextView;
+        final TextView lastSeenTextView;
         final TextView deviceTextView;
         final ImageButton forgetButton;
 
