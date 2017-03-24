@@ -66,7 +66,6 @@ public class HelpActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         mOptionsMenuID = R.menu.menu_help;
 
         return super.onCreateOptionsMenu(menu);
