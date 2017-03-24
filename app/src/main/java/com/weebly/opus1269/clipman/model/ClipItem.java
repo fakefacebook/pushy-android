@@ -66,21 +66,35 @@ public class ClipItem implements Serializable {
         mText = text;
     }
 
+    public ClipItem(String text, ReadableInstant date, Boolean fav,
+                    Boolean remote, String device) {
+        mText = text;
+        mDate = new DateTime(date.getMillis());
+        mFav = fav;
+        mRemote = remote;
+        mDevice = device;
+    }
+
     public ClipItem(Cursor cursor) {
         init();
-        mText = cursor.getString(cursor.getColumnIndex(ClipContract.Clip.COL_TEXT));
-        mDate = new DateTime(cursor.getLong(cursor.getColumnIndex(ClipContract.Clip.COL_DATE)));
-        final long fav = cursor.getLong(cursor.getColumnIndex(ClipContract.Clip.COL_FAV));
+        int idx = cursor.getColumnIndex(ClipContract.Clip.COL_TEXT);
+        mText = cursor.getString(idx);
+        idx = cursor.getColumnIndex(ClipContract.Clip.COL_DATE);
+        mDate = new DateTime(cursor.getLong(idx));
+        idx = cursor.getColumnIndex(ClipContract.Clip.COL_FAV);
+        final long fav = cursor.getLong(idx);
         mFav = fav != 0L;
-        final long remote = cursor.getLong(cursor.getColumnIndex(ClipContract.Clip.COL_REMOTE));
+        idx = cursor.getColumnIndex(ClipContract.Clip.COL_REMOTE);
+        final long remote = cursor.getLong(idx);
         mRemote = remote != 0L;
-        mDevice = cursor.getString(cursor.getColumnIndex(ClipContract.Clip.COL_DEVICE));
+        idx = cursor.getColumnIndex(ClipContract.Clip.COL_DEVICE);
+        mDevice = cursor.getString(idx);
     }
 
     public ClipItem(ClipItem clipItem) {
         init();
         mText = clipItem.getText();
-        mDate = clipItem.getDate();
+        mDate = new DateTime(clipItem.getDate().getMillis());
         mFav = clipItem.isFav();
         mRemote = clipItem.isRemote();
         mDevice = clipItem.getDevice();
@@ -88,7 +102,6 @@ public class ClipItem implements Serializable {
 
     /**
      * Get the text on the Clipboard as a ClipItem
-     *
      * @param clipboard The {@link ClipboardManager}
      * @return Clipboard content as ClipItem
      */
@@ -135,7 +148,6 @@ public class ClipItem implements Serializable {
 
     /**
      * Parse the fav state from the {@link ClipDescription}
-     *
      * @param desc    The item's {@link ClipDescription}
      * @return The fav state
      */
@@ -154,8 +166,8 @@ public class ClipItem implements Serializable {
     }
 
     /**
-     * Parse the {@link ClipDescription} to see if it is from one of our remote devices
-     *
+     * Parse the {@link ClipDescription} to see if it is from one of our
+     * remote devices
      * @param desc    The item's {@link ClipDescription}
      * @return The remote device name or "" if a local copy
      */
@@ -189,7 +201,7 @@ public class ClipItem implements Serializable {
         mDate = new DateTime(date.getMillis());
     }
 
-    public void setDate(long date) {
+    void setDate(long date) {
         mDate = new DateTime(date);
     }
 
@@ -221,6 +233,9 @@ public class ClipItem implements Serializable {
         mDevice = device;
     }
 
+    /**
+     * Initialize the members
+     */
     private void init() {
         mText = "";
         mDate = new DateTime();
@@ -231,7 +246,6 @@ public class ClipItem implements Serializable {
 
     /**
      * Get the ClipItem as a {@link ContentValues object}
-     *
      * @return ClipItem as {@link ContentValues object}
      */
     public ContentValues getContentValues() {
@@ -249,7 +263,6 @@ public class ClipItem implements Serializable {
 
     /**
      * Copy the ClipItem to the clipboard
-     *
      */
     public void copyToClipboard() {
         // Make sure we have looper
@@ -258,12 +271,14 @@ public class ClipItem implements Serializable {
 
             @Override
             public void run() {
-                final ClipboardManager clipboard =
-                        (ClipboardManager) App.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                final ClipboardManager clipboard = (ClipboardManager) App
+                    .getContext()
+                    .getSystemService(Context.CLIPBOARD_SERVICE);
                 final long fav = mFav ? 1L : 0L;
 
                 // add a label with the fav value so we can maintain the state
-                CharSequence label = DESC_LABEL + "[" + Long.toString(fav) + "]\n";
+                CharSequence label =
+                    DESC_LABEL + "[" + Long.toString(fav) + "]\n";
                 if (mRemote) {
                     // add label indicating this is from a remote device
                     label = label + REMOTE_DESC_LABEL + "(" + mDevice + ")";
@@ -277,13 +292,14 @@ public class ClipItem implements Serializable {
 
     /**
      * Share the ClipItem with other apps
-     *
      * @param view The {@link View} that is requesting the share
      */
     public void doShare(View view) {
         if (TextUtils.isEmpty(mText)) {
             if (view != null) {
-                Snackbar.make(view, R.string.no_share, Snackbar.LENGTH_SHORT).show();
+                Snackbar
+                    .make(view, R.string.no_share, Snackbar.LENGTH_SHORT)
+                    .show();
             }
             return;
         }

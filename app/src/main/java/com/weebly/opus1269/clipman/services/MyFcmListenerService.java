@@ -31,6 +31,8 @@ import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.msg.Msg;
 import com.weebly.opus1269.clipman.ui.helpers.NotificationHelper;
 
+import org.joda.time.DateTime;
+
 import java.util.Map;
 
 /**
@@ -171,10 +173,9 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         Devices.add(device, false);
 
         // add to clipboard
-        final ClipItem clipItem = new ClipItem(message);
-        clipItem.setRemote(true);
-        clipItem.setDevice(device.getDisplayName());
-        clipItem.setFav(fav);
+        final String name = device.getDisplayName();
+        final ClipItem clipItem =
+            new ClipItem(message, new DateTime(), fav, true, name);
         clipItem.copyToClipboard();
     }
 }
