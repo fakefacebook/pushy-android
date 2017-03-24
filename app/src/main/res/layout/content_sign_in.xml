@@ -19,12 +19,13 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/activity_layout"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:weightSum="5"
-              tools:context=".ui.main.MainActivity"
+              app:layout_behavior="@string/appbar_scrolling_view_behavior"
+              tools:context=".ui.signin.SignInActivity"
               tools:showIn="@layout/activity_sign_in">
 
     <ScrollView android:layout_width="match_parent"

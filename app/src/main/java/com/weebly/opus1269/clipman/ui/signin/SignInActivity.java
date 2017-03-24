@@ -113,8 +113,6 @@ public class SignInActivity extends BaseActivity implements
             restoreInstanceState(savedInstanceState);
         }
 
-        setFabVisibility(false);
-
         setupButtons();
 
         setupDevicesBroadcastReceiver();
@@ -168,9 +166,7 @@ public class SignInActivity extends BaseActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         mOptionsMenuID = R.menu.menu_signin;
 
-        super.onCreateOptionsMenu(menu);
-
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -179,9 +175,6 @@ public class SignInActivity extends BaseActivity implements
 
         final int id = item.getItemId();
         switch (id) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
             case R.id.action_help:
                 showHelpDialog();
                 break;
