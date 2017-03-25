@@ -214,7 +214,7 @@ public class MessagingClient extends Endpoint{
 
                 // call server
                 final String regToken = getRegToken();
-                ret = msgService.send(regToken, jsonString)
+                ret = msgService.send(regToken, jsonString, true)
                     .execute();
                 if (ret.getSuccess()) {
                     Log.logD(TAG, "Message sent to server: " + mAction);
