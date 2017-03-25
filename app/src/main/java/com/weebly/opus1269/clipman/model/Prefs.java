@@ -90,19 +90,25 @@ public class Prefs {
 
     public static boolean isPushClipboard() {
         final Context context = App.getContext();
-        final String key = context.getResources().getString(R.string.key_pref_push_clipboard);
+        final String key = context.getResources().getString(R.string.key_pref_push_msg);
         return get(key, true);
     }
 
     public static boolean isAutoSend() {
         final Context context = App.getContext();
-        final String key = context.getResources().getString(R.string.key_pref_auto_clipboard);
+        final String key = context.getResources().getString(R.string.key_pref_auto_msg);
         return get(key, true);
     }
 
     public static boolean isAllowReceive() {
         final Context context = App.getContext();
-        final String key = context.getResources().getString(R.string.key_pref_receive_clipboard);
+        final String key = context.getResources().getString(R.string.key_pref_receive_msg);
+        return get(key, true);
+    }
+
+    public static boolean isHighPriority() {
+        final Context context = App.getContext();
+        final String key = context.getResources().getString(R.string.key_pref_priority_msg);
         return get(key, true);
     }
 

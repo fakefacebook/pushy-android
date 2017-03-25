@@ -39,26 +39,39 @@
             android:summary="@string/pref_desc_monitor_startup"
             />
 
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:key="@string/key_pref_push_clipboard"
-            android:title="@string/pref_title_push_clipboard"
-            android:summary="@string/pref_desc_push_clipboard"
-            />
+    </PreferenceCategory>
 
-        <SwitchPreferenceCompat
-            android:dependency="@string/key_pref_push_clipboard"
-            android:defaultValue="true"
-            android:key="@string/key_pref_auto_clipboard"
-            android:title="@string/pref_title_auto_clipboard"
-            android:summary="@string/pref_desc_auto_clipboard"
-            />
+    <PreferenceCategory
+        android:title="@string/pref_cat_title_msg"
+        android:key="@string/key_pref_cat_msg">
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
-            android:key="@string/key_pref_receive_clipboard"
-            android:title="@string/pref_title_receive_clipboard"
-            android:summary="@string/pref_desc_receive_clipboard"
+            android:key="@string/key_pref_push_msg"
+            android:title="@string/pref_title_push_msg"
+            android:summary="@string/pref_desc_push_msg"
+            />
+
+        <SwitchPreferenceCompat
+            android:dependency="@string/key_pref_push_msg"
+            android:defaultValue="true"
+            android:key="@string/key_pref_auto_msg"
+            android:title="@string/pref_title_auto_msg"
+            android:summary="@string/pref_desc_auto_msg"
+            />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/key_pref_receive_msg"
+            android:title="@string/pref_title_receive_msg"
+            android:summary="@string/pref_desc_receive_msg"
+        />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/key_pref_priority_msg"
+            android:title="@string/pref_title_priority_msg"
+            android:summary="@string/pref_desc_priority_msg"
         />
 
     </PreferenceCategory>

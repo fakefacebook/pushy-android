@@ -64,7 +64,7 @@
 
 
     <!-- Related to Preferences -->
-    <string name="pref_cat_title_clipboard">Clipboard \u0026 messaging</string>
+    <string name="pref_cat_title_clipboard">Clipboard</string>
     <string name="key_pref_cat_clipboard">cat_clipboard</string>
 
     <string name="pref_title_monitor_clipboard">Monitor clipboard</string>
@@ -75,17 +75,24 @@
     <string name="pref_desc_monitor_startup">Start service when device is turned on</string>
     <string name="key_pref_monitor_startup">monitor_startup</string>
 
-    <string name="pref_title_push_clipboard">Push to devices</string>
-    <string name="pref_desc_push_clipboard">Send messages to your registered devices</string>
-    <string name="key_pref_push_clipboard">push_clipboard</string>
+    <string name="pref_cat_title_msg">Messaging</string>
+    <string name="key_pref_cat_msg">cat_msg</string>
 
-    <string name="pref_title_auto_clipboard">Auto send</string>
-    <string name="pref_desc_auto_clipboard">Automatically send messages</string>
-    <string name="key_pref_auto_clipboard">auto_clipboard</string>
+    <string name="pref_title_push_msg">Push to devices</string>
+    <string name="pref_desc_push_msg">Send messages to your registered devices</string>
+    <string name="key_pref_push_msg">push_clipboard</string>
 
-    <string name="pref_title_receive_clipboard">Receive from devices</string>
-    <string name="pref_desc_receive_clipboard">Receive messages from your registered devices</string>
-    <string name="key_pref_receive_clipboard">receive_clipboard</string>
+    <string name="pref_title_auto_msg">Auto send</string>
+    <string name="pref_desc_auto_msg">Automatically send messages</string>
+    <string name="key_pref_auto_msg">auto_clipboard</string>
+
+    <string name="pref_title_receive_msg">Receive from devices</string>
+    <string name="pref_desc_receive_msg">Receive messages from your registered devices</string>
+    <string name="key_pref_receive_msg">receive_clipboard</string>
+
+    <string name="pref_title_priority_msg">High priority message</string>
+    <string name="pref_desc_priority_msg">Wakes android devices for immediate delivery. Uses more battery.</string>
+    <string name="key_pref_priority_msg">priority_clipboard</string>
 
     <string name="pref_cat_title_general">General</string>
     <string name="key_pref_cat_general">cat_general</string>

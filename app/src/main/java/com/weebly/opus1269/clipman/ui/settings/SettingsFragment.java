@@ -175,7 +175,7 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers
         final String keyNotifications =
             getResources().getString(R.string.key_pref_notifications);
         final String keyReceive =
-            getResources().getString(R.string.key_pref_receive_clipboard);
+            getResources().getString(R.string.key_pref_receive_msg);
         final Activity activity = getActivity();
 
         if (key.equals(keyNickname)) {

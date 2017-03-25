@@ -214,7 +214,8 @@ public class MessagingClient extends Endpoint{
 
                 // call server
                 final String regToken = getRegToken();
-                ret = msgService.send(regToken, jsonString, true)
+                final Boolean highPriority = Prefs.isHighPriority();
+                ret = msgService.send(regToken, jsonString, highPriority)
                     .execute();
                 if (ret.getSuccess()) {
                     Log.logD(TAG, "Message sent to server: " + mAction);
