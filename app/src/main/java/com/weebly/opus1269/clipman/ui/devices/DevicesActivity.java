@@ -27,12 +27,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.weebly.opus1269.clipman.R;
-import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.ui.base.BaseActivity;
@@ -75,7 +72,8 @@ public class DevicesActivity extends BaseActivity {
         super.onPause();
 
         // Unregister since the activity is not visible
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mDevicesReceiver);
+        LocalBroadcastManager.getInstance(this)
+            .unregisterReceiver(mDevicesReceiver);
     }
 
     @Override
@@ -83,7 +81,8 @@ public class DevicesActivity extends BaseActivity {
         super.onResume();
 
         // Register mDevicesReceiver to receive Device notifications.
-        LocalBroadcastManager.getInstance(this).registerReceiver(mDevicesReceiver,
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(mDevicesReceiver,
                 new IntentFilter(Devices.INTENT_FILTER));
 
         NotificationHelper.removeDevices();
@@ -95,33 +94,6 @@ public class DevicesActivity extends BaseActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        mOptionsMenuID = R.menu.menu_devices;
-
-        super.onCreateOptionsMenu(menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean processed = true;
-
-        final int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            default:
-                processed = false;
-                break;
-        }
-
-        return processed || super.onOptionsItemSelected(item);
-    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Private methods
@@ -148,24 +120,12 @@ public class DevicesActivity extends BaseActivity {
             private void notifyAdapter(Intent intent) {
                 final Bundle bundle = intent.getBundleExtra(Devices.BUNDLE);
                 final String action = bundle.getString(Devices.ACTION);
-                final int pos = bundle.getInt(Devices.POS);
                 if (action == null) {
                     return;
                 }
 
-                Log.logD(TAG, "Devices change: " + action + " pos: " + pos);
-
                 switch (action) {
-                    case Devices.ACTION_ADD:
-                        mAdapter.notifyItemInserted(pos);
-                        break;
-                   case Devices.ACTION_CHANGE:
-                        mAdapter.notifyItemChanged(pos);
-                        break;
-                    case Devices.ACTION_REMOVE:
-                        mAdapter.notifyItemRemoved(pos);
-                        break;
-                    case Devices.ACTION_CLEAR:
+                     case Devices.ACTION_UPDATE:
                         mAdapter.notifyDataSetChanged();
                         break;
                     default:
@@ -179,5 +139,4 @@ public class DevicesActivity extends BaseActivity {
         mAdapter.notifyDataSetChanged();
         MessagingClient.sendPing();
     }
-
 }

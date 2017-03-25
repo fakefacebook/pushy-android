@@ -68,7 +68,7 @@
     <string name="key_pref_cat_clipboard">cat_clipboard</string>
 
     <string name="pref_title_monitor_clipboard">Monitor clipboard</string>
-    <string name="pref_desc_monitor_clipboard">Run service to store clipboard content</string>
+    <string name="pref_desc_monitor_clipboard">Run service to monitor clipboard changes</string>
     <string name="key_pref_monitor_clipboard">monitor_clipboard</string>
 
     <string name="pref_title_monitor_startup">Monitor clipboard on boot</string>
@@ -146,7 +146,7 @@
     <string name="ar_delete_favs">Include favorites</string>
 
 
-    <!-- Related to the Clipboard -->
+    <!-- Related to the ClipItem database-->
     <string name="default_clip_1">I am Clip Man. The clipboard manager with push notifications.</string>
     <string name="default_clip_2">Sign-In to share with all your devices.</string>
     <string name="default_clip_3"><![CDATA[Tap to view all.\n\n
@@ -199,18 +199,11 @@
 
 
     <!-- Related to push notifications -->
-    <string name="error_registering">Failed to register with messaging service.</string>
-    <string name="error_unregistering">Failed to un-register with messaging service.</string>
-    <string name="error_unknown">An unknown error occurred.</string>
-    <string name="error_connection">Unable to connect to Google SignIn.</string>
-    <string name="error_timeout">Connection timed out.</string>
     <string name="refresh_devices">Refreshing device list…</string>
     <string name="device_ping">Contacting other devices&#8230;</string>
     <string name="device_ping_response">Device is online</string>
     <string name="device_added">New device added</string>
     <string name="device_removed">Device removed</string>
-
-    <!-- Related to gae push notifications -->
     <string name="registering">Registering device with the messaging service…</string>
     <string name="unregistering">Removing device registration from the messaging service…</string>
     <string name="err_register">Error registering device with server</string>
@@ -240,6 +233,7 @@
     <string name="revoke_err_fmt">"App revocation failed. Please try again later\n %s"</string>
     <string name="sign_out_err_fmt">"Sign-out failed. Please try again later\n %s"</string>
     <string name="sign_in_err_fmt">"Sign-in failed. Please try again later\n %s"</string>
+    <string name="error_connection">Unable to connect to Google SignIn.</string>
     <string name="auth_code_fmt">Auth Code: %s</string>
     <string name="id_token_fmt">ID Token: %s</string>
 

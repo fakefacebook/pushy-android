@@ -47,15 +47,7 @@ public class Devices {
     /** @value */
     public static final String ACTION = "actionDevices";
     /** @value */
-    public static final String ACTION_ADD = "addDevice";
-    /** @value */
-    public static final String ACTION_CHANGE = "changeDevice";
-    /** @value */
-    public static final String ACTION_REMOVE = "removeDevice";
-    /** @value */
-    public static final String ACTION_CLEAR = "clearDevices";
-    /** @value */
-    public static final String POS = "posDevices";
+    public static final String ACTION_UPDATE = "updateDevices";
     /** @value */
     public static final String ACTION_MY_DEVICE = "myDevice";
 
@@ -66,19 +58,29 @@ public class Devices {
 
     /**
      * Save list to persistant storage
+     * @param broadcast broadcast result to listeners if true
      */
-    private static void save() {
+    private static void save(Boolean broadcast) {
         final Comparator<Device> cmp = new Comparator<Device>() {
             @Override
             public int compare(Device lhs, Device rhs) {
-                return lhs.getDisplayName().compareTo(rhs.getDisplayName());
+                // newest first
+                return ((Long) rhs.getLastSeen().getMillis())
+                    .compareTo(lhs.getLastSeen().getMillis());
             }
         };
+        // sort by lastSeen
         Collections.sort(sDevices, cmp);
 
+        // persist
         final Gson gson = new Gson();
         final String devicesString = gson.toJson(sDevices);
         Prefs.setDevices(devicesString);
+
+        if (broadcast) {
+            // let listeners know
+            _sendBroadcast(ACTION_UPDATE);
+        }
     }
 
     /**
@@ -109,21 +111,16 @@ public class Devices {
             int i = 0;
             for (final Device device : sDevices) {
                 if (dev.getUniqueName().equals(device.getUniqueName())) {
-                    // found, nickname or lastSeen probably changed, update device
+                    // found, nickname or lastSeen probably changed,
+                    // update device
                     sDevices.set(i, dev);
-                    save();
-                    if (broadcast) {
-                        _sendBroadcast(ACTION_CHANGE, _getPos(dev));
-                    }
+                    save(broadcast);
                     return;
                 }
                 i++;
             }
             sDevices.add(dev);
-            save();
-            if (broadcast) {
-                _sendBroadcast(ACTION_ADD, _getPos(dev));
-            }
+            save(broadcast);
         }
     }
 
@@ -133,16 +130,13 @@ public class Devices {
      */
     public static void remove(Device dev) {
         if (dev != null) {
-            int pos = 0;
-            for (final Iterator<Device> i = sDevices.iterator(); i.hasNext(); ) {
+            for (final Iterator<Device> i = sDevices.iterator(); i.hasNext();) {
                 final Device device = i.next();
                 if (dev.getUniqueName().equals(device.getUniqueName())) {
                     i.remove();
-                    save();
-                    _sendBroadcast(ACTION_REMOVE, pos);
-                    return;
+                    save(true);
+                    break;
                 }
-                pos++;
             }
         }
     }
@@ -152,8 +146,7 @@ public class Devices {
      */
     static void clear() {
         sDevices.clear();
-        save();
-        _sendBroadcast(ACTION_CLEAR, 0);
+        save(true);
     }
 
     /**
@@ -161,7 +154,7 @@ public class Devices {
      */
     public static void notifyMyDeviceUnregistered() {
         clear();
-        _sendBroadcast(ACTION_MY_DEVICE, 0);
+        _sendBroadcast(ACTION_MY_DEVICE);
     }
 
     /**
@@ -186,32 +179,16 @@ public class Devices {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Get the position of a {@link Device} in the list
-     * @param dev the {@link Device} to find
-     * @return the position in the list
-     */
-    private static int _getPos(Device dev) {
-        int pos = 0;
-        for (final Device device : sDevices) {
-            if (dev.getUniqueName().equals(device.getUniqueName())) {
-                return pos;
-            }
-            pos++;
-        }
-        return getCount() - 1;
-    }
-
-    /**
      * Broadcast changes to listeners
      * @param action the type of the change
-     * @param pos the position of the change
      */
-    private static void _sendBroadcast(String action, int pos) {
+    private static void _sendBroadcast(String action) {
         final Intent intent = new Intent(INTENT_FILTER);
         final Bundle bundle = new Bundle();
         bundle.putString(ACTION, action);
-        bundle.putInt(POS, pos);
         intent.putExtra(BUNDLE, bundle);
-        LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+        LocalBroadcastManager
+            .getInstance(App.getContext())
+            .sendBroadcast(intent);
     }
 }
