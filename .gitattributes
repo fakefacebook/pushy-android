@@ -5,6 +5,8 @@
 *.PNG binary
 *.zip binary
 *.ZIP binary
+*.7z binary
+*.7Z binary
 *.xcf binary
 *.XCF binary
 *.jar binary
