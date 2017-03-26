@@ -22,10 +22,9 @@ import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.weebly.opus1269.clipman.app.App;
-
-import static com.firebase.jobdispatcher.Trigger.NOW;
 
 /**
  * This {@link FirebaseInstanceIdService} listens for changes to the regToken
@@ -47,7 +46,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
 
         Job myJob = dispatcher.newJobBuilder()
             .setService(RefreshTokenJobService.class)
-            .setTrigger(NOW)
+            .setTrigger(Trigger.executionWindow(0, 0))
             .setRecurring(false)
             .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
             .setTag(RefreshTokenJobService.TAG)

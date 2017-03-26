@@ -18,6 +18,9 @@
 
 package com.weebly.opus1269.clipman.services;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -35,18 +38,28 @@ public class RefreshTokenJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.logD(TAG, "Refreshed token: " + refreshedToken);
+        // Make sure we have looper
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
 
-        if (User.INSTANCE.isLoggedIn()) {
-            final EndpointRet ret = RegistrationClient.register(refreshedToken);
-            if (!ret.getSuccess()) {
-                Log.logE(TAG, ret.getReason());
+            @Override
+            public void run() {
+                // Get updated InstanceID token.
+                String refreshedToken =
+                    FirebaseInstanceId.getInstance().getToken();
+                Log.logD(TAG, "Refreshed token: " + refreshedToken);
+
+                if (User.INSTANCE.isLoggedIn()) {
+                    final EndpointRet ret =
+                        RegistrationClient.register(refreshedToken);
+                    if (!ret.getSuccess()) {
+                        Log.logE(TAG, ret.getReason());
+                    }
+                }
             }
-        }
+        });
 
-        return false; // Answers the question: "Is there still work going on?"
+        return true; // Answers the question: "Is there still work going on?"
     }
 
     @Override
