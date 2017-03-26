@@ -54,6 +54,13 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         "Unknown FCM message received: ";
 
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // start if needed
+        ClipboardWatcherService.startService(false);
+    }
+
     /**
      * Called when message is received from one of our devices.
      * @param message message sent from fcm.
