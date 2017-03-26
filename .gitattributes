@@ -11,3 +11,5 @@
 *.XCF binary
 *.jar binary
 *.JAR binary
+*.apk binary
+*.APK binary
