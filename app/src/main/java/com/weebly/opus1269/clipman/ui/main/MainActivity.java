@@ -44,11 +44,12 @@ import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.model.User;
+import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.services.ClipboardWatcherService;
-import com.weebly.opus1269.clipman.ui.devices.DevicesActivity;
 import com.weebly.opus1269.clipman.ui.base.BaseActivity;
 import com.weebly.opus1269.clipman.ui.clipviewer.ClipViewerActivity;
 import com.weebly.opus1269.clipman.ui.clipviewer.ClipViewerFragment;
+import com.weebly.opus1269.clipman.ui.devices.DevicesActivity;
 import com.weebly.opus1269.clipman.ui.help.HelpActivity;
 import com.weebly.opus1269.clipman.ui.helpers.MenuTintHelper;
 import com.weebly.opus1269.clipman.ui.helpers.NotificationHelper;
@@ -66,26 +67,35 @@ public class MainActivity extends BaseActivity implements
         DeleteDialogFragment.DeleteDialogListener,
         SortTypeDialogFragment.SortTypeDialogListener {
 
+    /**
+     * Delegate for RecyclerView
+     */
     private ClipLoaderManager mLoaderManager;
 
-    // items from last delete operation
+    /**
+     * Items from last delete operation
+     */
     private ContentValues[] mUndoItems = null;
 
-    /**
-     * saved preferences
-     */
+    // saved preferences
 
-    // AppBar setting for fav filter
+    /**
+     * AppBar setting for fav filter
+     */
     private Boolean mFavFilter = false;
 
-    /**
-     * saved instance state
-     */
+    // saved instance state
 
-    // The currently selected position in the list, delegated to ClipCursorAdapter
+    /**
+     * The currently selected position in the list,
+     * delegated to ClipCursorAdapter
+     */
     private static final String STATE_POS = "pos";
 
-    // The database _ID of the selection list item, delegated to ClipCursorAdapter
+    /**
+     * The database _ID of the selection list item,
+     * delegated to ClipCursorAdapter
+     */
     private static final String STATE_ITEM_ID = "item_id";
 
     @Override
@@ -128,7 +138,8 @@ public class MainActivity extends BaseActivity implements
 
         setFabVisibility(false);
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer =
+            (DrawerLayout) findViewById(R.id.drawer_layout);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar,
@@ -136,7 +147,8 @@ public class MainActivity extends BaseActivity implements
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView =
+            (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         handleIntent();
@@ -170,8 +182,10 @@ public class MainActivity extends BaseActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(STATE_POS, mLoaderManager.getAdapter().getSelectedPos());
-        outState.putLong(STATE_ITEM_ID, mLoaderManager.getAdapter().getSelectedItemID());
+        outState.putInt(STATE_POS,
+            mLoaderManager.getAdapter().getSelectedPos());
+        outState.putLong(STATE_ITEM_ID,
+            mLoaderManager.getAdapter().getSelectedItemID());
     }
 
     @Override
@@ -261,7 +275,8 @@ public class MainActivity extends BaseActivity implements
                 break;
         }
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer =
+            (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
@@ -275,16 +290,19 @@ public class MainActivity extends BaseActivity implements
      * Set NavigationView header aspect ratio to 16:9
      */
     @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-                               int oldTop, int oldRight, int oldBottom) {
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+    public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                               int oldLeft, int oldTop, int oldRight,
+                               int oldBottom) {
+        final NavigationView navigationView =
+            (NavigationView) findViewById(R.id.nav_view);
 
         if (v.equals(navigationView)) {
             final int oldWidth = oldRight - oldLeft;
             final int width = right - left;
             final View hView = navigationView.getHeaderView(0);
             if ((hView != null) && (oldWidth != width)) {
-                hView.getLayoutParams().height = Math.round((9.0F / 16.0F) * width);
+                hView.getLayoutParams().height =
+                    Math.round((9.0F / 16.0F) * width);
             }
         }
     }
@@ -322,25 +340,25 @@ public class MainActivity extends BaseActivity implements
                 break;
         }
         final Snackbar snack =
-                Snackbar.make(findViewById(R.id.fab), message, Snackbar.LENGTH_LONG);
+                Snackbar.make(findViewById(R.id.fab),
+                    message, Snackbar.LENGTH_LONG);
         if (nRows > 0) {
             snack.setAction("UNDO", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ClipContentProvider.insert(MainActivity.this, mUndoItems);
-                        }
-                    })
-                    .addCallback(new Snackbar.Callback() {
+                @Override
+                public void onClick(View v) {
+                    ClipContentProvider.insert(MainActivity.this, mUndoItems);
+                }
+            }).addCallback(new Snackbar.Callback() {
 
-                        @Override
-                        public void onDismissed(Snackbar snackbar, int event) {
-                            mUndoItems = null;
-                        }
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    mUndoItems = null;
+                }
 
-                        @Override
-                        public void onShown(Snackbar snackbar) {
-                        }
-                    });
+                @Override
+                public void onShown(Snackbar snackbar) {
+                }
+            });
         }
         snack.show();
     }
@@ -371,7 +389,8 @@ public class MainActivity extends BaseActivity implements
     }
 
     /**
-     * Start the {@link ClipViewerActivity} or update the {@link ClipViewerFragment}
+     * Start the {@link ClipViewerActivity}
+     * or update the {@link ClipViewerFragment}
      * @param clipItem item to display
      */
     void startOrUpdateClipViewer(ClipItem clipItem) {
@@ -402,6 +421,7 @@ public class MainActivity extends BaseActivity implements
         final String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && (type != null)) {
+            // Share from other app
             if (ClipItem.TEXT_PLAIN.equals(type)) {
                 final String sharedText =
                     intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -409,9 +429,11 @@ public class MainActivity extends BaseActivity implements
                     final ClipItem item = new ClipItem(sharedText);
                     ClipContentProvider.insert(this, item);
                     startOrUpdateClipViewer(item);
+                    MessagingClient.send(item);
                 }
             }
         } else if (intent.hasExtra(ClipItem.INTENT_EXTRA_CLIP_ITEM)) {
+            // notification
             final ClipItem item = (ClipItem) intent.getSerializableExtra(
                         ClipItem.INTENT_EXTRA_CLIP_ITEM);
             intent.removeExtra(ClipItem.INTENT_EXTRA_CLIP_ITEM);
@@ -455,7 +477,8 @@ public class MainActivity extends BaseActivity implements
      * Initialize the NavigationView
      */
     private void setupNavigationView() {
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView =
+            (NavigationView) findViewById(R.id.nav_view);
         if (navigationView == null) {
             return;
         }
@@ -466,7 +489,8 @@ public class MainActivity extends BaseActivity implements
         hView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                final DrawerLayout drawer =
+                    (DrawerLayout) findViewById(R.id.drawer_layout);
                 if (drawer != null) {
                     drawer.closeDrawer(GravityCompat.START);
                 }
@@ -476,11 +500,15 @@ public class MainActivity extends BaseActivity implements
 
     }
 
+    /**
+     * Set title based on currently selected clip row
+     */
     private void setTitle() {
         final ClipItem clipItem = getClipItemClone();
         if (AppUtils.isDualPane()) {
             if (clipItem.isRemote()) {
-                setTitle(getString(R.string.title_activity_main_remote_fmt, clipItem.getDevice()));
+                setTitle(getString(R.string.title_activity_main_remote_fmt,
+                    clipItem.getDevice()));
             } else {
                 setTitle(getString(R.string.title_activity_main_local));
             }
@@ -490,20 +518,34 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    /**
+     * get our fragment
+     * @return A fragment
+     */
     private ClipViewerFragment getClipViewerFragment() {
         return (ClipViewerFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.clip_viewer_container);
     }
 
+    /**
+     * Get copy of currently selected clip row
+     * @return A new {@link ClipItem}
+     */
     private ClipItem getClipItemClone() {
         return getClipViewerFragment().getClipItemClone();
     }
 
+    /**
+     * Set UI state based on whether we are filtering by favorites
+     * @param prefFavFilter true if only showing favorites
+     * @param restart if true, restart ClipLoader
+     */
     private void setPrefFavFilter(boolean prefFavFilter, boolean restart) {
         mFavFilter = prefFavFilter;
 
         if (mOptionsMenu != null) {
-            final MenuItem menuItem = mOptionsMenu.findItem(R.id.action_fav_filter);
+            final MenuItem menuItem =
+                mOptionsMenu.findItem(R.id.action_fav_filter);
             int colorID;
             if (mFavFilter) {
                 menuItem.setIcon(R.drawable.ic_favorite_black_24dp);
@@ -528,7 +570,8 @@ public class MainActivity extends BaseActivity implements
      * Set Nav Header based on sign-in state
      */
     private void updateNavHeader() {
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView =
+            (NavigationView) findViewById(R.id.nav_view);
         if (navigationView == null) {
             return;
         }
