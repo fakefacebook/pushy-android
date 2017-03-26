@@ -47,7 +47,7 @@ public class Msg {
     /** {@value} */
     public static final String ACTION_DEVICE_REMOVED = "remove_our_device";
 
-    // mesage text
+    // message text
 
     static final String MSG_PING =
         App.getContext().getString(R.string.device_ping);
@@ -63,8 +63,6 @@ public class Msg {
     /** {@value} */
     public static final String MESSAGE = "m";
     /** {@value} */
-    public static final String FAV = "fav";
-    /** {@value} */
     public static final String DEVICE_MODEL = "dM";
     /** {@value} */
     public static final String DEVICE_SN = "dSN";
@@ -72,6 +70,10 @@ public class Msg {
     public static final String DEVICE_OS = "dOS";
     /** {@value} */
     public static final String DEVICE_NICKNAME = "dN";
+    /** {@value} */
+    public static final String FAV = "fav";
+    /** {@value} */
+    public static final String SRC_REG_ID = "srcRegId";
 
     static final String ERROR_UNKNOWN =
         App.getContext().getString(R.string.err_unknown);

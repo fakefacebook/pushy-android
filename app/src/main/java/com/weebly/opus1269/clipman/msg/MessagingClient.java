@@ -120,14 +120,24 @@ public class MessagingClient extends Endpoint{
         }
     }
 
-    /** Respond to ping */
-    public static void sendPingResponse() {
+    /**
+     * Respond to ping
+     * @param srcRegId source of ping
+     */
+    public static void sendPingResponse(String srcRegId) {
         if (notSignedIn()) {
             return;
         }
 
         JSONObject data =
             getJSONData(Msg.ACTION_PING_RESPONSE, Msg.MSG_PING_RESPONSE);
+        try {
+            data.put(Msg.SRC_REG_ID, srcRegId);
+        } catch (JSONException ex) {
+            Log.logEx(TAG, "", ex);
+            data = null;
+        }
+
         if (data != null) {
             new MessagingAsyncTask().execute(data);
         }

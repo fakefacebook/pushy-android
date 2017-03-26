@@ -109,7 +109,8 @@ public class MyFcmListenerService extends FirebaseMessagingService {
                 break;
             case Msg.ACTION_PING:
                 // We were pinged
-                MessagingClient.sendPingResponse();
+                Devices.add(device, true);
+                MessagingClient.sendPingResponse(data.get(Msg.SRC_REG_ID));
                 break;
             case Msg.ACTION_PING_RESPONSE:
                 // Device responded to a ping
