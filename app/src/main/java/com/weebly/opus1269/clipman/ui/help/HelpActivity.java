@@ -157,7 +157,7 @@ public class HelpActivity extends BaseActivity {
      * Get system info. for body of support requests
      */
     private String getEmailBody() {
-      return  "Clip Man Version: " + BuildConfig.VERSION_NAME + '\n' +
+      return  "Pushy Clipboard Version: " + BuildConfig.VERSION_NAME + '\n' +
               "Android Version: " + Build.VERSION.RELEASE + '\n' +
               "Device: " + Device.getMyModel() + " \n \n \n";
     }

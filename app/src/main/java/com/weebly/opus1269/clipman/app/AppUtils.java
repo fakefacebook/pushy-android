@@ -55,7 +55,7 @@ public class AppUtils {
     public static final String PLAY_STORE_WEB =
         "https://play.google.com/store/apps/details?id=" + PACKAGE_NAME;
 
-    public static final String EMAIL_ADDRESS = "clipmanapp@gmail.com";
+    public static final String EMAIL_ADDRESS = "pushyclipboard@gmail.com";
 
     // Intent constants
     public static final String SEARCH_ACTION = PACKAGE_PATH + "SEARCH_ACTION";

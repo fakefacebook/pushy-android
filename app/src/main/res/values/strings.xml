@@ -19,13 +19,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Related to App -->
-    <string name="app_name">Clip Man</string>
+    <string name="app_name">Pushy</string>
 
 
     <!-- Related to Activities -->
     <string name="title_activity_main">@string/app_name</string>
-    <string name="title_activity_main_local">Clip Man: Local clip</string>
-    <string name="title_activity_main_remote_fmt">Clip Man: Remote clip - %s</string>
+    <string name="title_activity_main_local">Pushy: Local clip</string>
+    <string name="title_activity_main_remote_fmt">Pushy: Remote clip - %s</string>
     <string name="title_activity_clip_viewer">Local clip</string>
     <string name="title_activity_clip_viewer_remote">Remote clip</string>
     <string name="title_activity_settings">Settings</string>
@@ -154,12 +154,12 @@
 
 
     <!-- Related to the ClipItem database-->
-    <string name="default_clip_1">I am Clip Man. The clipboard manager with push notifications.</string>
+    <string name="default_clip_1">A clipboard manager with push notifications.</string>
     <string name="default_clip_2">Sign-In to share with all your devices.</string>
     <string name="default_clip_3"><![CDATA[Tap to view all.\n\n
     It is a good idea to go to the "Settings" and enter a nickname for this device.\n\n
     Try clicking on a link: http://google.com\n\n
-    Or an Email address: clipmanapp@gmail.com\n\n
+    Or an Email address: pushyclipboard@gmail.com\n\n
     Or a phone number: 555-1234\n\n
     Map locations too:\n\n1600 Amphitheatre Parkway\nMountain View, CA 94043]]></string>
     <string name="default_clip_4">Tap the \u2661 to make it a favorite.</string>
@@ -192,8 +192,11 @@
     <string name="help_doc_source">Source code</string>
     <string name="help_doc_source_tag" translatable="false">https://github.com/Clip-Man/clip-man-android/</string>
 
+    <string name="help_privacy_path" translatable="false">https://github.com/Clip-Man/clip-man-android/blob/master/PRIVACY.md</string>
     <string name="help_license_path" translatable="false">https://github.com/Clip-Man/clip-man-android/blob/master/LICENSE.md</string>
     <string name="help_licenses_path" translatable="false">https://github.com/Clip-Man/clip-man-android/blob/master/LICENSES.md</string>
+
+    <string name="license" translatable="false"><a href="https://github.com/Clip-Man/clip-man-android/blob/master/LICENSE.md">Apache 2.0</a></string>
 
 
     <!-- Related to DevicesActivity -->
@@ -224,7 +227,7 @@
 
 
     <!-- Related to account sign-in -->
-    <string name="signin_title">Google Sign-In\nClip Man</string>
+    <string name="signin_title">Google Sign-In\nPushy</string>
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="signed_in">Signed in</string>
     <string name="signing_in">Signing in…</string>
@@ -273,7 +276,6 @@
     <string name="button_continue">CONTINUE</string>
     <string name="copyright" translatable="false">&#169;2017 Michael A Updike</string>
     <string name="version_fmt">Version %s</string>
-    <string name="license" translatable="false"><a href="https://github.com/Clip-Man/clip-man-android/blob/master/LICENSE.md">Apache 2.0</a></string>
     <string name="default_person_name">Tap to sign-in</string>
     <string name="now_fmt">just now, %s</string>
     <string name="joda_time_fmt_pattern">h:mm a</string>

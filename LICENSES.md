@@ -1,4 +1,4 @@
-# Open Source Licenses Used By Clip Man
+# Open Source Licenses Used By Pushy Clipboard
 
 ## Android-Support-Preference-V7-Fix
 

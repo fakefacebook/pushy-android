@@ -1,3 +1,3 @@
-# Clip Man
+# Pushy Clipboard
 
 A work in progress
