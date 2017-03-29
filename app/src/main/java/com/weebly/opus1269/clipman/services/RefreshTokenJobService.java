@@ -38,28 +38,29 @@ public class RefreshTokenJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        // Make sure we have looper
-        final Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
+        Boolean ret = false;
+        if (User.INSTANCE.isLoggedIn()) {
+            ret = true;
+            // Make sure we have looper
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
 
-            @Override
-            public void run() {
-                // Get updated InstanceID token.
-                String refreshedToken =
-                    FirebaseInstanceId.getInstance().getToken();
-                Log.logD(TAG, "Refreshed token: " + refreshedToken);
-
-                if (User.INSTANCE.isLoggedIn()) {
+                @Override
+                public void run() {
+                    // Get updated InstanceID token.
+                    String refreshedToken =
+                        FirebaseInstanceId.getInstance().getToken();
+                    Log.logD(TAG, "Refreshed token: " + refreshedToken);
                     final EndpointRet ret =
                         RegistrationClient.register(refreshedToken);
                     if (!ret.getSuccess()) {
                         Log.logE(TAG, ret.getReason());
                     }
                 }
-            }
-        });
+            });
+        }
 
-        return true; // Answers the question: "Is there still work going on?"
+        return ret; // Answers the question: "Is there still work going on?"
     }
 
     @Override
