@@ -27,6 +27,8 @@ import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
+import com.weebly.opus1269.clipman.model.Prefs;
+import com.weebly.opus1269.clipman.model.User;
 import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.msg.Msg;
 import com.weebly.opus1269.clipman.ui.helpers.NotificationHelper;
@@ -103,6 +105,9 @@ public class MyFcmListenerService extends FirebaseMessagingService {
 
         if (device.getUniqueName().equals(Device.getMyUniqueName())) {
             // ignore our own messages
+            return;
+        } else if (!User.INSTANCE.isLoggedIn()) {
+            // ignore if logged out
             return;
         }
 
