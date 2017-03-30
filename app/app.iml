@@ -112,7 +112,7 @@
     <orderEntry type="library" exported="" name="firebase-core-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-tagmanager-v4-impl-10.2.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-library-1.3" level="project" />
-    <orderEntry type="library" exported="" name="transition-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="transition-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="messaging-v1-1.22.0-SNAPSHOT-sources" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="exposed-instrumentation-api-publish-0.5" level="project" />
     <orderEntry type="library" exported="" name="firebase-jobdispatcher-0.5.2" level="project" />
@@ -122,13 +122,14 @@
     <orderEntry type="library" exported="" name="play-services-analytics-impl-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="jackson-core-2.1.3" level="project" />
     <orderEntry type="library" exported="" name="firebase-common-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-compat-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="preference-v7-25.3.1.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="javawriter-2.1.1" level="project" />
-    <orderEntry type="library" exported="" name="support-media-compat-25.3.0" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-25.3.0" level="project" />
-    <orderEntry type="library" exported="" name="support-vector-drawable-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="support-media-compat-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="support-vector-drawable-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="support-compat-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-auth-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-android-1.22.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-analytics-10.2.1" level="project" />
@@ -138,35 +139,34 @@
     <orderEntry type="library" exported="" name="recyclerviewcursoradapter-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-tasks-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="design-25.3.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-integration-1.3" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-10.2.1" level="project" />
+    <orderEntry type="library" exported="" name="design-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-auth-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="google-oauth-client-1.22.0" level="project" />
-    <orderEntry type="library" exported="" name="support-core-ui-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-iid-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-core-utils-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="jsr305-2.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-fragment-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-core-utils-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="support-fragment-25.3.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-core-2.2.2" level="project" />
-    <orderEntry type="library" exported="" name="preference-v7-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="preference-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="rules-0.5" level="project" />
     <orderEntry type="library" exported="" name="firebase-analytics-impl-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-messaging-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-1.22.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.7" level="project" />
-    <orderEntry type="library" exported="" name="preference-v14-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="preference-v14-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-jackson2-1.22.0" level="project" />
-    <orderEntry type="library" exported="" name="preference-v7-25.3.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
     <orderEntry type="library" exported="" name="play-services-analytics-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="google-api-services-people-v1-rev4-1.22.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
-    <orderEntry type="library" exported="" name="recyclerview-v7-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="registration-v1-1.22.0-SNAPSHOT-sources" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-25.3.0" level="project" />
-    <orderEntry type="library" exported="" name="animated-vector-drawable-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="animated-vector-drawable-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="android-android-25" level="project" />
   </component>
 </module>
