@@ -271,6 +271,10 @@ public class MainActivity extends BaseActivity implements
             case R.id.nav_help:
                 startActivity(HelpActivity.class);
                 break;
+            case R.id.nav_chrome_extension:
+                AppUtils.showWebUrl(
+                    getString(R.string.chrome_extension_url));
+                break;
             default:
                 break;
         }

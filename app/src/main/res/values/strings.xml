@@ -55,12 +55,15 @@
     <string name="action_help_view_store">View in Google Play Store</string>
     <string name="action_help_version">Version info</string>
     <string name="action_help_licenses">Open source licenses</string>
+    <string name="action_help_privacy">Privacy</string>
     <string name="action_refresh_devices">Refresh device list</string>
 
     <string name="nav_account">Manage account</string>
     <string name="nav_devices">Manage devices</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_help">Help &amp; feedback</string>
+    <string name="nav_extension">Get Chrome extension</string>
+    <string name="chrome_extension_url" translatable="false">https://chrome.google.com/webstore/detail/pushy-clipboard/jemdfhaheennfkehopbpkephjlednffd</string>
 
 
     <!-- Related to Preferences -->
@@ -192,9 +195,8 @@
     <string name="help_doc_source">Source code</string>
     <string name="help_doc_source_tag" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/</string>
 
-    <string name="help_privacy_path" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/blob/master/PRIVACY.md</string>
-    <string name="help_license_path" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/blob/master/LICENSE.md</string>
-    <string name="help_licenses_path" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/blob/master/LICENSES.md</string>
+    <string name="help_privacy_url" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/blob/master/PRIVACY.md</string>
+    <string name="help_licenses_url" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/blob/master/LICENSES.md</string>
 
     <string name="license" translatable="false"><a href="https://github.com/Pushy-Clipboard/pushy-android/blob/master/LICENSE.md">Apache 2.0</a></string>
 

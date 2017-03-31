@@ -83,9 +83,13 @@ public class HelpActivity extends BaseActivity {
             case R.id.action_version:
                 showVersionDialog();
                 break;
+            case R.id.action_privacy:
+                AppUtils.showWebUrl(
+                    getString(R.string.help_privacy_url));
+                break;
             case R.id.action_licenses:
                 AppUtils.showWebUrl(
-                    getString(R.string.help_licenses_path));
+                    getString(R.string.help_licenses_url));
                 break;
             default:
                 processed = false;
@@ -155,6 +159,7 @@ public class HelpActivity extends BaseActivity {
 
     /**
      * Get system info. for body of support requests
+     * @return Email body
      */
     private String getEmailBody() {
       return  "Pushy Clipboard Version: " + BuildConfig.VERSION_NAME + '\n' +

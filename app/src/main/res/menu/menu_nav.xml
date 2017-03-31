@@ -19,31 +19,30 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:id="@+id/group_account">
-        <item
-            android:enabled="true"
-            android:id="@+id/nav_account"
-            android:icon="@drawable/ic_account_circle_black_24dp"
-            android:title="@string/nav_account"/>
-    </group>
+    <item
+        android:id="@+id/nav_account"
+        android:enabled="true"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:title="@string/nav_account" />
+    <item
+        android:id="@+id/nav_devices"
+        android:enabled="true"
+        android:icon="@drawable/ic_devices_black_24dp"
+        android:title="@string/nav_devices" />
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/nav_settings" />
+    <item
+        android:id="@+id/nav_help"
+        android:icon="@drawable/ic_help_black_24dp"
+        android:title="@string/nav_help" />
 
-    <group android:id="@+id/group_devices">
+    <group android:id="@+id/group_extension">
         <item
-            android:enabled="true"
-            android:id="@+id/nav_devices"
-            android:icon="@drawable/ic_devices_black_24dp"
-            android:title="@string/nav_devices"/>
-    </group>
-
-    <group android:id="@+id/group_settings">
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="@string/nav_settings"/>
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/ic_help_black_24dp"
-            android:title="@string/nav_help"/>
+            android:id="@+id/nav_chrome_extension"
+            android:icon="@drawable/ic_extension_black_24dp"
+            android:title="@string/nav_extension" />
     </group>
 
 </menu>

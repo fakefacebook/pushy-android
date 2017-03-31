@@ -36,6 +36,11 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_privacy"
+        android:title="@string/action_help_privacy"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_licenses"
         android:title="@string/action_help_licenses"
         app:showAsAction="never"/>
