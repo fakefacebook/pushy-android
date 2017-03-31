@@ -57,15 +57,14 @@ import com.weebly.opus1269.clipman.ui.settings.SettingsActivity;
 import com.weebly.opus1269.clipman.ui.signin.SignInActivity;
 
 /**
- * Thia is the top level Activity for the app
+ * Top level Activity for the app
  */
-
 public class MainActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        View.OnLayoutChangeListener,
-        ClipViewerFragment.OnClipChanged,
-        DeleteDialogFragment.DeleteDialogListener,
-        SortTypeDialogFragment.SortTypeDialogListener {
+    NavigationView.OnNavigationItemSelectedListener,
+    View.OnLayoutChangeListener,
+    ClipViewerFragment.OnClipChanged,
+    DeleteDialogFragment.DeleteDialogListener,
+    SortTypeDialogFragment.SortTypeDialogListener {
 
     /**
      * Delegate for RecyclerView
@@ -130,10 +129,10 @@ public class MainActivity extends BaseActivity implements
         if (AppUtils.isDualPane()) {
             // create the clip viewer for the two pane option
             final ClipViewerFragment fragment =
-                    ClipViewerFragment.newInstance(new ClipItem(), "");
+                ClipViewerFragment.newInstance(new ClipItem(), "");
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.clip_viewer_container, fragment)
-                    .commit();
+                .replace(R.id.clip_viewer_container, fragment)
+                .commit();
         }
 
         setFabVisibility(false);
@@ -142,8 +141,8 @@ public class MainActivity extends BaseActivity implements
             (DrawerLayout) findViewById(R.id.drawer_layout);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            this, drawer, toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -216,8 +215,8 @@ public class MainActivity extends BaseActivity implements
             case R.id.action_send:
                 sendClipboardContents();
                 break;
-             case R.id.action_fav_filter:
-                 // toggle
+            case R.id.action_fav_filter:
+                // toggle
                 setPrefFavFilter(!mFavFilter, true);
                 break;
             case R.id.action_delete:
@@ -243,7 +242,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected boolean setQueryString(String queryString) {
         boolean ret = false;
-        if(super.setQueryString(queryString)) {
+        if (super.setQueryString(queryString)) {
             getSupportLoaderManager().restartLoader(0, null, mLoaderManager);
             ret = true;
         }
@@ -344,8 +343,8 @@ public class MainActivity extends BaseActivity implements
                 break;
         }
         final Snackbar snack =
-                Snackbar.make(findViewById(R.id.fab),
-                    message, Snackbar.LENGTH_LONG);
+            Snackbar.make(findViewById(R.id.fab),
+                message, Snackbar.LENGTH_LONG);
         if (nRows > 0) {
             snack.setAction("UNDO", new View.OnClickListener() {
                 @Override
@@ -436,12 +435,17 @@ public class MainActivity extends BaseActivity implements
                     MessagingClient.send(item);
                 }
             }
-        } else if (intent.hasExtra(ClipItem.INTENT_EXTRA_CLIP_ITEM)) {
+        } else if (intent.hasExtra(AppUtils.INTENT_EXTRA_CLIP_ITEM)) {
             // notification
-            final ClipItem item = (ClipItem) intent.getSerializableExtra(
-                        ClipItem.INTENT_EXTRA_CLIP_ITEM);
-            intent.removeExtra(ClipItem.INTENT_EXTRA_CLIP_ITEM);
-            startOrUpdateClipViewer(item);
+            final int msgCt =
+                intent.getIntExtra(AppUtils.INTENT_EXTRA_CLIP_COUNT, 0);
+            if (msgCt == 1) {
+                // if 1 message open Clipviewer, otherwise show in us
+                final ClipItem item = (ClipItem) intent.getSerializableExtra(
+                    AppUtils.INTENT_EXTRA_CLIP_ITEM);
+                intent.removeExtra(AppUtils.INTENT_EXTRA_CLIP_ITEM);
+                startOrUpdateClipViewer(item);
+            }
         }
     }
 
@@ -516,8 +520,7 @@ public class MainActivity extends BaseActivity implements
             } else {
                 setTitle(getString(R.string.title_activity_main_local));
             }
-        }
-        else {
+        } else {
             setTitle(getString(R.string.app_name));
         }
     }
@@ -528,7 +531,7 @@ public class MainActivity extends BaseActivity implements
      */
     private ClipViewerFragment getClipViewerFragment() {
         return (ClipViewerFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.clip_viewer_container);
+            .findFragmentById(R.id.clip_viewer_container);
     }
 
     /**
@@ -542,7 +545,7 @@ public class MainActivity extends BaseActivity implements
     /**
      * Set UI state based on whether we are filtering by favorites
      * @param prefFavFilter true if only showing favorites
-     * @param restart if true, restart ClipLoader
+     * @param restart       if true, restart ClipLoader
      */
     private void setPrefFavFilter(boolean prefFavFilter, boolean restart) {
         mFavFilter = prefFavFilter;
@@ -559,7 +562,7 @@ public class MainActivity extends BaseActivity implements
                 menuItem.setIcon(R.drawable.ic_favorite_border_black_24dp);
                 menuItem.setTitle(R.string.action_show_favs);
                 colorID = R.color.icons;
-           }
+            }
 
             final int color = ContextCompat.getColor(this, colorID);
             MenuTintHelper.colorMenuItem(menuItem, color, 255);
@@ -597,8 +600,8 @@ public class MainActivity extends BaseActivity implements
      */
     private void updateOptionsMenu() {
         if (mOptionsMenu != null) {
-            Boolean enabled  = false;
-            Integer alpha  = 64;
+            Boolean enabled = false;
+            Integer alpha = 64;
             if (User.INSTANCE.isLoggedIn() && Prefs.isPushClipboard()) {
                 enabled = true;
                 alpha = 255;

@@ -58,18 +58,25 @@ public class AppUtils {
     public static final String EMAIL_ADDRESS = "pushyclipboard@gmail.com";
 
     // Intent constants
-    public static final String SEARCH_ACTION = PACKAGE_PATH + "SEARCH_ACTION";
-    public static final String SHARE_ACTION = PACKAGE_PATH + "SHARE_ACTION";
+    public static final String SEARCH_ACTION =
+        PACKAGE_PATH + "SEARCH_ACTION";
+    public static final String SHARE_ACTION =
+        PACKAGE_PATH + "SHARE_ACTION";
     public static final String DELETE_NOTIFICATION_ACTION =
-            PACKAGE_PATH + "DELETE_NOTIFICATION_ACTION";
+        PACKAGE_PATH + "DELETE_NOTIFICATION_ACTION";
+    public static final String INTENT_EXTRA_CLIP_ITEM =
+        PACKAGE_PATH + "CLIP_ITEM";
     public static final String INTENT_EXTRA_NOTIFICATION_ID =
-            PACKAGE_PATH + "NOTIFICATION_ID";
+        PACKAGE_PATH + "NOTIFICATION_ID";
+    public static final String INTENT_EXTRA_CLIP_COUNT =
+        PACKAGE_PATH + "CLIP_COUNT";
 
-    private AppUtils() {}
+    private AppUtils() {
+    }
 
     /**
      * Convert device density to pixels
-     * @param context A Context
+     * @param context  A Context
      * @param dipValue Value to convert
      * @return Value in pixels
      */
@@ -112,9 +119,9 @@ public class AppUtils {
 
     /**
      * Check if a service is running
-     * @see <a href="https://goo.gl/55RFa6">Stack Overflow</a>
      * @param serviceClass Class name of Service
      * @return boolean
+     * @see <a href="https://goo.gl/55RFa6">Stack Overflow</a>
      */
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
         final Context context = App.getContext();
@@ -124,7 +131,6 @@ public class AppUtils {
         boolean ret = false;
         for (final ActivityManager.RunningServiceInfo service :
             manager.getRunningServices(Integer.MAX_VALUE)) {
-            //noinspection CallToStringEquals
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 ret = true;
                 break;
@@ -195,15 +201,15 @@ public class AppUtils {
 
         if (delta <= DateUtils.SECOND_IN_MILLIS) {
             DateTimeFormatter fmt =
-                    DateTimeFormat.forPattern(context.getString(R.string.joda_time_fmt_pattern));
-            value = context.getString(R.string.now_fmt,date.toString(fmt));
+                DateTimeFormat.forPattern(context.getString(R.string.joda_time_fmt_pattern));
+            value = context.getString(R.string.now_fmt, date.toString(fmt));
         } else {
             value =
                 DateUtils.getRelativeDateTimeString(context, time,
                     DateUtils.SECOND_IN_MILLIS, DateUtils.DAY_IN_MILLIS,
                     DateUtils.FORMAT_ABBREV_ALL);
         }
-         return value;
+        return value;
     }
 
 

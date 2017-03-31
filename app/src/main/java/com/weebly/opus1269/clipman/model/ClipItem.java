@@ -48,7 +48,6 @@ public class ClipItem implements Serializable {
     private static final String DESC_LABEL = "opus1269 was here";
     private static final String REMOTE_DESC_LABEL = "From Remote Copy";
     public static final String TEXT_PLAIN = "text/plain";
-    public static final String INTENT_EXTRA_CLIP_ITEM = "ClipItem";
 
     private String mText;
     private DateTime mDate;
@@ -148,7 +147,7 @@ public class ClipItem implements Serializable {
 
     /**
      * Parse the fav state from the {@link ClipDescription}
-     * @param desc    The item's {@link ClipDescription}
+     * @param desc The item's {@link ClipDescription}
      * @return The fav state
      */
     private static boolean parseFav(ClipDescription desc) {
@@ -168,7 +167,7 @@ public class ClipItem implements Serializable {
     /**
      * Parse the {@link ClipDescription} to see if it is from one of our
      * remote devices
-     * @param desc    The item's {@link ClipDescription}
+     * @param desc The item's {@link ClipDescription}
      * @return The remote device name or "" if a local copy
      */
     private static String parseRemote(ClipDescription desc) {
@@ -321,7 +320,7 @@ public class ClipItem implements Serializable {
         intent.putExtra(Intent.EXTRA_TITLE, label);
         intent.setType(TEXT_PLAIN);
         final Intent sendIntent = Intent.createChooser(intent,
-                context.getResources().getString(R.string.share_text_to));
+            context.getResources().getString(R.string.share_text_to));
         sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (sendIntent.resolveActivity(context.getPackageManager()) != null) {
             // Verify that the intent will resolve to an activity
