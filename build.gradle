@@ -23,7 +23,6 @@ project.ext.sdkVersion = 25
 project.ext.supportLibraryVersion = '25.3.1'
 project.ext.gmsVersion = '10.2.1'
 project.ext.gapiVersion = '1.22.0'
-project.ext.appEngineVersion = '1.9.50'
 
 buildscript {
     repositories {
