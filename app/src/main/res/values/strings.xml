@@ -188,8 +188,8 @@
 
     <string name="help_title_documentation">Help</string>
 
-    <string name="help_doc_usage">App documentation</string>
-    <string name="help_doc_usage_tag" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/blob/master/README.md</string>
+    <string name="help_doc_usage">User documentation</string>
+    <string name="help_doc_usage_tag" translatable="false">https://pushy-clipboard.github.io/documentation.html</string>
     <string name="help_doc_release">Release notes</string>
     <string name="help_doc_releas_tag_fmt" translatable="false">https://github.com/Pushy-Clipboard/pushy-android/releases/tag/v%s</string>
     <string name="help_doc_source">Source code</string>
