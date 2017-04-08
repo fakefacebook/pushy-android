@@ -24,10 +24,10 @@ import android.os.SystemClock;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.weebly.opus1269.clipman.app.Log;
+import com.weebly.opus1269.clipman.model.Analytics;
 import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
-import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.model.User;
 import com.weebly.opus1269.clipman.msg.MessagingClient;
 import com.weebly.opus1269.clipman.msg.Msg;
@@ -111,6 +111,7 @@ public class MyFcmListenerService extends FirebaseMessagingService {
             return;
         }
 
+        Analytics.INSTANCE.received();
         Log.logD(TAG, FCM_RECEIVED + action);
 
         switch (action) {

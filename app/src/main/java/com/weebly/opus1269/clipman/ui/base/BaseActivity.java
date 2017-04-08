@@ -33,8 +33,11 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
+import com.weebly.opus1269.clipman.model.Analytics;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.ui.helpers.MenuTintHelper;
 
@@ -59,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     protected int mOptionsMenuID = -1;
     protected Menu mOptionsMenu = null;
     protected boolean mHomeUpEnabled = true;
+    private Tracker mTracker;
 
     /**
      * saved instance state
@@ -93,6 +97,17 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(mHomeUpEnabled);
         }
+
+        mTracker = Analytics.INSTANCE.getTracker();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

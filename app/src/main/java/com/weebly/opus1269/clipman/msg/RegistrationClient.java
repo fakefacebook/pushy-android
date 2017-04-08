@@ -34,6 +34,7 @@ import com.weebly.opus1269.clipman.app.CustomAsyncTask;
 import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.registration.Registration;
 import com.weebly.opus1269.clipman.backend.registration.model.EndpointRet;
+import com.weebly.opus1269.clipman.model.Analytics;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.ui.signin.SignInActivity;
 
@@ -96,6 +97,7 @@ public class RegistrationClient extends Endpoint {
             ret = regService.register(regToken).execute();
             if (ret.getSuccess()) {
                 isRegistered = true;
+                Analytics.INSTANCE.registered();
             } else {
                 ret.setReason(Log.logE(TAG,
                     ERROR_REGISTER + " " + ret.getReason()));
@@ -149,6 +151,7 @@ public class RegistrationClient extends Endpoint {
             final Registration regService = getRegistrationService(credential);
             ret = regService.unregister(regToken).execute();
             if (ret.getSuccess()) {
+                Analytics.INSTANCE.unregistered();
                 isRegistered = false;
             } else {
                 ret.setReason(Log.logE(TAG, ERROR_UNREGISTER +

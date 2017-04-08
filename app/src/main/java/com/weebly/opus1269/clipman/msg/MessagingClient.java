@@ -30,6 +30,7 @@ import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.messaging.Messaging;
 import com.weebly.opus1269.clipman.backend.messaging.model.EndpointRet;
+import com.weebly.opus1269.clipman.model.Analytics;
 import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Device;
 import com.weebly.opus1269.clipman.model.Devices;
@@ -229,6 +230,7 @@ public class MessagingClient extends Endpoint{
                     .execute();
                 if (ret.getSuccess()) {
                     Log.logD(TAG, "Message sent to server: " + mAction);
+                    Analytics.INSTANCE.sent();
                 } else {
                     ret.setReason(
                         Log.logE(TAG, ERROR_SEND + ": " + ret.getReason()));
