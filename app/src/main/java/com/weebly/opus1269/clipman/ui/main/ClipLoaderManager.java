@@ -204,7 +204,6 @@ class ClipLoaderManager implements
         holder.clipItem.setRemote(false);
         holder.clipItem.setDevice(Device.getMyName());
         holder.clipItem.copyToClipboard();
-        Snackbar.make(holder.itemView, R.string.clipboard_copy, Snackbar.LENGTH_SHORT).show();
     }
 
     /**
