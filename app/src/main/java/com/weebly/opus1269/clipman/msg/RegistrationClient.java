@@ -35,6 +35,7 @@ import com.weebly.opus1269.clipman.app.Log;
 import com.weebly.opus1269.clipman.backend.registration.Registration;
 import com.weebly.opus1269.clipman.backend.registration.model.EndpointRet;
 import com.weebly.opus1269.clipman.model.Analytics;
+import com.weebly.opus1269.clipman.model.Devices;
 import com.weebly.opus1269.clipman.model.Prefs;
 import com.weebly.opus1269.clipman.ui.signin.SignInActivity;
 
@@ -257,8 +258,11 @@ public class RegistrationClient extends Endpoint {
             // must call
             super.onPostExecute(error);
 
-            if (mActivity != null) {
+            if (mProgress != null) {
                 mProgress.dismiss();
+            }
+
+            if (mActivity != null) {
                 if (!TextUtils.isEmpty(error)) {
                     // failed to register Device with server
                     if (mActivity instanceof SignInActivity) {
@@ -282,7 +286,6 @@ public class RegistrationClient extends Endpoint {
 
     /**
      * AsyncTask to unregister from server.
-     * Also, optionally sign-out or revoke access on success
      */
     public static class UnregisterAsyncTask extends
         CustomAsyncTask<Void, Void, String> {
@@ -346,29 +349,12 @@ public class RegistrationClient extends Endpoint {
             // must call
             super.onPostExecute(error);
 
-            if (mActivity != null) {
+            if (mProgress != null) {
                 mProgress.dismiss();
-                if (!TextUtils.isEmpty(error)) {
-                    // failed to unregister Device
-                    MessagingClient.sendDeviceAdded();
-                    new AlertDialog.Builder(mActivity)
-                        .setTitle(R.string.err_unregister)
-                        .setMessage(error)
-                        .setPositiveButton(R.string.button_dismiss, null)
-                        .show();
-                } else {
-                    if (mActivity instanceof SignInActivity) {
-                        SignInActivity act = (SignInActivity) mActivity;
-                        if (act.isRevoke()) {
-                            act.doRevoke();
-                        } else {
-                            act.doSignOut();
-                        }
-                    }
-                }
-            } else {
-                Log.logD(TAG, NO_ACTIVITY);
             }
+
+            // SignInActivity will be notified that it can now sign-out
+            Devices.notifyMyDeviceUnregistered();
         }
     }
 }

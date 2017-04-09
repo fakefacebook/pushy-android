@@ -240,18 +240,11 @@ public class SignInActivity extends BaseActivity implements
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Should we revoke access at signout
-     * @return true if revoke
-     */
-    public boolean isRevoke() {
-        return mIsRevoke;
-    }
-
-    /**
      * SignOut of Google and Firebase
      */
     public void doSignOut() {
         if (mGoogleApiClient.isConnected()) {
+            showProgressDialog(getString(R.string.signing_out));
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
@@ -259,11 +252,13 @@ public class SignInActivity extends BaseActivity implements
                         if (status.isSuccess()) {
                             FirebaseAuth.getInstance().signOut();
                             clearUser();
+                            dismissProgressDialog();
                         } else {
                             mErrorMessage =
                                 getString(R.string.sign_out_err_fmt,
                                     status.getStatusMessage());
                             updateView();
+                            dismissProgressDialog();
                         }
                     }
                 });
@@ -273,11 +268,16 @@ public class SignInActivity extends BaseActivity implements
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // private methods
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Revoke access to app for this {@link User}
      */
-    public void doRevoke() {
+    private void doRevoke() {
         if (mGoogleApiClient.isConnected()) {
+            showProgressDialog(getString(R.string.signing_out));
             Auth.GoogleSignInApi
                 .revokeAccess(mGoogleApiClient)
                 .setResultCallback(
@@ -287,11 +287,13 @@ public class SignInActivity extends BaseActivity implements
                             if (status.isSuccess()) {
                                 FirebaseAuth.getInstance().signOut();
                                 clearUser();
+                                dismissProgressDialog();
                             } else {
                                 mErrorMessage =
                                     getString(R.string.revoke_err_fmt,
                                         status.getStatusMessage());
                                 updateView();
+                                dismissProgressDialog();
                             }
                         }
                     });
@@ -300,10 +302,6 @@ public class SignInActivity extends BaseActivity implements
             updateView();
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // private methods
-    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Show a dialog with rationale for signin
@@ -335,17 +333,26 @@ public class SignInActivity extends BaseActivity implements
      */
     private void setupDevicesBroadcastReceiver() {
         // handler for received Intents for the "devices" event
-        // we want to know when our device is removed so we can finish
-        // logout
+        // we want to know when our device is removed and unregistered
+        // so we can finish logout
         mDevicesReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 final Bundle bundle = intent.getBundleExtra(Devices.BUNDLE);
                 final String action = bundle.getString(Devices.ACTION);
 
-                if ((action != null) &&
-                    action.equals(Devices.ACTION_MY_DEVICE)) {
-                    doUnregister();
+                if (action != null) {
+                    if (action.equals(Devices.ACTION_MY_DEVICE_REMOVED)) {
+                        // device remove message sent, now unregister
+                        doUnregister();
+                    } else if (action.equals(Devices.ACTION_MY_DEVICE_UNREGISTERED)) {
+                        // unregistered, now signout or revoke
+                        if (mIsRevoke) {
+                            doRevoke();
+                        } else {
+                            doSignOut();
+                        }
+                    }
                 }
             }
         };
@@ -405,6 +412,7 @@ public class SignInActivity extends BaseActivity implements
      * @param result The {@link GoogleSignInResult} of any SignIn attempt
      */
     private void handleSignInResult(GoogleSignInResult result) {
+        showProgressDialog(getString(R.string.signing_in));
         mErrorMessage = "";
         if (result.isSuccess()) {
             // Authenticate with Firebase
@@ -417,6 +425,7 @@ public class SignInActivity extends BaseActivity implements
 
             assert account != null;
             final String idToken = account.getIdToken();
+            dismissProgressDialog();
             if (!Prefs.isDeviceRegistered() && !TextUtils.isEmpty(idToken)) {
                 // register with server
                 new RegistrationClient.RegisterAsyncTask(
@@ -428,6 +437,7 @@ public class SignInActivity extends BaseActivity implements
                 getString(R.string.sign_in_err_fmt, result.getStatus().toString());
             Log.logE(TAG, mErrorMessage);
             clearUser();
+            dismissProgressDialog();
         }
     }
 
@@ -471,25 +481,37 @@ public class SignInActivity extends BaseActivity implements
      * Event: SignOut button clicked
      */
     private void onSignOutClicked() {
-        mIsRevoke = false;
-        if (Prefs.isPushClipboard()) {
-            // also handles sign-out
-            MessagingClient.sendDeviceRemoved();
-        } else {
-            doSignOut();
-        }
+        handleSigningOut(false);
     }
 
     /**
      * Event: Revoke access button clicked
      */
     private void onRevokeAccessClicked() {
-        mIsRevoke = true;
-        if (Prefs.isPushClipboard()) {
-            // also handles revocation
-            MessagingClient.sendDeviceRemoved();
+        handleSigningOut(true);
+    }
+
+    /**
+     * Handle everything related to unregistering, signing out, and revoking
+     * access
+     * @param revoke - if true revoke access to app
+     */
+    private void handleSigningOut(Boolean revoke) {
+        mIsRevoke = revoke;
+        if (Prefs.isDeviceRegistered()) {
+            if (Prefs.isPushClipboard()) {
+                // also handles unregister and sign-out
+                MessagingClient.sendDeviceRemoved();
+            } else {
+                // handles unregister and sign-out
+                doUnregister();
+            }
         } else {
-            doRevoke();
+            if (revoke) {
+                doRevoke();
+            } else {
+                doSignOut();
+            }
         }
     }
 

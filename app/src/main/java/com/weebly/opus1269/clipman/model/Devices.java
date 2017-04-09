@@ -49,7 +49,10 @@ public class Devices {
     /** @value */
     public static final String ACTION_UPDATE = "updateDevices";
     /** @value */
-    public static final String ACTION_MY_DEVICE = "myDevice";
+    public static final String ACTION_MY_DEVICE_REMOVED = "myDeviceRemoved";
+    /** @value */
+    public static final String ACTION_MY_DEVICE_UNREGISTERED =
+        "myDeviceUnregistered";
 
     @SuppressWarnings("StaticNonFinalField")
     private static List<Device> sDevices = load();
@@ -150,11 +153,19 @@ public class Devices {
     }
 
     /**
-     * Notify listeners that we have unregistered from server
+     * Notify listeners that our {@link Device} was removed
+     */
+    public static void notifyMyDeviceRemoved() {
+        clear();
+        _sendBroadcast(ACTION_MY_DEVICE_REMOVED);
+    }
+
+    /**
+     * Notify listeners that our {@link Device} was unregistered
      */
     public static void notifyMyDeviceUnregistered() {
         clear();
-        _sendBroadcast(ACTION_MY_DEVICE);
+        _sendBroadcast(ACTION_MY_DEVICE_UNREGISTERED);
     }
 
     /**

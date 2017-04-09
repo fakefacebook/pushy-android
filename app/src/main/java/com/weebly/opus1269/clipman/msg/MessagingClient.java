@@ -85,7 +85,7 @@ public class MessagingClient extends Endpoint{
 
     /** Notify of our addition */
     static void sendDeviceAdded() {
-        if (notSignedIn()) {
+        if (notSignedIn() || !Prefs.isPushClipboard()) {
             return;
         }
 
@@ -98,7 +98,7 @@ public class MessagingClient extends Endpoint{
 
     /** Notify of our removal */
     public static void sendDeviceRemoved() {
-        if (notSignedIn()) {
+        if (notSignedIn() || !Prefs.isPushClipboard()) {
             return;
         }
 
@@ -111,7 +111,7 @@ public class MessagingClient extends Endpoint{
 
     /** Ping others */
     public static void sendPing() {
-        if (notSignedIn()) {
+        if (notSignedIn() || !Prefs.isPushClipboard()) {
             return;
         }
 
@@ -126,7 +126,7 @@ public class MessagingClient extends Endpoint{
      * @param srcRegId source of ping
      */
     public static void sendPingResponse(String srcRegId) {
-        if (notSignedIn()) {
+        if (notSignedIn() || !Prefs.isPushClipboard()) {
             return;
         }
 
@@ -245,8 +245,9 @@ public class MessagingClient extends Endpoint{
         protected void onPostExecute(EndpointRet ret) {
             if (Msg.ACTION_DEVICE_REMOVED.equals(mAction)) {
                 // remove device notification
-                // SignInActivity will be notified that it can now sign-out
-                Devices.notifyMyDeviceUnregistered();
+                // SignInActivity will be notified that it can now
+                // unregister and sign-out
+                Devices.notifyMyDeviceRemoved();
             }
         }
     }
