@@ -2,6 +2,8 @@
 package com.weebly.opus1269.clipman.app;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 
 /**
@@ -17,6 +19,8 @@ public abstract class CustomAsyncTask<TParams, TProgress, TResult>
 
     private final App mApp;
     protected Activity mActivity;
+    protected ProgressDialog mProgress;
+    protected String mProgressMessage;
 
     public CustomAsyncTask(Activity activity) {
         mActivity = activity;
@@ -33,13 +37,49 @@ public abstract class CustomAsyncTask<TParams, TProgress, TResult>
         }
     }
 
-    protected void onActivityAttached() {}
+    private void onActivityAttached() {
+        if (mProgress == null) {
+            showProgressDialog();
+        }
+    }
 
-    protected void onActivityDetached() {}
+    private void onActivityDetached() {
+        dismissProgressDialog();
+    }
+
+    /**
+     * Optionally, display progress dialog
+     */
+    private void showProgressDialog() {
+        if (mProgressMessage != null) {
+            mProgress = new ProgressDialog(mActivity);
+            mProgress.setMessage(mProgressMessage);
+            mProgress.setCancelable(true);
+            mProgress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    cancel(true);
+                }
+            });
+
+            mProgress.show();
+        }
+    }
+
+    /**
+     * Optionally, dismiss progress dialog
+     */
+    protected void dismissProgressDialog() {
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
+    }
 
     @Override
     protected void onPreExecute() {
         mApp.addTask(mActivity, this);
+        showProgressDialog();
     }
 
     @Override
@@ -51,93 +91,4 @@ public abstract class CustomAsyncTask<TParams, TProgress, TResult>
     protected void onCancelled() {
         mApp.removeTask(this);
     }
-
-//      Example usage
-//    private static class DoBackgroundTask extends CustomAsyncTask<Void, Integer, Void> {
-//        private static final String TAG = "DoBackgroundTask";
-//
-//        private ProgressDialog mProgress;
-//        private int mCurrProgress;
-//
-//        public DoBackgroundTask(SignInActivity activity) {
-//            super(activity);
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            must call
-//            super.onPreExecute();
-//            showProgressDialog();
-//        }
-//
-//        @Override
-//        protected void onActivityDetached() {
-//            if (mProgress != null) {
-//                mProgress.dismiss();
-//                mProgress = null;
-//            }
-//        }
-//
-//        @Override
-//        protected void onActivityAttached() {
-//            showProgressDialog();
-//        }
-//
-//        private void showProgressDialog() {
-//            mProgress = new ProgressDialog(mActivity);
-//            mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//            mProgress.setMessage("Doing stuff...");
-//            mProgress.setCancelable(true);
-//            mProgress.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//                @Override
-//                public void onCancel(DialogInterface dialog) {
-//                    cancel(true);
-//                }
-//            });
-//
-//            mProgress.show();
-//            mProgress.setProgress(mCurrProgress);
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            try {
-//                for (int i = 0; i < 100; i+=10) {
-//                    Thread.sleep(1000);
-//                    this.publishProgress(i);
-//                }
-//
-//            }
-//            catch (InterruptedException e) {
-//            }
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Integer... progress) {
-//            mCurrProgress = progress[0];
-//            if (mActivity != null) {
-//                mProgress.setProgress(mCurrProgress);
-//            }
-//            else {
-//                AppUtils.logD(TAG, "Progress updated while no Activity was attached.");
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            must call
-//            super.onPostExecute(result);
-//
-//            if (mActivity != null) {
-//                mProgress.dismiss();
-//                Toast.makeText(mActivity, "AsyncTask finished", Toast.LENGTH_LONG).show();
-//            }
-//            else {
-//                AppUtils.logD(TAG, "AsyncTask finished while no Activity was attached.");
-//            }
-//        }
-//    }
-
 }
