@@ -31,6 +31,7 @@ import android.view.View;
 
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.ThreadedAsyncTask;
 import com.weebly.opus1269.clipman.model.ClipContentProvider;
 import com.weebly.opus1269.clipman.model.ClipContract;
 import com.weebly.opus1269.clipman.model.ClipItem;
@@ -191,11 +192,11 @@ public class ClipViewerActivity extends BaseActivity implements
         setFavoriteMenuItem();
 
         // update database
-        new UpdateClipAsyncTask().execute();
+        new UpdateClipAsyncTask().executeMe();
     }
 
     private void deleteItem() {
-        new DeleteClipAsyncTask().execute();
+        new DeleteClipAsyncTask().executeMe();
     }
 
     /**
@@ -219,7 +220,7 @@ public class ClipViewerActivity extends BaseActivity implements
         }
     }
 
-    private class DeleteClipAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class DeleteClipAsyncTask extends ThreadedAsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -269,7 +270,7 @@ public class ClipViewerActivity extends BaseActivity implements
         }
     }
 
-    private class UpdateClipAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class UpdateClipAsyncTask extends ThreadedAsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {

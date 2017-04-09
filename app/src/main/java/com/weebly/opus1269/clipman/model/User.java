@@ -47,6 +47,7 @@ import com.google.api.services.people.v1.model.Person;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.Log;
+import com.weebly.opus1269.clipman.app.ThreadedAsyncTask;
 import com.weebly.opus1269.clipman.ui.helpers.BitmapHelper;
 
 import java.io.IOException;
@@ -306,7 +307,7 @@ public enum User {
      * Inner class to handle loading of user avatar
      * and cover photo asynchronously
      */
-    private class SetPhotosAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class SetPhotosAsyncTask extends ThreadedAsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {

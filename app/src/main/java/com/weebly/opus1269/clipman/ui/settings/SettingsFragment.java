@@ -208,12 +208,12 @@ public class SettingsFragment extends PreferenceFragmentCompatDividers
                     // register
                     new RegistrationClient
                         .RegisterAsyncTask(getActivity(), null)
-                        .execute();
+                        .executeMe();
                 } else {
                     // unregister
                     new RegistrationClient
                         .UnregisterAsyncTask(getActivity())
-                        .execute();
+                        .executeMe();
                 }
             }
         }

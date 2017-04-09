@@ -4,7 +4,6 @@ package com.weebly.opus1269.clipman.app;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 
 /**
  * This class is part of a solution to the problem of
@@ -13,7 +12,7 @@ import android.os.AsyncTask;
  */
 
 public abstract class CustomAsyncTask<TParams, TProgress, TResult>
-    extends AsyncTask<TParams, TProgress, TResult> {
+    extends ThreadedAsyncTask<TParams, TProgress, TResult> {
     protected static final String NO_ACTIVITY =
         "AsyncTask finished while no Activity was attached.";
 

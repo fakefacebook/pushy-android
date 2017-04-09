@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -239,7 +240,9 @@ public class SignInActivity extends BaseActivity implements
 
                 if (!Prefs.isDeviceRegistered()) {
                     // register with server
-                    new RegistrationClient.RegisterAsyncTask(this, mAccount.getIdToken()).execute();
+                    new RegistrationClient
+                        .RegisterAsyncTask(this, mAccount.getIdToken())
+                        .executeMe();
                 }
             } else {
                 // something went wrong, shouldn't be here
@@ -547,7 +550,7 @@ public class SignInActivity extends BaseActivity implements
      */
     private void doUnregister() {
         new RegistrationClient.UnregisterAsyncTask(
-            SignInActivity.this).execute();
+            SignInActivity.this).executeMe();
     }
 
     /**

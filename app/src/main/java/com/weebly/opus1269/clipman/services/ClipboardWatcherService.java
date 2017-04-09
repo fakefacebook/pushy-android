@@ -29,6 +29,7 @@ import android.text.TextUtils;
 
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
+import com.weebly.opus1269.clipman.app.ThreadedAsyncTask;
 import com.weebly.opus1269.clipman.model.ClipContentProvider;
 import com.weebly.opus1269.clipman.model.ClipItem;
 import com.weebly.opus1269.clipman.model.Prefs;
@@ -153,11 +154,11 @@ public class ClipboardWatcherService extends Service implements
             if (deltaTime > MIN_TIME_MILLIS) {
                 // only handle identical local copies this fast
                 // some apps (at least Chrome) write to clipboard twice.
-                new StoreClipAsyncTask(clipItem).execute(onNewOnly);
+                new StoreClipAsyncTask(clipItem).executeMe(onNewOnly);
             }
         } else {
             // normal situation, fire away
-            new StoreClipAsyncTask(clipItem).execute(onNewOnly);
+            new StoreClipAsyncTask(clipItem).executeMe(onNewOnly);
         }
         mLastText = clipItem.getText();
     }
@@ -170,7 +171,7 @@ public class ClipboardWatcherService extends Service implements
      * AsyncTask to write to the Clip database
      *
      */
-    private class StoreClipAsyncTask extends AsyncTask<Boolean, Void, Void> {
+    private class StoreClipAsyncTask extends ThreadedAsyncTask<Boolean, Void, Void> {
         final ClipItem mClipItem;
         boolean mResult;
 

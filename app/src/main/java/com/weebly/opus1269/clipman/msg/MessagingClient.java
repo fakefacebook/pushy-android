@@ -28,6 +28,7 @@ import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.App;
 import com.weebly.opus1269.clipman.app.AppUtils;
 import com.weebly.opus1269.clipman.app.Log;
+import com.weebly.opus1269.clipman.app.ThreadedAsyncTask;
 import com.weebly.opus1269.clipman.backend.messaging.Messaging;
 import com.weebly.opus1269.clipman.backend.messaging.model.EndpointRet;
 import com.weebly.opus1269.clipman.model.Analytics;
@@ -79,7 +80,7 @@ public class MessagingClient extends Endpoint{
         }
 
         if (data != null) {
-            new MessagingAsyncTask().execute(data);
+            new MessagingAsyncTask().executeMe(data);;
         }
     }
 
@@ -92,7 +93,7 @@ public class MessagingClient extends Endpoint{
         JSONObject data =
             getJSONData(Msg.ACTION_DEVICE_ADDED, Msg.MSG_DEVICE_ADDED);
         if (data != null) {
-            new MessagingAsyncTask().execute(data);
+            new MessagingAsyncTask().executeMe(data);
         }
     }
 
@@ -105,7 +106,7 @@ public class MessagingClient extends Endpoint{
         JSONObject data =
             getJSONData(Msg.ACTION_DEVICE_REMOVED, Msg.MSG_DEVICE_REMOVED);
         if (data != null) {
-            new MessagingAsyncTask().execute(data);
+            new MessagingAsyncTask().executeMe(data);
         }
     }
 
@@ -117,7 +118,7 @@ public class MessagingClient extends Endpoint{
 
         JSONObject data = getJSONData(Msg.ACTION_PING, Msg.MSG_PING);
         if (data != null) {
-            new MessagingAsyncTask().execute(data);
+            new MessagingAsyncTask().executeMe(data);
         }
     }
 
@@ -140,7 +141,7 @@ public class MessagingClient extends Endpoint{
         }
 
         if (data != null) {
-            new MessagingAsyncTask().execute(data);
+            new MessagingAsyncTask().executeMe(data);
         }
     }
 
@@ -197,7 +198,7 @@ public class MessagingClient extends Endpoint{
      * AsyncTask to call gae Messaging Endpoint
      */
     private static class MessagingAsyncTask
-        extends AsyncTask<JSONObject, Void, EndpointRet> {
+        extends ThreadedAsyncTask<JSONObject, Void, EndpointRet> {
         String mAction;
 
         MessagingAsyncTask() {}
@@ -226,8 +227,8 @@ public class MessagingClient extends Endpoint{
                 // call server
                 final String regToken = getRegToken();
                 final Boolean highPriority = Prefs.isHighPriority();
-                ret = msgService.send(regToken, jsonString, highPriority)
-                    .execute();
+                ret = msgService
+                    .send(regToken, jsonString, highPriority).execute();
                 if (ret.getSuccess()) {
                     Log.logD(TAG, "Message sent to server: " + mAction);
                     Analytics.INSTANCE.sent();

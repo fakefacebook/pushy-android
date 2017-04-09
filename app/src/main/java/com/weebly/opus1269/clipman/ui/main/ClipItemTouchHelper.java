@@ -27,6 +27,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.weebly.opus1269.clipman.R;
+import com.weebly.opus1269.clipman.app.ThreadedAsyncTask;
 import com.weebly.opus1269.clipman.model.ClipContract;
 import com.weebly.opus1269.clipman.model.ClipItem;
 
@@ -142,7 +143,7 @@ class ClipItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     }
 
     private void deleteRow(ClipCursorAdapter.ClipViewHolder holder) {
-        new DeleteAsyncTask().execute(holder.itemID);
+        new DeleteAsyncTask().executeMe(holder.itemID);
     }
 
     private class UndoItem {
@@ -169,7 +170,7 @@ class ClipItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     }
 
     // inner class to handle deletes asynchronously
-    private class DeleteAsyncTask extends AsyncTask<Object, Void, Void> {
+    private class DeleteAsyncTask extends ThreadedAsyncTask<Object, Void, Void> {
 
         @SuppressWarnings("OverloadedVarargsMethod")
         @Override
