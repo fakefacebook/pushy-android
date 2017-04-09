@@ -419,18 +419,6 @@ public class SignInActivity extends BaseActivity implements
             final GoogleSignInAccount account = result.getSignInAccount();
             firebaseAuthWithGoogle(account);
 
-            // User is signed in
-            User.INSTANCE.set(account);
-            updateView();
-
-            assert account != null;
-            final String idToken = account.getIdToken();
-            dismissProgressDialog();
-            if (!Prefs.isDeviceRegistered() && !TextUtils.isEmpty(idToken)) {
-                // register with server
-                new RegistrationClient.RegisterAsyncTask(
-                    SignInActivity.this, idToken).execute();
-            }
         } else {
             // reset info.
             mErrorMessage =
@@ -445,16 +433,13 @@ public class SignInActivity extends BaseActivity implements
      * Authorize with Firebase as well
      * @param acct - user account info. Result of successful Google signIn
      */
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         AuthCredential credential =
             GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.logD(TAG, "signInWithCredential:onComplete: " +
-                        task.isSuccessful());
-
                     // If sign in fails, display a message to the user.
                     // If sign in succeeds the auth state listener will be
                     // notified and logic to handle the
@@ -462,8 +447,22 @@ public class SignInActivity extends BaseActivity implements
                     if (!task.isSuccessful()) {
                         Log.logEx(TAG, "signInWithCredential",
                             task.getException());
+                        mErrorMessage = task.getException().getLocalizedMessage();
+                        clearUser();
+                        dismissProgressDialog();
+                    } else {
+                        // User is signed in
+                        User.INSTANCE.set(acct);
+                        updateView();
+
+                        final String idToken = acct.getIdToken();
+                        dismissProgressDialog();
+                        if (!Prefs.isDeviceRegistered() && !TextUtils.isEmpty(idToken)) {
+                            // register with server
+                            new RegistrationClient.RegisterAsyncTask(
+                                SignInActivity.this, idToken).execute();
+                        }
                     }
-                    // success
                 }
             });
     }
