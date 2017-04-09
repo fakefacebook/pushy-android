@@ -22,6 +22,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.weebly.opus1269.clipman.app.App;
+import com.weebly.opus1269.clipman.app.AppUtils;
 
 /**
  * Singleton for Google Analytics tracking.
@@ -58,6 +59,8 @@ public enum Analytics {
                 GoogleAnalytics.getInstance(App.getContext());
             // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
             mTracker = analytics.newTracker(TRACKING_ID);
+            mTracker.setAppName(AppUtils.getApplicationName());
+            mTracker.setAppVersion(Prefs.getVersionName());
         }
         return mTracker;
     }
