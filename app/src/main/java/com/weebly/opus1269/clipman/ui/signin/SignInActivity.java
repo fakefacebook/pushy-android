@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +46,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.weebly.opus1269.clipman.R;
 import com.weebly.opus1269.clipman.app.Log;
@@ -63,6 +63,7 @@ import com.weebly.opus1269.clipman.ui.helpers.ProgressDialogHelper;
  */
 public class SignInActivity extends BaseActivity implements
     GoogleApiClient.OnConnectionFailedListener,
+    FirebaseAuth.AuthStateListener,
     View.OnClickListener {
 
     /**
@@ -74,6 +75,11 @@ public class SignInActivity extends BaseActivity implements
      * Google authorization
      */
     private GoogleApiClient mGoogleApiClient = null;
+
+    /**
+     * Google account
+     */
+    private GoogleSignInAccount mAccount = null;
 
     /**
      * Firebase authorization
@@ -121,30 +127,45 @@ public class SignInActivity extends BaseActivity implements
 
         setupGoogleSignIn();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.addAuthStateListener(this);
+        LocalBroadcastManager
+            .getInstance(this)
+            .registerReceiver(mDevicesReceiver,
+                new IntentFilter(Devices.INTENT_FILTER));
+        updateView();
+
         if (User.INSTANCE.isLoggedIn()) {
             attemptSilentSignIn();
         }
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        mAuth.removeAuthStateListener(this);
+        LocalBroadcastManager
+            .getInstance(this)
+            .unregisterReceiver(mDevicesReceiver);
+        dismissProgressDialog();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
-        LocalBroadcastManager
-            .getInstance(this)
-            .registerReceiver(mDevicesReceiver,
-            new IntentFilter(Devices.INTENT_FILTER));
-        updateView();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        LocalBroadcastManager
-            .getInstance(this)
-            .unregisterReceiver(mDevicesReceiver);
-        dismissProgressDialog();
     }
 
     @Override
@@ -201,6 +222,36 @@ public class SignInActivity extends BaseActivity implements
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Implement FirebaseAuth.AuthStateListener
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        dismissProgressDialog();
+
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            if (mAccount != null) {
+                // set User
+                User.INSTANCE.set(mAccount);
+                updateView();
+
+                if (!Prefs.isDeviceRegistered()) {
+                    // register with server
+                    new RegistrationClient.RegisterAsyncTask(this, mAccount.getIdToken()).execute();
+                }
+            } else {
+                // something went wrong, shouldn't be here
+                signInFailed(getString(R.string.sign_in_err));
+            }
+        } else {
+            // User is signed out
+            clearUser();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Implement View.OnClickListener
     ///////////////////////////////////////////////////////////////////////////
 
@@ -250,21 +301,16 @@ public class SignInActivity extends BaseActivity implements
                     @Override
                     public void onResult(@NonNull Status status) {
                         if (status.isSuccess()) {
+                            // auth listener will handle rest of sign out
                             FirebaseAuth.getInstance().signOut();
-                            clearUser();
-                            dismissProgressDialog();
                         } else {
-                            mErrorMessage =
-                                getString(R.string.sign_out_err_fmt,
-                                    status.getStatusMessage());
-                            updateView();
-                            dismissProgressDialog();
+                            signOutFailed(getString(R.string.sign_out_err_fmt,
+                                status.getStatusMessage()));
                         }
                     }
                 });
         } else {
-            mErrorMessage = getString(R.string.sign_out_err_fmt, "");
-            updateView();
+            signOutFailed(getString(R.string.sign_out_err_fmt, ""));
         }
     }
 
@@ -273,33 +319,123 @@ public class SignInActivity extends BaseActivity implements
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Revoke access to app for this {@link User}
+     * Event: SignIn button clicked
      */
-    private void doRevoke() {
-        if (mGoogleApiClient.isConnected()) {
-            showProgressDialog(getString(R.string.signing_out));
-            Auth.GoogleSignInApi
-                .revokeAccess(mGoogleApiClient)
-                .setResultCallback(
-                    new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(@NonNull Status status) {
-                            if (status.isSuccess()) {
-                                FirebaseAuth.getInstance().signOut();
-                                clearUser();
-                                dismissProgressDialog();
-                            } else {
-                                mErrorMessage =
-                                    getString(R.string.revoke_err_fmt,
-                                        status.getStatusMessage());
-                                updateView();
-                                dismissProgressDialog();
-                            }
-                        }
-                    });
+    private void onSignInClicked() {
+        final Intent signInIntent =
+            Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    /**
+     * Event: SignOut button clicked
+     */
+    private void onSignOutClicked() {
+        handleSigningOut(false);
+    }
+
+    /**
+     * Event: Revoke access button clicked
+     */
+    private void onRevokeAccessClicked() {
+        handleSigningOut(true);
+    }
+
+    /**
+     * Try to signin with cached credentials or cross-device single sign-on
+     */
+    private void attemptSilentSignIn() {
+        final OptionalPendingResult<GoogleSignInResult> opr =
+            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+
+        if (opr.isDone()) {
+            // If the user's cached credentials are valid,
+            // the OptionalPendingResult will be "done"
+            // and the GoogleSignInResult will be available instantly.
+            handleSignInResult(opr.get());
         } else {
-            mErrorMessage = getString(R.string.revoke_err_fmt, "");
-            updateView();
+            // If the user has not previously signed in on this device
+            // or the sign-in has expired,
+            // this asynchronous branch will attempt to sign in the user
+            // silently.  Cross-device single sign-on will occur in this branch.
+            showProgressDialog(getString(R.string.signing_in));
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(@NonNull GoogleSignInResult r) {
+                    dismissProgressDialog();
+                    handleSignInResult(r);
+                }
+            });
+        }
+    }
+
+    /**
+     * All SignIn attempts will come through here
+     * @param result The {@link GoogleSignInResult} of any SignIn attempt
+     */
+    private void handleSignInResult(GoogleSignInResult result) {
+        showProgressDialog(getString(R.string.signing_in));
+        mErrorMessage = "";
+        if (result.isSuccess()) {
+            mAccount = result.getSignInAccount();
+            // Authenticate with Firebase, also completes sign-in activities
+            firebaseAuthWithGoogle();
+        } else {
+            // Google signIn failed
+            final String error =
+                getString(R.string.sign_in_err_fmt,
+                    result.getStatus().toString());
+            signInFailed(error);
+        }
+    }
+
+    /**
+     * Authorize with Firebase
+     */
+    private void firebaseAuthWithGoogle() {
+        AuthCredential credential =
+            GoogleAuthProvider.getCredential(mAccount.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    // If sign in fails, display a message to the user.
+                    // If sign in succeeds the auth state listener will be
+                    // notified and logic to handle the
+                    // signed in user can be handled in the listener.
+                    if (!task.isSuccessful()) {
+                        final Exception ex = task.getException();
+                        Log.logEx(TAG, "firebase signin error", ex);
+                        assert ex != null;
+                        signInFailed(ex.getLocalizedMessage());
+                    }
+                    // success, auth listener will handle rest
+                }
+            });
+    }
+
+    /**
+     * Handle everything related to unregistering, signing out, and revoking
+     * access
+     * @param revoke - if true revoke access to app
+     */
+    private void handleSigningOut(Boolean revoke) {
+        mIsRevoke = revoke;
+        if (Prefs.isDeviceRegistered()) {
+            if (Prefs.isPushClipboard()) {
+                // also handles unregister and sign-out
+                showProgressDialog(getString(R.string.signing_out));
+                MessagingClient.sendDeviceRemoved();
+            } else {
+                // handles unregister and sign-out
+                doUnregister();
+            }
+        } else {
+            if (revoke) {
+                doRevoke();
+            } else {
+                doSignOut();
+            }
         }
     }
 
@@ -344,6 +480,7 @@ public class SignInActivity extends BaseActivity implements
                 if (action != null) {
                     if (action.equals(Devices.ACTION_MY_DEVICE_REMOVED)) {
                         // device remove message sent, now unregister
+                        dismissProgressDialog();
                         doUnregister();
                     } else if (action.equals(Devices.ACTION_MY_DEVICE_UNREGISTERED)) {
                         // unregistered, now signout or revoke
@@ -380,137 +517,28 @@ public class SignInActivity extends BaseActivity implements
     }
 
     /**
-     * Try to signin with cached credentials or cross-device single sign-on
+     * Revoke access to app for this {@link User}
      */
-    private void attemptSilentSignIn() {
-        final OptionalPendingResult<GoogleSignInResult> opr =
-            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-
-        if (opr.isDone()) {
-            // If the user's cached credentials are valid,
-            // the OptionalPendingResult will be "done"
-            // and the GoogleSignInResult will be available instantly.
-            handleSignInResult(opr.get());
-        } else {
-            // If the user has not previously signed in on this device
-            // or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user
-            // silently.  Cross-device single sign-on will occur in this branch.
-            showProgressDialog(getString(R.string.signing_in));
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(@NonNull GoogleSignInResult r) {
-                    dismissProgressDialog();
-                    handleSignInResult(r);
-                }
-            });
-        }
-    }
-
-    /**
-     * All SignIn attempts will come through here
-     * @param result The {@link GoogleSignInResult} of any SignIn attempt
-     */
-    private void handleSignInResult(GoogleSignInResult result) {
-        showProgressDialog(getString(R.string.signing_in));
-        mErrorMessage = "";
-        if (result.isSuccess()) {
-            // Authenticate with Firebase
-            final GoogleSignInAccount account = result.getSignInAccount();
-            firebaseAuthWithGoogle(account);
-
-        } else {
-            // reset info.
-            mErrorMessage =
-                getString(R.string.sign_in_err_fmt, result.getStatus().toString());
-            Log.logE(TAG, mErrorMessage);
-            clearUser();
-            dismissProgressDialog();
-        }
-    }
-
-    /**
-     * Authorize with Firebase as well
-     * @param acct - user account info. Result of successful Google signIn
-     */
-    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
-        AuthCredential credential =
-            GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    // If sign in fails, display a message to the user.
-                    // If sign in succeeds the auth state listener will be
-                    // notified and logic to handle the
-                    // signed in user can be handled in the listener.
-                    if (!task.isSuccessful()) {
-                        Log.logEx(TAG, "signInWithCredential",
-                            task.getException());
-                        mErrorMessage = task.getException().getLocalizedMessage();
-                        clearUser();
-                        dismissProgressDialog();
-                    } else {
-                        // User is signed in
-                        User.INSTANCE.set(acct);
-                        updateView();
-
-                        final String idToken = acct.getIdToken();
-                        dismissProgressDialog();
-                        if (!Prefs.isDeviceRegistered() && !TextUtils.isEmpty(idToken)) {
-                            // register with server
-                            new RegistrationClient.RegisterAsyncTask(
-                                SignInActivity.this, idToken).execute();
+    private void doRevoke() {
+        if (mGoogleApiClient.isConnected()) {
+            showProgressDialog(getString(R.string.signing_out));
+            Auth.GoogleSignInApi
+                .revokeAccess(mGoogleApiClient)
+                .setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            if (status.isSuccess()) {
+                                // auth listener will handle rest of sign out
+                                FirebaseAuth.getInstance().signOut();
+                            } else {
+                                signOutFailed(getString(R.string.revoke_err_fmt,
+                                    status.getStatusMessage()));
+                            }
                         }
-                    }
-                }
-            });
-    }
-
-    /**
-     * Event: SignIn button clicked
-     */
-    private void onSignInClicked() {
-        final Intent signInIntent =
-            Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    /**
-     * Event: SignOut button clicked
-     */
-    private void onSignOutClicked() {
-        handleSigningOut(false);
-    }
-
-    /**
-     * Event: Revoke access button clicked
-     */
-    private void onRevokeAccessClicked() {
-        handleSigningOut(true);
-    }
-
-    /**
-     * Handle everything related to unregistering, signing out, and revoking
-     * access
-     * @param revoke - if true revoke access to app
-     */
-    private void handleSigningOut(Boolean revoke) {
-        mIsRevoke = revoke;
-        if (Prefs.isDeviceRegistered()) {
-            if (Prefs.isPushClipboard()) {
-                // also handles unregister and sign-out
-                MessagingClient.sendDeviceRemoved();
-            } else {
-                // handles unregister and sign-out
-                doUnregister();
-            }
+                    });
         } else {
-            if (revoke) {
-                doRevoke();
-            } else {
-                doSignOut();
-            }
+            signOutFailed(getString(R.string.revoke_err_fmt, ""));
         }
     }
 
@@ -558,6 +586,27 @@ public class SignInActivity extends BaseActivity implements
             emailView.setText("");
         }
         errorView.setText(mErrorMessage);
+    }
+
+    /**
+     * SignIn failed for some reason
+     * @param error info. on failure
+     */
+    private void signInFailed(String error) {
+        mErrorMessage = error;
+        Log.logE(TAG, mErrorMessage);
+        clearUser();
+        dismissProgressDialog();
+    }
+
+    /**
+     * SignOut failed for some reason
+     * @param error info. on failure
+     */
+    private void signOutFailed(String error) {
+        mErrorMessage = error;
+        Log.logE(TAG, mErrorMessage);
+        dismissProgressDialog();
     }
 
     /**

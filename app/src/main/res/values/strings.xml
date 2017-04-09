@@ -245,8 +245,9 @@
     </string>
     <string name="revoke_err_fmt">"App revocation failed. Please try again later\n %s"</string>
     <string name="sign_out_err_fmt">"Sign-out failed. Please try again later\n %s"</string>
+    <string name="sign_in_err">"Sign-in failed. Please try again later"</string>
     <string name="sign_in_err_fmt">"Sign-in failed. Please try again later\n %s"</string>
-    <string name="error_connection">Unable to connect to Google SignIn.</string>
+    <string name="error_connection">Unable to connect to Google SignIn</string>
     <string name="auth_code_fmt">Auth Code: %s</string>
     <string name="id_token_fmt">ID Token: %s</string>
 
